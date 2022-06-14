@@ -25,13 +25,6 @@ public class RacerGUI extends JFrame {
 				}
 			}
 		});
-		String name="";
-        Scanner teclado = new Scanner(System.in);
-        System.out.print("Introduzca su nombre: ");
-        name = teclado.nextLine();
-		if (name != null && name != "") {
-			System.out.println("Hola " + name + "!");
-		}
 	}
 
 	/**
