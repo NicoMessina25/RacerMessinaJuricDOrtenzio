@@ -16,4 +16,14 @@ public class RacerBoard extends Board {
 		super(amouPlayers);
 	}
 
+	public int getAmouQues() {
+		return amouQues;
+	}
+
+	public void setAmouQues(int amouQues) {
+		this.amouQues = amouQues;
+	}
+	
+	
+
 }
