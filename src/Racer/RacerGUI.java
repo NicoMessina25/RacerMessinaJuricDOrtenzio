@@ -1,11 +1,12 @@
 package Racer;
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
+import java.util.Scanner;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-
+import java.io.*;
 public class RacerGUI extends JFrame {
 
 	private JPanel contentPane;
@@ -24,6 +25,13 @@ public class RacerGUI extends JFrame {
 				}
 			}
 		});
+		String name="";
+        Scanner teclado = new Scanner(System.in);
+        System.out.print("Introduzca su nombre: ");
+        name = teclado.nextLine();
+		if (name != null && name != "") {
+			System.out.println("Hola " + name + "!");
+		}
 	}
 
 	/**
