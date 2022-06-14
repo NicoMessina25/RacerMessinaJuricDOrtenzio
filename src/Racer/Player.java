@@ -1,6 +1,6 @@
 package Racer;
 
-public class players {
+public class Player {
 
 	public static void main(String[] args) {
 		System.out.println("Hola");
