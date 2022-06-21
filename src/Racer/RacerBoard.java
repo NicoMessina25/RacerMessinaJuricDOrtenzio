@@ -7,6 +7,7 @@ public class RacerBoard extends Board {
 	private int amouQues = 50;
 	private ArrayList<Question> questions = new ArrayList<Question>(amouQues);
 	private ArrayList<Category> categories = new ArrayList<Caregory>();
+	private Dice dice = new Dice();
 
 	public RacerBoard() {
 		
@@ -25,5 +26,18 @@ public class RacerBoard extends Board {
 	}
 	
 	
+	public Dice getDice() {
+		return dice;
+	}
+
+	public void setDice(Dice dice) {
+		this.dice = dice;
+	}
+
+	public static void main(String[] args) {
+		RacerBoard rb = new RacerBoard();
+		rb.getDice().diceRoll();
+		System.out.println(rb.getDice().getValue());
+	}
 
 }

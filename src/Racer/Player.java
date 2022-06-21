@@ -4,8 +4,8 @@ import java.awt.Color;
 
 public class Player {
 	private String name = new String();
-	private int id, r, g, b;
-	private Color color = new Color(r, g, b);
+	private int id;
+	private Color color;
 
 	public Player(){
 		
