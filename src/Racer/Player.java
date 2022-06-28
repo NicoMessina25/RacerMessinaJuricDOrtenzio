@@ -5,16 +5,16 @@ import java.awt.Color;
 public class Player {
 	private String name = new String();
 	private int id;
-	private Color color;
+	private TeamColor tColor;
 
 	public Player(){
 		
 	}
 	
-	public Player(String name, int id, Color color) {
+	public Player(String name, int id, TeamColor tColor) {
 		this.name = name;
 		this.id = id;
-		this.color = color;
+		this.tColor = tColor;
 	}
 
 	public String getName() {
@@ -33,12 +33,12 @@ public class Player {
 		this.id = id;
 	}
 
-	public Color getColor() {
-		return color;
+	public TeamColor getTeamColor() {
+		return tColor;
 	}
 
-	public void setColor(Color color) {
-		this.color = color;
+	public void setTeamColor(TeamColor tColor) {
+		this.tColor = tColor;
 	}
 	
 }

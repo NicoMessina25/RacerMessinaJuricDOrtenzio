@@ -61,6 +61,7 @@ public class RacerBoard extends Board {
 	public static void main(String[] args) {
 		RacerBoard rb = new RacerBoard();
 		Scanner scan = new Scanner(System.in);
+		HashSet<TeamColor> pickedCol = new HashSet<TeamColor>();
 		int amoPlay = 0;
 		
 		
@@ -84,15 +85,17 @@ public class RacerBoard extends Board {
 		
 		for (int i = 1; i <= amoPlay; i++) {
 			StringBuilder sb = new StringBuilder();
-			HashSet<Color> pickedCol = new HashSet<Color>();
+			int tColNum;
 			
 			sb.append("Enter player "); 
 			sb.append(i);
 			sb.append(" name");
 			
 			System.out.println(sb.toString());
+			rb.getPlayers().add(new RacerPlayer());
 			rb.getPlayers().get(i-1).setName(scan.next()); 
 			rb.getPlayers().get(i-1).setId(i);
+			
 			
 			int j = 0;
 			System.out.println("Choose your F1 team");
@@ -108,8 +111,14 @@ public class RacerBoard extends Board {
 				System.out.println(tC.getTeamName() + " - " + j);
 			}
 		
-			sb.delete(0, sb.lastIndexOf(null));
+			sb.delete(0, sb.lastIndexOf(sb.toString()));
 			
+			System.out.println("Enter the team's number");
+			
+			tColNum = scan.nextInt() - 1;
+			
+			rb.getPlayers().get(i-1).setTeamColor(rb.getTeamColors().get(tColNum));
+			pickedCol.add(rb.getTeamColors().get(tColNum));
 			
 		}
 		

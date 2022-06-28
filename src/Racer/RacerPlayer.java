@@ -9,8 +9,8 @@ public class RacerPlayer extends Player {
 		super();
 	}
 	
-	public RacerPlayer(String name, int id, Color color) {
-		super(name, id, color);
+	public RacerPlayer(String name, int id, TeamColor tColor) {
+		super(name, id, tColor);
 	}
 
 	public int getLostTurns() {
