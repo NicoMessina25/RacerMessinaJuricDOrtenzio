@@ -4,17 +4,17 @@ import java.awt.Color;
 
 public class Player {
 	private String name = new String();
-	private int id, r, g, b;
-	private Color color = new Color(r, g, b);
+	private int id;
+	private TeamColor tColor;
 
 	public Player(){
 		
 	}
 	
-	public Player(String name, int id, Color color) {
+	public Player(String name, int id, TeamColor tColor) {
 		this.name = name;
 		this.id = id;
-		this.color = color;
+		this.tColor = tColor;
 	}
 
 	public String getName() {
@@ -33,12 +33,12 @@ public class Player {
 		this.id = id;
 	}
 
-	public Color getColor() {
-		return color;
+	public TeamColor getTeamColor() {
+		return tColor;
 	}
 
-	public void setColor(Color color) {
-		this.color = color;
+	public void setTeamColor(TeamColor tColor) {
+		this.tColor = tColor;
 	}
 	
 }
