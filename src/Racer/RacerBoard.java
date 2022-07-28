@@ -6,7 +6,7 @@ public class RacerBoard extends Board {
 	
 	private int amouQues = 50;
 	private ArrayList<Question> questions = new ArrayList<Question>(amouQues);
-	private ArrayList<Category> categories = new ArrayList<Caregory>();
+	private ArrayList<Category> categories = new ArrayList<Category>();
 
 	public RacerBoard() {
 		
