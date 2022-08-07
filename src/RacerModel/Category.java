@@ -1,11 +1,13 @@
+
 package RacerModel;
+
 
 import java.awt.Color;
 
 public class Category {
 	private String description;
 	private Color color;
-	
+		
 	public Category() {
 		
 	}

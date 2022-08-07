@@ -1,9 +1,11 @@
+
 package RacerModel;
 
 import java.util.ArrayList;
 
 public class Question {
 	
+
 	private int id, correctOptionId, dificulty;
 	private String statement;
 	private ArrayList<Option> options = new ArrayList<Option>(); // N CANTIDAD DE OPCIONES
@@ -42,21 +44,9 @@ public class Question {
 
 	public ArrayList<Option> getOptions() {
 		return options;
+
 	}
-	/*
-	public void muestraPregunta() { ESTA CLASE SE NECESITA EL XML PARA VER BIEN COMO ARMARLO
-		
-		System.out.println(enunciado); // MUESTRA LA PREGUNTA
-		
-		int i = 0;
-		while (i < opciones.size()) { // MUESTRA LAS OPCIONES CON 1 2 3 4 ETC.
-			
-			System.out.println("\t"+(i+1)+". "+opciones.get(i));
-			i++;
-		}
-	} 
-	*/
-	
+
 	public Category getCategory() {
 		return category;
 	}
@@ -79,3 +69,4 @@ public class Question {
 	}
 	
 }
+

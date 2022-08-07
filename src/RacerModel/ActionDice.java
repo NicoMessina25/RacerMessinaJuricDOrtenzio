@@ -1,5 +1,6 @@
 package RacerModel;
 
+
 import java.util.ArrayList;
 
 public class ActionDice extends Dice {
@@ -22,5 +23,4 @@ public class ActionDice extends Dice {
 		this.actions = actions;
 	}
 }
-
 

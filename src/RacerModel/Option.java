@@ -1,4 +1,7 @@
+
 package RacerModel;
+
+
 
 public class Option {
 	
@@ -24,16 +27,13 @@ public class Option {
 		this.descripcion = descripcion;
 	}
 
+
 	public int getSortNum() {
 		return sortNum;
 	}
 
 	public void setSortNum(int sortNum) {
 		this.sortNum = sortNum;
-	}
-
-	public boolean isCorrecta() {
-		return correcta;
 	}
 
 	public void setCorrecta(boolean correcta) {
