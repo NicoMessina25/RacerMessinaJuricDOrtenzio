@@ -43,7 +43,7 @@ public class BoardPaneGUI extends JFrame {
 	public BoardPaneGUI(RacerBoard rb) {
 		setTitle("Racer");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 470, 480);
+		setBounds(100, 100, 559, 480);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
@@ -67,14 +67,14 @@ public class BoardPaneGUI extends JFrame {
 		
 		JScrollPane scrollPaneAction = new JScrollPane();
 		scrollPaneAction.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		scrollPaneAction.setBounds(197, 140, 213, 71);
+		scrollPaneAction.setBounds(320, 142, 213, 71);
 		contentPane.add(scrollPaneAction);
 		
 		JTextPane textPaneAction = new JTextPane();
 		scrollPaneAction.setViewportView(textPaneAction);
 		
 		JLabel lblAction = new JLabel("Action");
-		lblAction.setBounds(127, 146, 60, 14);
+		lblAction.setBounds(250, 148, 60, 14);
 		contentPane.add(lblAction);
 		
 		JLabel lblDice = new JLabel("Dice: ");
@@ -88,7 +88,7 @@ public class BoardPaneGUI extends JFrame {
 		lblPlayerTurn.setText("Turn: " + rb.getPlayers().get(rb.getPlayerTurn()).getName());
 		
 		JPanel panelActionColor = new JPanel();
-		panelActionColor.setBounds(197, 217, 213, 10);
+		panelActionColor.setBounds(320, 219, 213, 10);
 		contentPane.add(panelActionColor);
 		
 		JLabel lblQuestion = new JLabel("Pregunta");
@@ -163,16 +163,23 @@ public class BoardPaneGUI extends JFrame {
 		btnEndTurn.setVisible(false);
 		
 		
+		JLabel lblPlayerToAnswer = new JLabel("Responde: --");
+		lblPlayerToAnswer.setBounds(157, 200, 130, 24);
+		contentPane.add(lblPlayerToAnswer);
+		lblPlayerToAnswer.setVisible(false);
+		
+		
 		btnRollDice.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				Action action;
-				Player player = rb.getPlayers().get(rb.getPlayerTurn());
+				RacerPlayer player = (RacerPlayer) rb.getPlayers().get(rb.getPlayerTurn());
 				rb.getActionDice().diceRoll();
 				rb.getDice().diceRoll();
 				int diceValue = rb.getDice().getValue();
 				action = rb.getActionDice().getAction(rb.getActionDice().getValue());
+				panelActionColor.setVisible(true);
 				panelActionColor.setBackground(action.getColor());
 				textPaneAction.setText(action.getDesc());
 				lblDice.setText("Dice: " + diceValue);
@@ -181,14 +188,25 @@ public class BoardPaneGUI extends JFrame {
 				btnRollDice.setVisible(false);
 				
 				if(rb.getSquares().get(player.getCurrentSquare()).getTag() == "Pregunta") {
+					rb.getActionDice().setValue(6); //provisional: la pregunta tiene prioridad al dado de accion
 					btnStartQuestion.setVisible(true);
-					btnEndTurn.setVisible(false);
+					lblPlayerToAnswer.setText("Responde: " + player.getName());
+					textPaneAction.setText("");
+					panelActionColor.setVisible(false);
 					
 				} else {
-					rb.movePlayer(player, diceValue);
-					btnEndTurn.setVisible(true);
-
-					
+					int actionNum = rb.getActionDice().getValue();
+					if(actionNum != 1 && actionNum != 5) {
+						btnStartQuestion.setVisible(true);
+						if(actionNum == 3) {
+							lblPlayerToAnswer.setText("Responde: " + rb.getPlayers().get(rb.nextPlayer()).getName());
+						} else lblPlayerToAnswer.setText("Responde: " + player.getName());
+						lblPlayerToAnswer.setVisible(true);
+					} else {
+						rb.executeAction(rb.getActionDice().getAction(rb.getActionDice().getValue()), diceValue, true);
+						btnEndTurn.setVisible(true);
+					}
+										
 					textPaneGameStatus.setText(rb.genPlayersStatus());
 					
 				}
@@ -246,17 +264,21 @@ public class BoardPaneGUI extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				Question questionChosen = rb.getCurQuestion();
+				RacerPlayer player = (RacerPlayer) rb.getPlayers().get(rb.getPlayerTurn());
 				int i = 0;
 				int diceValue = rb.getDice().getValue();
 				while (i < rdbtnOptions.size() && !rdbtnOptions.get(i).isSelected()) {
 					i++;
 				}
 				if(i < questionChosen.getOptions().size()) {
-					if(!questionChosen.correctAnswer(questionChosen.getOptions().get(i).getId())) {
-						diceValue *= -1;
+					rb.executeAction(rb.getActionDice().getAction(rb.getActionDice().getValue()), diceValue, questionChosen.correctAnswer(questionChosen.getOptions().get(i).getId()));
+					if(!questionChosen.correctAnswer(questionChosen.getOptions().get(i).getId())) {						
 						System.out.println("Incorrect");
-					} else System.out.println("Correct");
-					rb.movePlayer(rb.getPlayers().get(rb.getPlayerTurn()), diceValue);
+					} else {
+						System.out.println("Correct");
+					}
+						
+					//rb.movePlayer(player, diceValue);
 					
 					
 					
@@ -286,6 +308,7 @@ public class BoardPaneGUI extends JFrame {
 				} else {
 					btnRollDice.setVisible(true);
 					rb.nextTurn();
+					
 					player = rb.getPlayers().get(rb.getPlayerTurn());
 					//lblNextTurn.setText("Next Turn: " + rb.getPlayers().get(rb.getPlayerTurn()).getName());
 					lblDice.setText("Dice: --");
@@ -295,6 +318,7 @@ public class BoardPaneGUI extends JFrame {
 					lblCategory.setVisible(false);
 					lblTimeRemaining.setVisible(false);
 					lblQuestion.setVisible(false);
+					lblPlayerToAnswer.setVisible(false);
 					btnEndTurn.setVisible(false);
 					
 					if(rb.getCurQuestion() != null) {

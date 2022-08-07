@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 import Events.StartGameEvent;
 import Listeners.StartGameListener;
+import RacerModel.Action;
 import RacerModel.ActionDice;
 import RacerModel.Category;
 import RacerModel.Dice;
@@ -130,6 +131,18 @@ public class RacerBoard extends Board implements StartGameListener {
 		return valid;
 	}
 	
+	@Override
+	public void nextTurn() {
+		super.nextTurn();
+		int lostTurns = ((RacerPlayer) super.getPlayers().get(super.getPlayerTurn())).getLostTurns();
+		while (lostTurns > 0) {
+			((RacerPlayer)  super.getPlayers().get(super.getPlayerTurn())).setLostTurns(lostTurns - 1);
+			System.out.println(super.getPlayers().get(super.getPlayerTurn()).getName() + " perdió un turno");
+			super.nextTurn();
+			lostTurns = ((RacerPlayer)  super.getPlayers().get(super.getPlayerTurn())).getLostTurns();
+		}
+	}
+	
 	public void playerBackToStart(Player p) {
 		p.setCurrentSquare(0);
 		super.getSquares().get(0).setCurPlayer(p);
@@ -168,6 +181,10 @@ public class RacerBoard extends Board implements StartGameListener {
 		
 		
 		return questionsToShow.get((int) Math.floor(Math.random()*questionsToShow.size()));
+	}
+	
+	public void executeAction(Action action, int diceValue, boolean correct) {
+		action.doAction(this, (RacerPlayer) super.getPlayers().get(super.getPlayerTurn()), diceValue, correct);
 	}
 	
 	@Override

@@ -201,11 +201,14 @@ public class RacerGUI extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				int id;
-				
+				int timePerOption;
 
 				
 				String name = textFieldName.getText();
 				boolean expert = chckbxExpert.isSelected();
+				if(expert) {
+					timePerOption = 10;
+				} else timePerOption = 15;
 				TeamColor tc = (TeamColor) comboBoxTeams.getSelectedItem();
 				if (rb.getPlayers().size() > 0) {
 						id = rb.getPlayers().get(rb.getPlayers().size() - 1).getId() + 1;
@@ -214,7 +217,7 @@ public class RacerGUI extends JFrame {
 					}
 				
 				if(rb.validateFields(name, tc, (int) spnAmountOfPlayers.getValue(), id)) {
-					rb.addPlayer(new RacerPlayer(name, id, 0, tc, expert));
+					rb.addPlayer(new RacerPlayer(name, id, tc, expert, timePerOption));
 					textAreaPlayersCreated.setText(rb.genPlayersStatus());
 					textFieldName.setText("");
 					chckbxExpert.setSelected(false);

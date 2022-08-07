@@ -6,6 +6,12 @@ import java.util.HashSet;
 
 import Controller.RacerBoard;
 import RacerModel.Action;
+import RacerModel.ActionBlue;
+import RacerModel.ActionFucsia;
+import RacerModel.ActionGreen;
+import RacerModel.ActionOrange;
+import RacerModel.ActionRed;
+import RacerModel.ActionYellow;
 import RacerModel.Category;
 import RacerModel.Option;
 import RacerModel.Question;
@@ -42,12 +48,12 @@ public class RunRacer {
 		rb.getTeamColors().add(new TeamColor("Red_Bull", new Color(252,216,0)));//RedBull - 8
 		rb.getTeamColors().add(new TeamColor("Williams", new Color(0,160,222)));//Williams - 9
 		
-		rb.getActionDice().getActions().add(new Action("Avanza el valor obtenido en el dado numérico, pero pierde el próximo turno (no podrá lanzar los dados en el siguiente turno)", new Color(255, 0, 0)));
-		rb.getActionDice().getActions().add(new Action("Duplica casillas a avanzar si contesta bien. Si contesta mal, no avanza y pierde el próximo turno.", new Color(0, 0, 255)));
-		rb.getActionDice().getActions().add(new Action("El jugador que lanzó el dado no avanza ni retrocede. El jugador de “la derecha” (el del turno siguiente) deberá responder una pregunta. Si contesta bien, dicho jugador avanza el número obtenido en el dado numérico. Si contesta mal, dicho jugador retrocede esa cantidad de casillas. ", new Color(255, 128, 0)));
-		rb.getActionDice().getActions().add(new Action("Avanza si contesta bien. Si contesta mal, no avanza.", new Color(255, 255, 0)));
-		rb.getActionDice().getActions().add(new Action("Avanza directamente la cantidad de casillas indicada por el dado numérico.", new Color(0, 255, 0)));
-		rb.getActionDice().getActions().add(new Action("Avanza si contesta bien. Retrocede si contesta mal.", new Color(255, 0, 255)));
+		rb.getActionDice().getActions().add(new ActionRed("Avanza el valor obtenido en el dado numérico, pero pierde el próximo turno (no podrá lanzar los dados en el siguiente turno)", new Color(255, 0, 0)));
+		rb.getActionDice().getActions().add(new ActionBlue("Duplica casillas a avanzar si contesta bien. Si contesta mal, no avanza y pierde el próximo turno.", new Color(0, 0, 255)));
+		rb.getActionDice().getActions().add(new ActionOrange("El jugador que lanzó el dado no avanza ni retrocede. El jugador de “la derecha” (el del turno siguiente) deberá responder una pregunta. Si contesta bien, dicho jugador avanza el número obtenido en el dado numérico. Si contesta mal, dicho jugador retrocede esa cantidad de casillas. ", new Color(255, 128, 0)));
+		rb.getActionDice().getActions().add(new ActionYellow("Avanza si contesta bien. Si contesta mal, no avanza.", new Color(255, 255, 0)));
+		rb.getActionDice().getActions().add(new ActionGreen("Avanza directamente la cantidad de casillas indicada por el dado numérico.", new Color(0, 255, 0)));
+		rb.getActionDice().getActions().add(new ActionFucsia("Avanza si contesta bien. Retrocede si contesta mal.", new Color(255, 0, 255)));
 		
 		rb.getCategories().add(new Category("Deportes", new Color(0, 147, 0)));
 		rb.getCategories().add(new Category("Arte", new Color(244, 116, 0)));

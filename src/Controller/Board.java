@@ -68,6 +68,12 @@ public class Board {
 	public void setPlayerTurn(int playerTurn) {
 		this.playerTurn = playerTurn;
 	}
+	
+	public int nextPlayer() {
+		if (playerTurn < players.size() - 1) {
+			return playerTurn + 1;
+		} else return 0;
+	}
 
 	public void nextTurn() {
 		if (playerTurn < players.size() - 1) {

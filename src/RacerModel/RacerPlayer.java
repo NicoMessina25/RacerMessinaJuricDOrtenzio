@@ -9,11 +9,12 @@ public class RacerPlayer extends Player {
 		super();
 	}
 	
-	public RacerPlayer(String name, int id, int currentSquare, TeamColor tColor, boolean expert) {
-		super(name, id, currentSquare);
+	public RacerPlayer(String name, int id, TeamColor tColor, boolean expert, int timePerOption) {
+		super(name, id, 0);
 		this.tColor = tColor;
 		this.expert = expert;
-		
+		this.lostTurns = 0;
+		this.timePerOption = timePerOption;
 	}
 
 	public int getLostTurns() {
