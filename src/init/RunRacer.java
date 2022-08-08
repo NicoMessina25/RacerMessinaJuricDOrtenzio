@@ -196,6 +196,8 @@ public class RunRacer {
 			System.out.println(sq.toString());
 		}*/
 		
+		rb.setTimer();
+		
 		RacerGUI frame = new RacerGUI(rb);
 		frame.setStartGameListener(rb);
 		

@@ -32,6 +32,9 @@ import javax.swing.JRadioButton;
 public class BoardPaneGUI extends JFrame {
 
 	private JPanel contentPane;
+	private JLabel lblTimeLeft;
+	private boolean isTimeLeft;
+	private JButton btnAnswer;
 
 	/**
 	 * Launch the application.
@@ -109,10 +112,10 @@ public class BoardPaneGUI extends JFrame {
 		contentPane.add(btnStartQuestion);
 		btnStartQuestion.setVisible(false);
 		
-		JLabel lblTimeRemaining = new JLabel("Tiempo Restante: ");
-		lblTimeRemaining.setBounds(255, 238, 167, 20);
-		contentPane.add(lblTimeRemaining);
-		lblTimeRemaining.setVisible(false);
+		lblTimeLeft = new JLabel("Tiempo Restante: ");
+		lblTimeLeft.setBounds(255, 238, 167, 20);
+		contentPane.add(lblTimeLeft);
+		lblTimeLeft.setVisible(false);
 		
 		JLabel lblCategory = new JLabel("Categoría: ");
 		lblCategory.setBounds(91, 239, 154, 19);
@@ -144,7 +147,7 @@ public class BoardPaneGUI extends JFrame {
 		contentPane.add(rdbtnOp4);
 		rdbtnOp4.setVisible(false);
 		
-		JButton btnAnswer = new JButton("Answer");
+		btnAnswer = new JButton("Answer");
 		btnAnswer.setBounds(355, 337, 89, 39);
 		contentPane.add(btnAnswer);
 		btnAnswer.setVisible(false);
@@ -221,15 +224,20 @@ public class BoardPaneGUI extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Player player = rb.getPlayers().get(rb.getPlayerTurn());
+				RacerPlayer player = (RacerPlayer) rb.getPlayers().get(rb.getPlayerTurn());
 				
 				scrollPaneQuestion.setVisible(true);
 				lblCategory.setVisible(true);
-				lblTimeRemaining.setVisible(true);
+				lblTimeLeft.setVisible(true);
 				lblQuestion.setVisible(true);
+				isTimeLeft = true;
 				
-				Question questionChosen = rb.getQuestion((RacerPlayer) player);
+				
+				Question questionChosen = rb.getQuestion(player);
 				rb.setCurQuestion(questionChosen);
+				rb.setTimeLeft(player.getTimePerOption()*questionChosen.getOptions().size());
+				lblTimeLeft.setText("Tiempo restante: " + rb.getTimeLeft());
+				rb.startTimer();
 				lblCategory.setText("Categoría: " + questionChosen.getCategory().getDescription());
 				
 				for(Option op: questionChosen.getOptions()) {
@@ -264,18 +272,17 @@ public class BoardPaneGUI extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				Question questionChosen = rb.getCurQuestion();
-				RacerPlayer player = (RacerPlayer) rb.getPlayers().get(rb.getPlayerTurn());
 				int i = 0;
 				int diceValue = rb.getDice().getValue();
 				while (i < rdbtnOptions.size() && !rdbtnOptions.get(i).isSelected()) {
 					i++;
 				}
 				if(i < questionChosen.getOptions().size()) {
-					rb.executeAction(rb.getActionDice().getAction(rb.getActionDice().getValue()), diceValue, questionChosen.correctAnswer(questionChosen.getOptions().get(i).getId()));
-					if(!questionChosen.correctAnswer(questionChosen.getOptions().get(i).getId())) {						
-						System.out.println("Incorrect");
-					} else {
+					rb.executeAction(rb.getActionDice().getAction(rb.getActionDice().getValue()), diceValue, questionChosen.correctAnswer(questionChosen.getOptions().get(i).getId()) && isTimeLeft);
+					if(questionChosen.correctAnswer(questionChosen.getOptions().get(i).getId()) && isTimeLeft) {						
 						System.out.println("Correct");
+					} else {
+						System.out.println("Incorrect");
 					}
 						
 					//rb.movePlayer(player, diceValue);
@@ -316,7 +323,7 @@ public class BoardPaneGUI extends JFrame {
 	
 					scrollPaneQuestion.setVisible(false);
 					lblCategory.setVisible(false);
-					lblTimeRemaining.setVisible(false);
+					lblTimeLeft.setVisible(false);
 					lblQuestion.setVisible(false);
 					lblPlayerToAnswer.setVisible(false);
 					btnEndTurn.setVisible(false);
@@ -337,4 +344,14 @@ public class BoardPaneGUI extends JFrame {
 			
 		});
 	}
+	
+	public void updateTimeLeft(int timeLeft) {
+		lblTimeLeft.setText("Tiempo restante: " + timeLeft);
+		isTimeLeft = timeLeft > 0;
+		if(!isTimeLeft) {
+			btnAnswer.doClick();
+		}
+		
+	}
+	
 }

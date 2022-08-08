@@ -1,12 +1,17 @@
 package Controller;
 
 import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
+
+import javax.swing.JLabel;
+import javax.swing.Timer;
 
 import Events.StartGameEvent;
 import Listeners.StartGameListener;
@@ -19,6 +24,7 @@ import RacerModel.Question;
 import RacerModel.RacerPlayer;
 import RacerModel.Square;
 import RacerModel.TeamColor;
+import Views.BoardPaneGUI;
 
 
 
@@ -33,7 +39,9 @@ public class RacerBoard extends Board implements StartGameListener {
 	private ArrayList<TeamColor> teamColors = new ArrayList<TeamColor>(amouTeam);
 	private ActionDice actionDice = new ActionDice();
 	private Question curQuestion;
-
+	private Timer timer = new Timer(1000, null);
+	private int timeLeft;
+	private BoardPaneGUI boardPane;
 
 
 	public RacerBoard() {		
@@ -101,6 +109,22 @@ public class RacerBoard extends Board implements StartGameListener {
 		this.actionDice = actionDice;
 	}
 
+	public int getTimeLeft() {
+		return timeLeft;
+	}
+
+	public void setTimeLeft(int timeLeft) {
+		this.timeLeft = timeLeft;
+	}
+
+	public BoardPaneGUI getBoardPane() {
+		return boardPane;
+	}
+
+	public void setBoardPane(BoardPaneGUI boardPane) {
+		this.boardPane = boardPane;
+	}
+
 	public Question getCurQuestion() {
 		return curQuestion;
 	}
@@ -108,6 +132,7 @@ public class RacerBoard extends Board implements StartGameListener {
 	public void setCurQuestion(Question curQuestion) {
 		this.curQuestion = curQuestion;
 	}
+
 
 	public String genPlayersStatus() {
 		StringBuilder sb = new StringBuilder();
@@ -185,11 +210,34 @@ public class RacerBoard extends Board implements StartGameListener {
 	
 	public void executeAction(Action action, int diceValue, boolean correct) {
 		action.doAction(this, (RacerPlayer) super.getPlayers().get(super.getPlayerTurn()), diceValue, correct);
+		timer.stop();
 	}
 	
 	@Override
 	public void listenStartGame(StartGameEvent e) {
-		e.starGame();
+		e.starGame(this);
+	}
+	
+	public void setTimer() {
+		
+		timer.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				timeLeft--;
+				if(timeLeft == 0) {
+					timer.stop();
+				}
+				boardPane.updateTimeLeft(timeLeft);
+			}
+			
+		});
+
+	
+	}
+	
+	public void startTimer() {
+		timer.start();
 	}
 		
 		
