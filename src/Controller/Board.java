@@ -2,8 +2,8 @@ package Controller;
 
 import java.util.ArrayList;
 
-
 import RacerModel.Player;
+import RacerModel.RacerPlayer;
 import RacerModel.Square;
 
 public class Board {
@@ -33,8 +33,8 @@ public class Board {
 		return squares;
 	}
 	
-	public void addPlayer(Player player){
-		players.add(player);
+	public void addPlayer(RacerPlayer rp){
+		players.add(rp);
 	};
 	
 	public void removePlayer() {
@@ -67,6 +67,12 @@ public class Board {
 
 	public void setPlayerTurn(int playerTurn) {
 		this.playerTurn = playerTurn;
+	}
+	
+	public int nextPlayer() {
+		if (playerTurn < players.size() - 1) {
+			return playerTurn + 1;
+		} else return 0;
 	}
 
 	public void nextTurn() {

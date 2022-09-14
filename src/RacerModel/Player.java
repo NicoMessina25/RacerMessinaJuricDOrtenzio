@@ -8,6 +8,10 @@ public class Player {
 		
 	}
 	
+	public Player(String name) {
+		this.name = name;
+	}
+	
 	public Player(String name, int id, int currentSquare) {
 		this.name = name;
 		this.id = id;

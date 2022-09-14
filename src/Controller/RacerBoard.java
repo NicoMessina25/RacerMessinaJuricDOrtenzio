@@ -1,18 +1,38 @@
 package Controller;
 
 import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Scanner;
-import java.util.stream.Collectors;
 
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JPanel;
+import javax.swing.JTextPane;
+import javax.swing.Timer;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+
+import Events.CreatePlayerEvent;
 import Events.StartGameEvent;
+import Listeners.CreatePlayerListener;
 import Listeners.StartGameListener;
+import RacerModel.Action;
 import RacerModel.ActionDice;
 import RacerModel.Category;
 import RacerModel.Dice;
+import RacerModel.Option;
 import RacerModel.Player;
 import RacerModel.Question;
 import RacerModel.RacerPlayer;
@@ -22,17 +42,22 @@ import RacerModel.TeamColor;
 
 
 
-public class RacerBoard extends Board implements StartGameListener {
+public class RacerBoard extends Board implements StartGameListener, CreatePlayerListener {
 	
-	private int amouQues = 50;
+	//private int amouQues = 50;
 	private int amouTeam = 10;
-	private ArrayList<Question> questions = new ArrayList<Question>(amouQues);
+	private final int MAX_PLAYERS = 4;
+	private final int MIN_PLAYERS = 2;
+	private ArrayList<Question> questions = new ArrayList<Question>();
 	private ArrayList<Category> categories = new ArrayList<Category>();
 	private Dice dice = new Dice();
 	private ArrayList<TeamColor> teamColors = new ArrayList<TeamColor>(amouTeam);
 	private ActionDice actionDice = new ActionDice();
 	private Question curQuestion;
-
+	private Timer timer;
+	private int timeLeft;
+	private RacerPlayer playerToAnswer;
+	private int lastId;
 
 
 	public RacerBoard() {		
@@ -40,15 +65,6 @@ public class RacerBoard extends Board implements StartGameListener {
 	
 	public RacerBoard(int rows, int columns) {
 		super(rows, columns);
-	}
-
-
-	public int getAmouQues() {
-		return amouQues;
-	}
-
-	public void setAmouQues(int amouQues) {
-		this.amouQues = amouQues;
 	}
 	
 	
@@ -100,12 +116,54 @@ public class RacerBoard extends Board implements StartGameListener {
 		this.actionDice = actionDice;
 	}
 
+	public int getTimeLeft() {
+		return timeLeft;
+	}
+
+	public void setTimeLeft(int timeLeft) {
+		this.timeLeft = timeLeft;
+	}
+
+
 	public Question getCurQuestion() {
 		return curQuestion;
 	}
 
 	public void setCurQuestion(Question curQuestion) {
 		this.curQuestion = curQuestion;
+	}
+	
+	public RacerPlayer getPlayerToAnswer() {
+		return playerToAnswer;
+	}
+
+	public void setPlayerToAnswer(RacerPlayer playerToAnswer) {
+		this.playerToAnswer = playerToAnswer;
+	}
+
+
+	public Timer getTimer() {
+		return timer;
+	}
+
+	public void setTimer(Timer timer) {
+		this.timer = timer;
+	}
+
+	public int getMAX_PLAYERS() {
+		return MAX_PLAYERS;
+	}
+
+	public int getMIN_PLAYERS() {
+		return MIN_PLAYERS;
+	}
+
+	public int getLastId() {
+		return lastId;
+	}
+
+	public void setLastId(int id) {
+		this.lastId = id;
 	}
 
 	public String genPlayersStatus() {
@@ -118,16 +176,32 @@ public class RacerBoard extends Board implements StartGameListener {
 		return sb.toString();
 	}
 	
-	public boolean validateFields(String name, TeamColor tc, int amountOfPLayers, int id) {
-		boolean valid = true;
+	
+	public void addPlayer(String name, TeamColor tc, boolean expert, int timePerOption) {
+		RacerPlayer rp = new RacerPlayer(name, getLastId(), tc, expert, timePerOption);
+		super.addPlayer(rp);
+	}
+	
+	public boolean validateFields(String name, int id) {
 		Iterator<Player> it = super.getPlayers().iterator();
-		
-		while (it.hasNext() && valid) {
-			RacerPlayer player = (RacerPlayer) it.next();
-			valid = !(name.equals(player.getName()) || tc.equals(player.getTeamColor()));
+		RacerPlayer rp = new RacerPlayer("");
+		while (it.hasNext() && !(name.equals(rp.getName()))) {
+			rp = (RacerPlayer) it.next();
 		}
-		valid = valid && !name.equals("") && id <= amountOfPLayers;
-		return valid;
+		 
+		return !(name.equals(rp.getName())) && !name.equals("") && id < MAX_PLAYERS;
+	}
+	
+	@Override
+	public void nextTurn() {
+		super.nextTurn();
+		int lostTurns = ((RacerPlayer) super.getPlayers().get(super.getPlayerTurn())).getLostTurns();
+		while (lostTurns > 0) {
+			((RacerPlayer)  super.getPlayers().get(super.getPlayerTurn())).setLostTurns(lostTurns - 1);
+			System.out.println(super.getPlayers().get(super.getPlayerTurn()).getName() + " perdió un turno");
+			super.nextTurn();
+			lostTurns = ((RacerPlayer)  super.getPlayers().get(super.getPlayerTurn())).getLostTurns();
+		}
 	}
 	
 	public void playerBackToStart(Player p) {
@@ -155,6 +229,7 @@ public class RacerBoard extends Board implements StartGameListener {
 	}
 	
 	public Question getQuestion(RacerPlayer p) {
+		Question ques;
 		List<Question> questionsToShow;
 		
 		do {
@@ -166,63 +241,165 @@ public class RacerBoard extends Board implements StartGameListener {
 			}
 		} while(questionsToShow.size() == 0);	
 		
+		ques = questionsToShow.get((int) Math.floor(Math.random()*questionsToShow.size()));
+		questions.remove(ques);
+		return ques;
+	}
+	
+	public void executeAction(Action action, ArrayList<JPanel> squarePanels, int diceValue, boolean correct) {
+		RacerPlayer rp = (RacerPlayer) getPlayerToAnswer();
+		if(rp.getCurrentSquare() != 0) {
+			squarePanels.get(rp.getCurrentSquare()-1).setBackground(new Color(255, 255, 255));
+		}
 		
-		return questionsToShow.get((int) Math.floor(Math.random()*questionsToShow.size()));
+		action.doAction(this, rp, diceValue, correct);
+		if(rp.getCurrentSquare() != 0) {
+			squarePanels.get(rp.getCurrentSquare()-1).setBackground(rp.getTeamColor().getCol());
+		}
+		
+		if(timer != null) {
+			timer.stop();
+		}
+		
 	}
 	
 	@Override
 	public void listenStartGame(StartGameEvent e) {
-		e.starGame();
+		e.starGame(this);
 	}
+	
+	/*public void setTimer() {
 		
-		
-		/*do {
-			System.out.println("Choose the number of players (2-4)");
-			amoPlay = scan.nextInt();
-		} while(amoPlay < 2 && amoPlay > 4);
-		
-		rb.setAmouPlayers(amoPlay);
-		
-		for (int i = 1; i <= amoPlay; i++) {
-			StringBuilder sb = new StringBuilder();
-			int tColNum;
-			
-			sb.append("Enter player "); 
-			sb.append(i);
-			sb.append(" name");
-			
-			System.out.println(sb.toString());
-			rb.getPlayers().add(new RacerPlayer());
-			rb.getPlayers().get(i-1).setName(scan.next()); 
-			rb.getPlayers().get(i-1).setId(i);
-			
-			
-			int j = 0;
-			System.out.println("Choose your F1 team");
-			
-			List<TeamColor> colToList =  rb.teamColors.stream().filter(c -> !pickedCol.contains(c)).collect(Collectors.toList());;
-			
-			Iterator<TeamColor> it = colToList.iterator();
-			
-			while (it.hasNext()) {
-				TeamColor tC = new TeamColor();
-				tC = it.next();
-				j++;
-				System.out.println(tC.getTeamName() + " - " + j);
+		timer.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				timeLeft--;
+				if(timeLeft == 0) {
+					timer.stop();
+				}
+				questionPanel.updateTimeLeft(timeLeft);
 			}
-		
-			sb.delete(0, sb.lastIndexOf(sb.toString()));
 			
-			System.out.println("Enter the team's number");
-			
-			tColNum = scan.nextInt() - 1;
-			
-			rb.getPlayers().get(i-1).setTeamColor(rb.getTeamColors().get(tColNum));
-			pickedCol.add(rb.getTeamColors().get(tColNum));
+		});
+
+	
+	}*/
+	
+	public void startTimer() {
+		timer.start();
+	}
+	
+	public void updateDelButton(JTextPane textPanePlayersCreated, ArrayList<JButton> btnsDelete, JComboBox<TeamColor> cbTeams) {
+		for(int i = 0; i < btnsDelete.size();i++) {
+			if(btnsDelete.get(i).getActionListeners().length > 0) {
+				btnsDelete.get(i).removeActionListener(btnsDelete.get(i).getActionListeners()[0]);
+			}
 			
 		}
 		
-		rb.getDice().diceRoll();
-		System.out.println(rb.getDice().getValue());*/
+		for(int i = 0; i < getPlayers().size(); i++) {
+			int j = i;
+			btnsDelete.get(i).addActionListener(new ActionListener() {
+	
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					getPlayers().remove(j);
+					//btnDelete.removeActionListener(btnDelete.getActionListeners()[0]);
+					lastId--;
+					
+					for(int k = j; k<getPlayers().size(); k++) {
+						getPlayers().get(k).setId(k+1);
+					}
+					updateDelButton(textPanePlayersCreated, btnsDelete, cbTeams);
+					updateComboBox(cbTeams);
+					//System.out.println("xd");
+					textPanePlayersCreated.setText(genPlayersStatus());
+					
+				}
+				
+			});
+		}
+			
+	}
+	
+	public void loadQuestions() {
+		String file = new String("/XMLQuestions.xml");
+		final DocumentBuilderFactory dbfac = DocumentBuilderFactory.newInstance();
+		DocumentBuilder docBuilder = null;
+		try {
+			docBuilder = dbfac.newDocumentBuilder();
+		} catch (ParserConfigurationException e1) {
+			e1.printStackTrace();
+		}
+		Document doc = null;
+		try {
+			doc = docBuilder.parse(this.getClass().getResourceAsStream(file));
+		} catch (SAXException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		//Node categories = nodoRaiz.getChildNodes().item(0);
+		final NodeList nlDesc = doc.getElementsByTagName("descripcion");
+		final NodeList nlColor = doc.getElementsByTagName("color");
+		
+		for(int i = 0; i < nlDesc.getLength(); i++) {
+			final Node desc = nlDesc.item(i);
+			final Node color = nlColor.item(i);
+			
+			String[] rgb = color.getTextContent().split(" ");
+			
+			categories.add(new Category(desc.getTextContent(), new Color(Integer.parseInt(rgb[0]), Integer.parseInt(rgb[1]), Integer.parseInt(rgb[2]))));
 
+		}
+		
+		final NodeList nlIds = doc.getElementsByTagName("id");
+		final NodeList nlDificulties = doc.getElementsByTagName("dificultad");
+		final NodeList nlStatement = doc.getElementsByTagName("enunciado");
+		final NodeList nlCategory = doc.getElementsByTagName("categoria");
+		final NodeList nlOptions = doc.getElementsByTagName("opciones");
+		
+		for(int i = 0; i < nlIds.getLength(); i++) {
+			final Element elemOptions = (Element) nlOptions.item(i);
+			final NodeList options = elemOptions.getElementsByTagName("opcion");
+			ArrayList<Option> opts = new ArrayList<Option>();
+			
+			for(int j = 0; j<options.getLength(); j++) {
+				opts.add(new Option(j, options.item(j).getTextContent()));
+				//System.out.println(j);
+			}
+			
+			
+			
+			questions.add(new Question(Integer.parseInt(nlIds.item(i).getTextContent()), 0, categories.get(Integer.parseInt(nlCategory.item(i).getTextContent())-1), Integer.parseInt(nlDificulties.item(i).getTextContent()), nlStatement.item(i).getTextContent(), opts));
+		}
+		
+		
+	}
+
+	public void updateComboBox(JComboBox<TeamColor> cbTeams) {
+		HashSet<TeamColor> selectedTeams = new HashSet<TeamColor>();
+		
+		cbTeams.removeAllItems();
+		
+		for(Player rp : getPlayers()) {
+			selectedTeams.add(((RacerPlayer) rp).getTeamColor());
+		}
+		
+		
+		for(Iterator<TeamColor> iterator = getTeamColors().iterator(); iterator.hasNext();) {
+			TeamColor tcolor = iterator.next();	
+			if(!selectedTeams.contains(tcolor)) {
+				cbTeams.addItem(tcolor);
+			}					
+		}
+	}
+
+	@Override
+	public void listenCreate(CreatePlayerEvent e) {
+		e.create(this);
+	}
+		
 }

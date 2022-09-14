@@ -2,7 +2,9 @@ package RacerModel;
 
 import java.awt.Color;
 
-public class Action {
+import Controller.RacerBoard;
+
+public abstract class Action {
 	
 	private String desc = new String();
 	private Color color;
@@ -32,6 +34,5 @@ public class Action {
 		this.color = color;
 	}
 	
-	
-
+	public abstract void doAction(RacerBoard rb, RacerPlayer rp, int diceValue, boolean correct);
 }
