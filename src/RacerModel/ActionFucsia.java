@@ -1,8 +1,6 @@
 package RacerModel;
 
 import java.awt.Color;
-import java.util.ArrayList;
-
 import Controller.RacerBoard;
 
 public class ActionFucsia extends ActionGreen {

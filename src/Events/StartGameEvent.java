@@ -36,7 +36,6 @@ public class StartGameEvent {
 	
 	public void starGame(RacerBoard rb) {
 		boardPane.setVisible(true);
-		rb.setBoardPane(boardPane);
 		Window w = SwingUtilities.getWindowAncestor(playersPane);
 		w.dispose();
 	}

@@ -16,11 +16,12 @@ public class ActionYellow extends ActionGreen {
 	}
 
 	@Override
-	public void doAction(RacerBoard rb, RacerPlayer rp, int diceValue, boolean correct) {
+	public void doAction(RacerBoard rb, RacerPlayer rp, int diceValue, boolean correct) {		
 		if(correct) {
-			super.doAction(rb, rp, diceValue, correct);
+			if(rb.getActionDice().getValue() == 3) {
+				super.doAction(rb, (RacerPlayer) rb.getPlayers().get(rb.nextPlayer()), diceValue, correct);
+			} else super.doAction(rb, rp, diceValue, correct);	
 		}
-
 	}
 
 }

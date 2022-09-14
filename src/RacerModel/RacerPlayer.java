@@ -9,6 +9,10 @@ public class RacerPlayer extends Player {
 		super();
 	}
 	
+	public RacerPlayer(String name) {
+		super(name);
+	}
+	
 	public RacerPlayer(String name, int id, TeamColor tColor, boolean expert, int timePerOption) {
 		super(name, id, 0);
 		this.tColor = tColor;

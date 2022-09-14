@@ -1,63 +1,53 @@
 package Views;
 
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Scanner;
 
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
 
-import Controller.RacerBoard;
-import Events.StartGameEvent;
-import Listeners.StartGameListener;
-import RacerModel.Player;
-import RacerModel.RacerPlayer;
-import RacerModel.TeamColor;
-
-import java.io.*;
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
-import java.awt.GridBagLayout;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Iterator;
 
-import javax.swing.SpringLayout;
-import java.awt.FlowLayout;
-import java.awt.GridLayout;
-import javax.swing.JSpinner;
-import javax.swing.SwingConstants;
-import javax.swing.SpinnerNumberModel;
-import javax.swing.JTextField;
-import javax.swing.border.TitledBorder;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import javax.swing.JComboBox;
-import javax.swing.border.EtchedBorder;
-import java.awt.Color;
-import javax.swing.JTextArea;
-import javax.swing.JScrollPane;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import java.awt.Dimension;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
+import javax.swing.JTextPane;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingConstants;
+import javax.swing.border.EtchedBorder;
+import javax.swing.border.TitledBorder;
+
+import Controller.RacerBoard;
+import Events.CreatePlayerEvent;
+import Events.StartGameEvent;
+import Listeners.CreatePlayerListener;
+import Listeners.StartGameListener;
+import RacerModel.TeamColor;
+import net.miginfocom.swing.MigLayout;
+
 public class RacerGUI extends JFrame {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private JPanel playersPane;
 	private StartGameListener startGameListener;
+	private CreatePlayerListener createPlayerListener;
 	private final JTextField textFieldName = new JTextField();
+	
 
 	/**
 	 * Launch the application.
@@ -83,158 +73,61 @@ public class RacerGUI extends JFrame {
 		setTitle("PreGame - Racer");
 	
 		
-		playersPane = new JPanel();
-		playersPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		playersPane = new JPanel(new MigLayout("fill", "[45.00][96.00][84.00][][][]", "[46.00][][60.00][][]"));
+		
 		setContentPane(playersPane);
-		playersPane.setLayout(null);
+		;
 		
-		JLabel lblAmountOfPlayers = new JLabel("Amount of Players");
-		lblAmountOfPlayers.setBounds(493, 11, 88, 14);
-		lblAmountOfPlayers.setHorizontalAlignment(SwingConstants.CENTER);
-		playersPane.add(lblAmountOfPlayers);
-		
-		JSpinner spnAmountOfPlayers = new JSpinner();
-		spnAmountOfPlayers.setBounds(525, 36, 31, 20);
-		spnAmountOfPlayers.setModel(new SpinnerNumberModel(2, 2, 4, 1));
-		playersPane.add(spnAmountOfPlayers);
-		
-		JPanel panelPlayer = new JPanel();
+		JPanel panelPlayer = new JPanel(new MigLayout("fill", "[][][][][][][][]", "[][][]"));
 		panelPlayer.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)), "Player", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
-		panelPlayer.setBounds(10, 11, 216, 351);
-		playersPane.add(panelPlayer);
-		panelPlayer.setLayout(null);
+		//panelPlayer.setBounds(10, 11, 216, 351);
+		playersPane.add(panelPlayer, "cell 0 0 4 2,grow");
+
 		
 		JLabel lblName = new JLabel("Name");
-		lblName.setBounds(11, 24, 69, 14);
-		panelPlayer.add(lblName);
+		//lblName.setBounds(11, 24, 69, 14);
+		panelPlayer.add(lblName, "cell 0 0");
 		lblName.setHorizontalAlignment(SwingConstants.CENTER);
-		textFieldName.setBounds(111, 21, 86, 20);
-		panelPlayer.add(textFieldName);
+		textFieldName.setMinimumSize(new Dimension(70, 20));
+		//textFieldName.setBounds(111, 21, 86, 20);
+		panelPlayer.add(textFieldName, "cell 1 0");
 		textFieldName.setColumns(10);
-		
-		JComboBox<TeamColor> comboBoxTeams = new JComboBox<TeamColor>();
-		
-		comboBoxTeams.setBounds(11, 63, 172, 22);
-		panelPlayer.add(comboBoxTeams);
 		
 		
 		JLabel lblTeams = new JLabel("F1 Team");
-		lblTeams.setBounds(34, 46, 85, 14);
-		panelPlayer.add(lblTeams);
+		//lblTeams.setBounds(230, 22, 85, 14);
+		panelPlayer.add(lblTeams, "cell 3 0");
 		
-		JCheckBox chckbxExpert = new JCheckBox("Expert");
-		chckbxExpert.setBounds(11, 116, 97, 23);
-		panelPlayer.add(chckbxExpert);
+		JComboBox<TeamColor> comboBoxTeams = new JComboBox<TeamColor>();
+		comboBoxTeams.setMaximumSize(new Dimension(32767, 20));
 		
-		JPanel panelTeamColor = new JPanel();
-		panelTeamColor.setBounds(11, 96, 172, 14);
-		panelPlayer.add(panelTeamColor);
-		panelTeamColor.setBackground(rb.getTeamColors().get(0).getCol());
+		//comboBoxTeams.setBounds(207, 39, 172, 22);
+		panelPlayer.add(comboBoxTeams, "cell 4 0 2 1,grow");
 		
-		JPanel panelTeamLogo = new JPanel();
-		panelTeamLogo.setBounds(11, 161, 178, 123);
-		panelPlayer.add(panelTeamLogo);
-		
-		JButton btnConfirm = new JButton("Confirm");
-		btnConfirm.setBounds(368, 389, 89, 23);
-		playersPane.add(btnConfirm);
-		
-		JPanel panelCreatedPlayers = new JPanel();
+		JPanel panelCreatedPlayers = new JPanel(new MigLayout("fill", "[206.00][]", "[28.00][][23.00][][]"));
 		panelCreatedPlayers.setBorder(new TitledBorder(null, "Players Created", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		panelCreatedPlayers.setBounds(236, 11, 247, 347);
-		playersPane.add(panelCreatedPlayers);
-		panelCreatedPlayers.setLayout(null);
+		
+		playersPane.add(panelCreatedPlayers, "cell 0 2 5 2,grow");
+		
 		
 		JScrollPane scrollPanePlayersCreated = new JScrollPane();
-		scrollPanePlayersCreated.setBounds(10, 32, 227, 219);
-		panelCreatedPlayers.add(scrollPanePlayersCreated);
+		scrollPanePlayersCreated.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		//scrollPanePlayersCreated.setBounds(10, 32, 227, 91);
+		panelCreatedPlayers.add(scrollPanePlayersCreated, "cell 0 0 1 4,grow");
 		
-		JTextArea textAreaPlayersCreated = new JTextArea();
-		scrollPanePlayersCreated.setViewportView(textAreaPlayersCreated);
+		JTextPane textPanePlayersCreated = new JTextPane();
+		scrollPanePlayersCreated.setViewportView(textPanePlayersCreated);
 		
-		JButton btnCreate = new JButton("Create");
-		btnCreate.setBounds(90, 389, 89, 23);
-		playersPane.add(btnCreate);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 597, 560);
+		JButton btnConfirm = new JButton("Confirm");
+		panelCreatedPlayers.add(btnConfirm, "cell 0 4");
+		//btnConfirm.setBounds(368, 389, 89, 23);
 		
-		Path path = FileSystems.getDefault().getPath("img",  "logo"+ rb.getTeamColors().get(0).getTeamName() + "F1.jpg");
-		ImagePanel panel = new ImagePanel(new ImageIcon(path.toString()).getImage());		
-		panelTeamLogo.add(panel);
-		
-		spnAmountOfPlayers.addChangeListener(new ChangeListener() {
-
-			@Override
-			public void stateChanged(ChangeEvent e) {
-				int amountOfPlayers = (int) spnAmountOfPlayers.getValue();
-				if(amountOfPlayers < rb.getPlayers().size()) {
-					rb.removePlayer();
-				}
-				textAreaPlayersCreated.setText(rb.genPlayersStatus());
-				
-			}
-				
-		});
-		
-		for(Iterator<TeamColor> iterator = rb.getTeamColors().iterator(); iterator.hasNext();) {
-			TeamColor tc = iterator.next();
-			comboBoxTeams.addItem(tc);
-	
-		}
-		
-		comboBoxTeams.addItemListener(new ItemListener() {
-
-			@Override
-			public void itemStateChanged(ItemEvent e) {
-				panelTeamColor.setBackground(((TeamColor) e.getItem()).getCol());
-				Path path = FileSystems.getDefault().getPath("img",  "logo"+ ((TeamColor) e.getItem()).getTeamName() + "F1.png");
-				//ImageIcon img = new ImageIcon(path.toString());
-				
-			
-	
-			}
-			
-		});
-		
-		btnCreate.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				int id;
-				int timePerOption;
-
-				
-				String name = textFieldName.getText();
-				boolean expert = chckbxExpert.isSelected();
-				if(expert) {
-					timePerOption = 10;
-				} else timePerOption = 15;
-				TeamColor tc = (TeamColor) comboBoxTeams.getSelectedItem();
-				if (rb.getPlayers().size() > 0) {
-						id = rb.getPlayers().get(rb.getPlayers().size() - 1).getId() + 1;
-					} else {
-						id = 1;
-					}
-				
-				if(rb.validateFields(name, tc, (int) spnAmountOfPlayers.getValue(), id)) {
-					rb.addPlayer(new RacerPlayer(name, id, tc, expert, timePerOption));
-					textAreaPlayersCreated.setText(rb.genPlayersStatus());
-					textFieldName.setText("");
-					chckbxExpert.setSelected(false);
-					comboBoxTeams.setSelectedIndex(0);
-				} else {
-					JOptionPane.showMessageDialog(null, "Ingrese un nombre (sin repetir) y/o seleccione un equipo sin repetir.\n Recuerda que no puedes crear más de " + spnAmountOfPlayers.getValue() + " jugadores");
-				}
-				
-				
-			}
-		});
 		
 		btnConfirm.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if(rb.getPlayers().size() < (int) spnAmountOfPlayers.getValue()) {
+				if(rb.getPlayers().size() < rb.getMIN_PLAYERS()) {
 					JOptionPane.showMessageDialog(null, "Ingrese los datos de todos los jugadores");
 				} else {
 					startGameListener.listenStartGame(new StartGameEvent(new BoardPaneGUI(rb), playersPane));
@@ -245,10 +138,107 @@ public class RacerGUI extends JFrame {
 		});
 		
 		
+		
+		JPanel panelTeamColor = new JPanel();
+		panelTeamColor.setBounds(11, 96, 172, 14);
+		panelPlayer.add(panelTeamColor, "cell 3 1 3 1,grow");
+		panelTeamColor.setBackground(rb.getTeamColors().get(0).getCol());
+		
+		
+		
+		JPanel panelTeamLogo = new JPanel();
+		panelTeamLogo.setBounds(11, 161, 178, 123);
+		panelPlayer.add(panelTeamLogo, "cell 4 0");
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		//setBounds(100, 100, 597, 560);
+		
+		Path path = FileSystems.getDefault().getPath("img",  "logo"+ rb.getTeamColors().get(2).getTeamName() + "F1.jpg");
+		ImagePanel imgPanel = new ImagePanel(path.toString());		
+		panelTeamLogo.add(imgPanel);
+		
+		comboBoxTeams.addItemListener(new ItemListener() {
+
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				panelTeamColor.setBackground(((TeamColor) e.getItem()).getCol());
+				Path path = FileSystems.getDefault().getPath("img",  "logo"+ ((TeamColor) e.getItem()).getTeamName() + "F1.jpg");
+				imgPanel.setImg(new ImageIcon(path.toString()).getImage());
+				panelTeamLogo.setSize(panelTeamLogo.getWidth(), panelTeamLogo.getHeight() + 2);
+				panelTeamLogo.repaint();
+				/*panelTeamLogo.remove(imgPanel);
+				ImagePanel imgPanel = new ImagePanel(path.toString());
+				panelTeamLogo.add(imgPanel);*/
+	
+			}
+			
+		});
+		
+		JCheckBox chckbxExpert = new JCheckBox("Expert");
+		chckbxExpert.setBounds(11, 116, 97, 23);
+		panelPlayer.add(chckbxExpert, "cell 0 1");
+		
+		
+		
+		JButton btnCreate = new JButton("Create");
+		panelPlayer.add(btnCreate, "cell 0 2");
+		btnCreate.setBounds(90, 389, 89, 23);
+		
+		ArrayList<JButton> btnsDelete = new ArrayList<JButton>();
+		for(int i = 0; i<rb.getMAX_PLAYERS(); i++) {
+			btnsDelete.add(new JButton("Delete " + (btnsDelete.size() + 1)));
+			panelCreatedPlayers.add(btnsDelete.get(btnsDelete.size()-1), "cell 1 " + (btnsDelete.size()-1));
+		}
+		
+		
+	
+		
+	
+		
+		btnCreate.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {		
+				
+				if(rb.validateFields(textFieldName.getText(), rb.getLastId())) {	
+					
+					
+					createPlayerListener.listenCreate(new CreatePlayerEvent(textFieldName.getText(), comboBoxTeams.getSelectedItem(), chckbxExpert.isSelected()));
+					textPanePlayersCreated.setText(rb.genPlayersStatus());
+					textFieldName.setText("");
+					chckbxExpert.setSelected(false);
+					comboBoxTeams.setSelectedIndex(0);
+					
+					rb.updateDelButton(textPanePlayersCreated, btnsDelete, comboBoxTeams);
+					
+					rb.updateComboBox(comboBoxTeams);
+					
+					
+				} else {
+					JOptionPane.showMessageDialog(null, "Ingrese un nombre (sin repetir) y/o seleccione un equipo sin repetir.\n Recuerda que no puedes crear más de " + rb.getMAX_PLAYERS() + " jugadores");
+					
+				}
+				
+				
+				
+				
+			}
+		});
+		
+		for(Iterator<TeamColor> iterator = rb.getTeamColors().iterator(); iterator.hasNext();) {
+			TeamColor tc = iterator.next();
+			comboBoxTeams.addItem(tc);
+	
+		}
+		
+		
 				
 	}
 	
 	public void setStartGameListener(StartGameListener I) {
 		startGameListener = I;
+	}
+	
+	public void setCreatePlayerListener(CreatePlayerListener I) {
+		createPlayerListener = I;
 	}
 }
