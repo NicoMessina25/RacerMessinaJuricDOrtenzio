@@ -3,6 +3,8 @@ package RacerModel;
 
 import java.util.ArrayList;
 
+import RacerModel.Action.Action;
+
 public class ActionDice extends Dice {
 	
 	private ArrayList<Action> actions = new ArrayList<Action>(6);

@@ -4,14 +4,14 @@ import java.awt.Color;
 import java.util.ArrayList;
 
 import Controller.RacerBoard;
-import RacerModel.ActionBlue;
-import RacerModel.ActionFucsia;
-import RacerModel.ActionGreen;
-import RacerModel.ActionOrange;
-import RacerModel.ActionRed;
-import RacerModel.ActionYellow;
-import RacerModel.Square;
 import RacerModel.TeamColor;
+import RacerModel.Action.ActionBlue;
+import RacerModel.Action.ActionFucsia;
+import RacerModel.Action.ActionGreen;
+import RacerModel.Action.ActionOrange;
+import RacerModel.Action.ActionRed;
+import RacerModel.Action.ActionYellow;
+import RacerModel.Square.Square;
 import Views.RacerGUI;
 
 public class RunRacer {

@@ -25,33 +25,41 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import Events.CreatePlayerEvent;
+import Events.ExitEvent;
+import Events.ResetEvent;
 import Events.StartGameEvent;
+import Events.StartQuestionEvent;
+import Events.WinEvent;
 import Listeners.CreatePlayerListener;
+import Listeners.ExitListener;
+import Listeners.ResetListener;
 import Listeners.StartGameListener;
-import RacerModel.Action;
+import Listeners.StartQuestionListener;
+import Listeners.WinListener;
 import RacerModel.ActionDice;
 import RacerModel.Category;
 import RacerModel.Dice;
 import RacerModel.Option;
 import RacerModel.Player;
 import RacerModel.Question;
-import RacerModel.RacerPlayer;
-import RacerModel.Square;
 import RacerModel.TeamColor;
+import RacerModel.Action.Action;
+import RacerModel.RacerPlayer.RacerPlayer;
+import RacerModel.RacerPlayer.RacerPlayerBegginer;
+import RacerModel.RacerPlayer.RacerPlayerExpert;
+import RacerModel.Square.Square;
 
 
 
 
-public class RacerBoard extends Board implements StartGameListener, CreatePlayerListener {
+public class RacerBoard extends Board implements StartGameListener, CreatePlayerListener, WinListener, ResetListener, ExitListener, StartQuestionListener {
 	
-	//private int amouQues = 50;
-	private int amouTeam = 10;
 	private final int MAX_PLAYERS = 4;
 	private final int MIN_PLAYERS = 2;
 	private ArrayList<Question> questions = new ArrayList<Question>();
 	private ArrayList<Category> categories = new ArrayList<Category>();
 	private Dice dice = new Dice();
-	private ArrayList<TeamColor> teamColors = new ArrayList<TeamColor>(amouTeam);
+	private ArrayList<TeamColor> teamColors = new ArrayList<TeamColor>();
 	private ActionDice actionDice = new ActionDice();
 	private Question curQuestion;
 	private Timer timer;
@@ -90,14 +98,6 @@ public class RacerBoard extends Board implements StartGameListener, CreatePlayer
 
 	public void setDice(Dice dice) {
 		this.dice = dice;
-	}
-
-	public int getAmouTeam() {
-		return amouTeam;
-	}
-
-	public void setAmouTeam(int amouTeam) {
-		this.amouTeam = amouTeam;
 	}
 
 	public ArrayList<TeamColor> getTeamColors() {
@@ -178,13 +178,14 @@ public class RacerBoard extends Board implements StartGameListener, CreatePlayer
 	
 	
 	public void addPlayer(String name, TeamColor tc, boolean expert, int timePerOption) {
-		RacerPlayer rp = new RacerPlayer(name, getLastId(), tc, expert, timePerOption);
+		RacerPlayer rp;
+		rp = (expert)? new RacerPlayerExpert(name, getLastId(), tc): new RacerPlayerBegginer(name, getLastId(), tc);
 		super.addPlayer(rp);
 	}
 	
 	public boolean validateFields(String name, int id) {
 		Iterator<Player> it = super.getPlayers().iterator();
-		RacerPlayer rp = new RacerPlayer("");
+		RacerPlayer rp = new RacerPlayerExpert("");
 		while (it.hasNext() && !(name.equals(rp.getName()))) {
 			rp = (RacerPlayer) it.next();
 		}
@@ -230,19 +231,22 @@ public class RacerBoard extends Board implements StartGameListener, CreatePlayer
 	
 	public Question getQuestion(RacerPlayer p) {
 		Question ques;
-		List<Question> questionsToShow;
+		List<Question> filteredQuestions;
 		
 		do {
 			Category catChosen = categories.get((int) Math.floor(Math.random()*categories.size()));
 		
-			if(p.isExpert()) {
+			filteredQuestions = p.getFilteredQuestions(questions, catChosen);
+			
+			/*if(p.isExpert()) {
 				questionsToShow = questions.stream().filter(q -> q.getDificulty() >= 3 && q.getCategory().getDescription().equals(catChosen.getDescription())).toList();
 			} else { questionsToShow = questions.stream().filter(q -> q.getDificulty() <= 3 && q.getCategory().getDescription().equals(catChosen.getDescription())).toList();;
-			}
-		} while(questionsToShow.size() == 0);	
+			}*/
+		} while(filteredQuestions.size() == 0);	
 		
-		ques = questionsToShow.get((int) Math.floor(Math.random()*questionsToShow.size()));
+		ques = filteredQuestions.get((int) Math.floor(Math.random()*filteredQuestions.size()));
 		questions.remove(ques);
+		setCurQuestion(ques);
 		return ques;
 	}
 	
@@ -400,6 +404,33 @@ public class RacerBoard extends Board implements StartGameListener, CreatePlayer
 	@Override
 	public void listenCreate(CreatePlayerEvent e) {
 		e.create(this);
+	}
+
+	@Override
+	public void listenWin(WinEvent e) {
+		e.win();
+	}
+
+	@Override
+	public void listenReset(ResetEvent e) {
+		e.reset();
+		
+	}
+
+	@Override
+	public void listenExit(ExitEvent e) {
+		e.exit();
+		
+	}
+	
+	public void executeWin() {
+		this.listenWin(null);
+	}
+
+	@Override
+	public void listenStartQuestion(StartQuestionEvent e) {
+		e.startQuestion(this);
+		
 	}
 		
 }

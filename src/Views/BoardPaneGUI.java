@@ -1,6 +1,7 @@
 package Views;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -12,25 +13,30 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 import javax.swing.ScrollPaneConstants;
-import javax.swing.Timer;
+import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
 
 import Controller.RacerBoard;
-import RacerModel.Action;
-import RacerModel.Player;
-import RacerModel.Question;
-import RacerModel.RacerPlayer;
+import Events.StartQuestionEvent;
+import Events.WinEvent;
+import Listeners.StartQuestionListener;
+import Listeners.WinListener;
+import RacerModel.Action.Action;
+import RacerModel.RacerPlayer.RacerPlayer;
 import net.miginfocom.swing.MigLayout;
-import java.awt.Dimension;
 
 public class BoardPaneGUI extends JFrame {
 
+
+	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-	private QuestionPanel questionPanel;
+	private WinListener winListener;
+	private StartQuestionListener startQuestionListener;
+
 
 
 	/**
@@ -45,9 +51,12 @@ public class BoardPaneGUI extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 800, 600);
 		contentPane = new JPanel(new MigLayout("fill", "[108.00][][][][][][][][]", "[][42.00][][][][][26.00][28.00][92.00][][]"));
-		
+	
 		
 		setContentPane(contentPane);
+		
+		setWinListerner(rb);
+		setStartQuestionListener(rb);
 		
 		rb.loadQuestions();
 		
@@ -118,7 +127,8 @@ public class BoardPaneGUI extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				
 				if(rb.getPlayerToAnswer().getCurrentSquare() == rb.getSquares().size() - 1) {
-					lblPlayerTurn.setText("Turn: " + rb.getPlayerToAnswer().getName() + " wins!!!");
+					winListener.listenWin(new WinEvent(new WinPanel(rb.getPlayerToAnswer().getName(), rb, rb, (BoardPaneGUI) SwingUtilities.getWindowAncestor(contentPane))));
+					//lblPlayerTurn.setText("Turn: " + rb.getPlayerToAnswer().getName() + " wins!!!");
 				} else {
 					btnRollDice.setVisible(true);
 					rb.nextTurn();
@@ -149,7 +159,6 @@ public class BoardPaneGUI extends JFrame {
 		
 		JPanel panelBoardGrid = new JPanel(new MigLayout("", "[]0[]0[]0[]0[]0[]", "[]0[]0[]0[]0[]0[]0[]"));
 		contentPane.add(panelBoardGrid, "cell 0 7 9 3,grow");
-		//panelBoardGrid.setBorder(new LineBorder(new Color(0, 0, 0)));
 		
 		ArrayList<JPanel> squarePanels = new ArrayList<JPanel>();
 		
@@ -184,14 +193,6 @@ public class BoardPaneGUI extends JFrame {
 				rb.setPlayerToAnswer((RacerPlayer) rb.getPlayers().get((rb.getActionDice().getValue() == 3)? rb.nextPlayer():rb.getPlayerTurn()));
 				btnRollDice.setVisible(false);
 				
-				/*if(rb.getSquares().get(player.getCurrentSquare()).getTag() == "Pregunta") {
-					rb.getActionDice().setValue(6); //provisional: la pregunta tiene prioridad al dado de accion
-					btnStartQuestion.setVisible(true);
-					lblPlayerToAnswer.setText("Responde: " + player.getName());
-					textPaneAction.setText("");
-					panelActionColor.setVisible(false);
-					
-				} else {*/
 				int actionNum = rb.getActionDice().getValue();
 				if(actionNum != 1 && actionNum != 5) {
 					btnStartQuestion.setVisible(true);
@@ -210,12 +211,7 @@ public class BoardPaneGUI extends JFrame {
 					
 				}
 									
-				textPaneGameStatus.setText(rb.genPlayersStatus());
-					
-				
-				
-				
-		
+				textPaneGameStatus.setText(rb.genPlayersStatus());		
 			}
 			
 		});
@@ -227,60 +223,24 @@ public class BoardPaneGUI extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				RacerPlayer player = (RacerPlayer) rb.getPlayerToAnswer();
+				startQuestionListener.listenStartQuestion(new StartQuestionEvent(rb.getPlayerToAnswer(), new QuestionPanel(rb.getQuestion((RacerPlayer) rb.getPlayerToAnswer()), rb, squarePanels, btnStartQuestion, btnEndTurn, textPaneAction, textPaneGameStatus)));
 				
-				
-				
-				
-				Question questionChosen = rb.getQuestion(player);
-				rb.setCurQuestion(questionChosen);
-				rb.setTimeLeft(player.getTimePerOption()*questionChosen.getOptions().size());
-				
-				questionPanel = new QuestionPanel(questionChosen, rb, squarePanels, btnStartQuestion, btnEndTurn, textPaneAction, textPaneGameStatus);
-				questionPanel.setSize(400, 400);
-				questionPanel.setVisible(true);
-				questionPanel.setLocationRelativeTo(null);
-				rb.setTimer(new Timer(1000, new ActionListener() {
-
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						rb.setTimeLeft(rb.getTimeLeft() - 1);;
-						if(rb.getTimeLeft() == 0) {
-							rb.getTimer().stop();
-						}
-						questionPanel.updateTimeLeft(rb.getTimeLeft());
-						
-					}
-					
-				}));
-				rb.startTimer();
 				btnStartQuestion.setVisible(false);
-			
-		
-				
-				/*for(Option op: questionChosen.getOptions()) {
-					op.setSortNum((int) Math.ceil(Math.random()*9));
-				}
-				
-				Collections.sort(questionChosen.getOptions(), new Comparator<Option>() {
-
-					@Override
-					public int compare(Option o1, Option o2) {
-						return o1.getSortNum() - o2.getSortNum();
-					}
-					
-				});*/
-			
-				
-				/*for(int i = 0; i < questionChosen.getOptions().size(); i++) {
-				
-				}*/
-				//btnAnswer.setVisible(true);
-				
-				
 				
 			}
 		});
+		
+	
+	}
+	
+	
+	
+	public void setWinListerner(WinListener I) {
+		winListener = I;
+	}
+	
+	public void setStartQuestionListener(StartQuestionListener I) {
+		startQuestionListener = I;
 	}
 	
 }

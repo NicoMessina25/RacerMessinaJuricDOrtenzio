@@ -3,8 +3,8 @@ package Controller;
 import java.util.ArrayList;
 
 import RacerModel.Player;
-import RacerModel.RacerPlayer;
-import RacerModel.Square;
+import RacerModel.RacerPlayer.RacerPlayer;
+import RacerModel.Square.Square;
 
 public class Board {
 	private int rows, columns;

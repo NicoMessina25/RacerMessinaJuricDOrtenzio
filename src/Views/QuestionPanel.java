@@ -15,7 +15,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.JTextPane;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
@@ -23,7 +22,7 @@ import javax.swing.SwingUtilities;
 import Controller.RacerBoard;
 import RacerModel.Option;
 import RacerModel.Question;
-import RacerModel.RacerPlayer;
+import RacerModel.RacerPlayer.RacerPlayer;
 import net.miginfocom.swing.MigLayout;
 
 public class QuestionPanel extends JFrame {
