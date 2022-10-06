@@ -13,16 +13,12 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 import javax.swing.ScrollPaneConstants;
-import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
 
 import Controller.RacerBoard;
 import Events.StartQuestionEvent;
-import Events.WinEvent;
 import Listeners.StartQuestionListener;
-import Listeners.WinListener;
-import RacerModel.Action.Action;
-import RacerModel.RacerPlayer.RacerPlayer;
+//import RacerModel.RacerPlayer.RacerPlayer;
 import net.miginfocom.swing.MigLayout;
 
 public class BoardPaneGUI extends JFrame {
@@ -34,7 +30,9 @@ public class BoardPaneGUI extends JFrame {
 	 */
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-	private WinListener winListener;
+	private JButton btnStartQuestion;
+	private JButton btnEndTurn;
+	private JTextPane textPaneAction;
 	private StartQuestionListener startQuestionListener;
 
 
@@ -55,7 +53,6 @@ public class BoardPaneGUI extends JFrame {
 		
 		setContentPane(contentPane);
 		
-		setWinListerner(rb);
 		setStartQuestionListener(rb);
 		
 		rb.loadQuestions();
@@ -82,7 +79,7 @@ public class BoardPaneGUI extends JFrame {
 		scrollPaneAction.setBounds(320, 142, 213, 71);
 		contentPane.add(scrollPaneAction, "flowy,cell 4 1 5 2,grow");
 		
-		JTextPane textPaneAction = new JTextPane();
+		textPaneAction = new JTextPane();
 		textPaneAction.setEditable(false);
 		textPaneAction.setMinimumSize(new Dimension(20, 70));
 		scrollPaneAction.setViewportView(textPaneAction);
@@ -107,12 +104,12 @@ public class BoardPaneGUI extends JFrame {
 		
 		
 		
-		JButton btnStartQuestion = new JButton("Start Question");
+		btnStartQuestion = new JButton("Start Question");
 		btnStartQuestion.setBounds(21, 201, 111, 23);
 		contentPane.add(btnStartQuestion, "cell 0 5,grow");
 		btnStartQuestion.setVisible(false);
 		
-		JButton btnEndTurn = new JButton("End Turn");
+		btnEndTurn = new JButton("End Turn");
 		btnEndTurn.setBounds(344, 391, 100, 23);
 		contentPane.add(btnEndTurn, "cell 1 5,grow");
 		
@@ -125,9 +122,10 @@ public class BoardPaneGUI extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				//rb.getSquares().get(rb.getPlayerToAnswer().getCurrentSquare()).doSquareAction(rb);
 				
 				if(rb.getPlayerToAnswer().getCurrentSquare() == rb.getSquares().size() - 1) {
-					winListener.listenWin(new WinEvent(new WinPanel(rb.getPlayerToAnswer().getName(), rb, rb, (BoardPaneGUI) SwingUtilities.getWindowAncestor(contentPane))));
+					//winListener.listenWin(new WinEvent(new WinPanel(rb.getPlayerToAnswer().getName(), rb, rb, (BoardPaneGUI) SwingUtilities.getWindowAncestor(contentPane))));
 					//lblPlayerTurn.setText("Turn: " + rb.getPlayerToAnswer().getName() + " wins!!!");
 				} else {
 					btnRollDice.setVisible(true);
@@ -136,14 +134,15 @@ public class BoardPaneGUI extends JFrame {
 					lblDice.setText("Dice: --");
 					lblPlayerTurn.setText("Turn: " + rb.getPlayers().get(rb.getPlayerTurn()).getName());
 					btnEndTurn.setVisible(false);
+					textPaneAction.setText("");
 					
-					if(rb.getCurQuestion() != null) {
+					/*if(rb.getCurQuestion() != null) {
 					
 					
 						for(int j = 0; j < rb.getCurQuestion().getOptions().size(); j++) {
 							
 						}
-					}
+					}*/
 					
 				}
 				
@@ -179,26 +178,23 @@ public class BoardPaneGUI extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Action action;
 
-				rb.getActionDice().diceRoll();
-				rb.getDice().diceRoll();
-				int diceValue = rb.getDice().getValue();
-				action = rb.getActionDice().getAction(rb.getActionDice().getValue());
+				rb.rollDices();				
 				panelActionColor.setVisible(true);
-				panelActionColor.setBackground(action.getColor());
-				textPaneAction.setText(action.getDesc());
-				lblDice.setText("Dice: " + diceValue);
+				panelActionColor.setBackground(rb.getCurrentActionColor());
+				textPaneAction.setText(rb.getCurrentActionDesc());
+				lblDice.setText("Dice: " + rb.getDice().getValue());
 				
-				rb.setPlayerToAnswer((RacerPlayer) rb.getPlayers().get((rb.getActionDice().getValue() == 3)? rb.nextPlayer():rb.getPlayerTurn()));
+			
 				btnRollDice.setVisible(false);
 				
-				int actionNum = rb.getActionDice().getValue();
-				if(actionNum != 1 && actionNum != 5) {
+			
+				if(rb.getActionDice().getAction().isQuestionNeeded()) {
 					btnStartQuestion.setVisible(true);
 
 				} else {
-					rb.executeAction(rb.getActionDice().getAction(rb.getActionDice().getValue()), squarePanels, diceValue, true);
+					rb.concludesTurnAction(true, squarePanels, btnStartQuestion, btnEndTurn, textPaneAction);
+					/*rb.executeAction(squarePanels, true);
 					if(rb.getSquares().get(rb.getPlayerToAnswer().getCurrentSquare()).getTag().equalsIgnoreCase("Pregunta")) {
 						btnStartQuestion.setVisible(true);
 				
@@ -207,7 +203,7 @@ public class BoardPaneGUI extends JFrame {
 		
 					} else {
 						btnEndTurn.setVisible(true);
-					}
+					}*/
 					
 				}
 									
@@ -223,7 +219,7 @@ public class BoardPaneGUI extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				startQuestionListener.listenStartQuestion(new StartQuestionEvent(rb.getPlayerToAnswer(), new QuestionPanel(rb.getQuestion((RacerPlayer) rb.getPlayerToAnswer()), rb, squarePanels, btnStartQuestion, btnEndTurn, textPaneAction, textPaneGameStatus)));
+				startQuestionListener.listenStartQuestion(new StartQuestionEvent(rb.getPlayerToAnswer(),rb.genQuestionForPlayer(rb.getPlayerToAnswer()), new QuestionPanel(rb, squarePanels, btnStartQuestion, btnEndTurn, textPaneAction, textPaneGameStatus)));
 				
 				btnStartQuestion.setVisible(false);
 				
@@ -235,12 +231,44 @@ public class BoardPaneGUI extends JFrame {
 	
 	
 	
-	public void setWinListerner(WinListener I) {
-		winListener = I;
-	}
-	
 	public void setStartQuestionListener(StartQuestionListener I) {
 		startQuestionListener = I;
+	}
+
+
+
+	public JButton getBtnStartQuestion() {
+		return btnStartQuestion;
+	}
+
+
+
+	public void setBtnStartQuestion(JButton btnStartQuestion) {
+		this.btnStartQuestion = btnStartQuestion;
+	}
+
+
+
+	public JTextPane getTextPaneAction() {
+		return textPaneAction;
+	}
+
+
+
+	public void setTextPaneAction(JTextPane textPaneAction) {
+		this.textPaneAction = textPaneAction;
+	}
+
+
+
+	public JButton getBtnEndTurn() {
+		return btnEndTurn;
+	}
+
+
+
+	public void setBtnEndTurn(JButton btnEndTurn) {
+		this.btnEndTurn = btnEndTurn;
 	}
 	
 }

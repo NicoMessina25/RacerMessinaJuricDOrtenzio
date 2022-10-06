@@ -5,13 +5,16 @@ import java.util.ArrayList;
 
 import Controller.RacerBoard;
 import RacerModel.TeamColor;
-import RacerModel.Action.ActionBlue;
-import RacerModel.Action.ActionFucsia;
-import RacerModel.Action.ActionGreen;
-import RacerModel.Action.ActionOrange;
-import RacerModel.Action.ActionRed;
-import RacerModel.Action.ActionYellow;
-import RacerModel.Square.Square;
+import RacerModel.ActionPckg.ActionBlue;
+import RacerModel.ActionPckg.ActionFucsia;
+import RacerModel.ActionPckg.ActionGreen;
+import RacerModel.ActionPckg.ActionOrange;
+import RacerModel.ActionPckg.ActionRed;
+import RacerModel.ActionPckg.ActionYellow;
+import RacerModel.SquarePckg.BegginingSquare;
+import RacerModel.SquarePckg.FinishSquare;
+import RacerModel.SquarePckg.QuestionSquare;
+import RacerModel.SquarePckg.Square;
 import Views.RacerGUI;
 
 public class RunRacer {
@@ -23,12 +26,14 @@ public class RunRacer {
 	public static void main(String[] args) {
 
 		RacerBoard rb = new RacerBoard(6, 7);
+		rb.setBegginingSquareId(0);
+		rb.setFinalSquareId(rb.getColumns()*rb.getRows());
 		
 	
 		ArrayList<Integer> questionIndexes = new ArrayList<Integer>();
 		
 		//HashSet<TeamColor> pickedCol = new HashSet<TeamColor>();
-		int LastSquareIndex = rb.getRows()*rb.getColumns();
+		int LastSquareIndex = rb.getFinalSquareId();
 		//int amoPlay = 0;
 		
 		
@@ -43,19 +48,20 @@ public class RunRacer {
 		rb.getTeamColors().add(new TeamColor("Red_Bull", new Color(252,216,0)));//RedBull - 8
 		rb.getTeamColors().add(new TeamColor("Williams", new Color(0,160,222)));//Williams - 9
 		
-		rb.getActionDice().getActions().add(new ActionRed("Avanza el valor obtenido en el dado numérico, pero pierde el próximo turno (no podrá lanzar los dados en el siguiente turno)", new Color(255, 0, 0)));
-		rb.getActionDice().getActions().add(new ActionBlue("Duplica casillas a avanzar si contesta bien. Si contesta mal, no avanza y pierde el próximo turno.", new Color(0, 0, 255)));
-		rb.getActionDice().getActions().add(new ActionOrange("El jugador que lanzó el dado no avanza ni retrocede. El jugador de “la derecha” (el del turno siguiente) deberá responder una pregunta. Si contesta bien, dicho jugador avanza el número obtenido en el dado numérico. Si contesta mal, dicho jugador retrocede esa cantidad de casillas. ", new Color(255, 128, 0)));
-		rb.getActionDice().getActions().add(new ActionYellow("Avanza si contesta bien. Si contesta mal, no avanza.", new Color(255, 255, 0)));
-		rb.getActionDice().getActions().add(new ActionGreen("Avanza directamente la cantidad de casillas indicada por el dado numérico.", new Color(0, 255, 0)));
-		rb.getActionDice().getActions().add(new ActionFucsia("Avanza si contesta bien. Retrocede si contesta mal.", new Color(255, 0, 255)));
-		
-
+		rb.getActionDice().getActions().add(new ActionRed("Avanza el valor obtenido en el dado numérico, pero pierde el próximo turno (no podrá lanzar los dados en el siguiente turno)", new Color(255, 0, 0), false, false));
+		rb.getActionDice().getActions().add(new ActionBlue("Duplica casillas a avanzar si contesta bien. Si contesta mal, no avanza y pierde el próximo turno.", new Color(0, 0, 255), true, false));
+		rb.getActionDice().getActions().add(new ActionOrange("El jugador que lanzó el dado no avanza ni retrocede. El jugador de “la derecha” (el del turno siguiente) deberá responder una pregunta. Si contesta bien, dicho jugador avanza el número obtenido en el dado numérico. Si contesta mal, dicho jugador retrocede esa cantidad de casillas. ", new Color(255, 128, 0), true, true));
+		rb.getActionDice().getActions().add(new ActionYellow("Avanza si contesta bien. Si contesta mal, no avanza.", new Color(255, 255, 0), true, false));
+		rb.getActionDice().getActions().add(new ActionGreen("Avanza directamente la cantidad de casillas indicada por el dado numérico.", new Color(0, 255, 0), false, false));
+		rb.getActionDice().getActions().add(new ActionFucsia("Avanza si contesta bien. Retrocede si contesta mal.", new Color(255, 0, 255), true, false));
 		
 		
 		for(int i = 0; i<= LastSquareIndex; i++) {
 			rb.getSquares().add(new Square(i, "Normal", new Color(0,0,0), null));
 		}
+		
+		rb.getSquares().set(rb.getBegginingSquareId(),new BegginingSquare(rb.getBegginingSquareId(), "Inicio", new Color(0,0,0), null));
+		rb.getSquares().set(rb.getFinalSquareId(), new FinishSquare(rb.getFinalSquareId(), "Fin", new Color(0,0,0), null));
 		
 		while (questionIndexes.size() < 4) {
 			int ind;
@@ -70,7 +76,7 @@ public class RunRacer {
 		rb.getSquares().get(LastSquareIndex).setTag("Fin");
 		
 		for(Integer i: questionIndexes) {
-			rb.getSquares().get(i).setTag("Pregunta");
+			rb.getSquares().set(i, new QuestionSquare(i, "Pregunta", new Color(0,0,0), null));
 		}
 		
 		/*for(Square sq: rb.getSquares()) {

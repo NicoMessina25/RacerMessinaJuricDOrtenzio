@@ -6,42 +6,63 @@ import java.awt.event.ActionListener;
 import javax.swing.Timer;
 
 import Controller.RacerBoard;
-import RacerModel.Player;
-import RacerModel.RacerPlayer.RacerPlayer;
+import RacerModel.Question;
+import RacerModel.PlayerPckg.Player;
+import RacerModel.PlayerPckg.RacerPlayer;
 import Views.QuestionPanel;
 
 public class StartQuestionEvent {
 	
 	private RacerPlayer player;
 	private QuestionPanel questionPanel;
+	private Timer timer;
+	private Question question;
+	private int timeLeft;
 
-	public StartQuestionEvent(Player player, QuestionPanel qP) {
+	public StartQuestionEvent(Player player, Question q, QuestionPanel qP) {
 		this.player = (RacerPlayer) player;
 		questionPanel = qP;
+		question = q;
 	}
 	
 	public void startQuestion(RacerBoard rb) {
 		
 		
-		rb.setTimeLeft(player.getTimePerOption()*rb.getCurQuestion().getOptions().size());
+		setTimeLeft(player.getTimePerOption()*question.getOptions().size());
 		questionPanel.setSize(400, 400);
 		questionPanel.setVisible(true);
 		questionPanel.setLocationRelativeTo(null);
-		rb.setTimer(new Timer(1000, new ActionListener() {
+		timer = new Timer(1000, new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				rb.setTimeLeft(rb.getTimeLeft() - 1);;
-				if(rb.getTimeLeft() == 0) {
-					rb.getTimer().stop();
+				setTimeLeft(getTimeLeft()-1);
+				if(timeLeft == 0) {
+					timer.stop();
 				}
-				questionPanel.updateTimeLeft(rb.getTimeLeft());
+				questionPanel.updateTimeLeft(getTimeLeft());
 				
 			}
 			
-		}));
-		rb.startTimer();
+		});
+		timer.start();
 
+	}
+	
+	public int getTimeLeft() {
+		return timeLeft;
+	}
+
+	public void setTimeLeft(int timeLeft) {
+		this.timeLeft = timeLeft;
+	}
+
+	public Timer getTimer() {
+		return timer;
+	}
+
+	public void setTimer(Timer timer) {
+		this.timer = timer;
 	}
 
 }

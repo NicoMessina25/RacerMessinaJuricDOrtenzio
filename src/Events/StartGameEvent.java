@@ -33,7 +33,7 @@ public class StartGameEvent {
 	}
 	
 	
-	public void starGame(RacerBoard rb) {
+	public void starGame() {
 		boardPane.setVisible(true);
 		Window w = SwingUtilities.getWindowAncestor(playersPane);
 		w.dispose();

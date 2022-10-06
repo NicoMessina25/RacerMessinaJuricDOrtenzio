@@ -3,7 +3,7 @@ package RacerModel;
 
 import java.util.ArrayList;
 
-import RacerModel.Action.Action;
+import RacerModel.ActionPckg.Action;
 
 public class ActionDice extends Dice {
 	
@@ -13,8 +13,8 @@ public class ActionDice extends Dice {
 		
 	}
 	
-	public Action getAction(int value) {
-		return actions.get(value - 1);
+	public Action getAction() {
+		return actions.get(super.getValue()-1);
 	}
 	
 	public ArrayList<Action> getActions(){

@@ -2,15 +2,16 @@ package Controller;
 
 import java.util.ArrayList;
 
-import RacerModel.Player;
-import RacerModel.RacerPlayer.RacerPlayer;
-import RacerModel.Square.Square;
+import RacerModel.PlayerPckg.Player;
+import RacerModel.SquarePckg.Square;
 
 public class Board {
 	private int rows, columns;
 	private ArrayList<Player> players = new ArrayList<Player>();
 	private ArrayList<Square> squares = new ArrayList<Square>(); //rows*columns + 1
 	private int playerTurn;
+	private int finalSquareId;
+	private int begginingSquareId;
 
 	public Board() {
 		
@@ -33,7 +34,7 @@ public class Board {
 		return squares;
 	}
 	
-	public void addPlayer(RacerPlayer rp){
+	public void addPlayer(Player rp){
 		players.add(rp);
 	};
 	
@@ -64,6 +65,26 @@ public class Board {
 	public int getPlayerTurn() {
 		return playerTurn;
 	}
+	
+	public Player getCurrentPlayer() {
+		return getPlayers().get(getPlayerTurn());
+	}
+
+	public int getFinalSquareId() {
+		return finalSquareId;
+	}
+
+	public void setFinalSquareId(int finalSquareId) {
+		this.finalSquareId = finalSquareId;
+	}
+
+	public int getBegginingSquareId() {
+		return begginingSquareId;
+	}
+
+	public void setBegginingSquareId(int begginingSquareId) {
+		this.begginingSquareId = begginingSquareId;
+	}
 
 	public void setPlayerTurn(int playerTurn) {
 		this.playerTurn = playerTurn;
@@ -76,9 +97,11 @@ public class Board {
 	}
 
 	public void nextTurn() {
-		if (playerTurn < players.size() - 1) {
-			playerTurn++;
-		} else playerTurn = 0;
+		playerTurn = nextPlayer();
+	}
+	
+	public Player getNextPLayer() {
+		return getPlayers().get(nextPlayer());
 	}
 
 }

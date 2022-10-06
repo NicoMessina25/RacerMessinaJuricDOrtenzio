@@ -5,13 +5,17 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JTextPane;
 import javax.swing.Timer;
 import javax.xml.parsers.DocumentBuilder;
@@ -26,33 +30,37 @@ import org.xml.sax.SAXException;
 
 import Events.CreatePlayerEvent;
 import Events.ExitEvent;
+import Events.QuestionSquareEvent;
 import Events.ResetEvent;
 import Events.StartGameEvent;
 import Events.StartQuestionEvent;
 import Events.WinEvent;
+
 import Listeners.CreatePlayerListener;
 import Listeners.ExitListener;
+import Listeners.QuestionSquareListener;
 import Listeners.ResetListener;
 import Listeners.StartGameListener;
 import Listeners.StartQuestionListener;
 import Listeners.WinListener;
+
 import RacerModel.ActionDice;
 import RacerModel.Category;
 import RacerModel.Dice;
 import RacerModel.Option;
-import RacerModel.Player;
 import RacerModel.Question;
 import RacerModel.TeamColor;
-import RacerModel.Action.Action;
-import RacerModel.RacerPlayer.RacerPlayer;
-import RacerModel.RacerPlayer.RacerPlayerBegginer;
-import RacerModel.RacerPlayer.RacerPlayerExpert;
-import RacerModel.Square.Square;
+import RacerModel.PlayerPckg.Player;
+import RacerModel.PlayerPckg.RacerPlayer;
+import RacerModel.PlayerPckg.RacerPlayerExpert;
+import RacerModel.SquarePckg.Square;
+import Views.BoardPaneGUI;
+import Views.WinPanel;
 
 
 
 
-public class RacerBoard extends Board implements StartGameListener, CreatePlayerListener, WinListener, ResetListener, ExitListener, StartQuestionListener {
+public class RacerBoard extends Board implements StartGameListener, CreatePlayerListener, WinListener, ResetListener, ExitListener, StartQuestionListener,QuestionSquareListener {
 	
 	private final int MAX_PLAYERS = 4;
 	private final int MIN_PLAYERS = 2;
@@ -64,8 +72,8 @@ public class RacerBoard extends Board implements StartGameListener, CreatePlayer
 	private Question curQuestion;
 	private Timer timer;
 	private int timeLeft;
-	private RacerPlayer playerToAnswer;
 	private int lastId;
+	private BoardPaneGUI boardPane;
 
 
 	public RacerBoard() {		
@@ -73,6 +81,7 @@ public class RacerBoard extends Board implements StartGameListener, CreatePlayer
 	
 	public RacerBoard(int rows, int columns) {
 		super(rows, columns);
+		
 	}
 	
 	
@@ -115,6 +124,7 @@ public class RacerBoard extends Board implements StartGameListener, CreatePlayer
 	public void setActionDice(ActionDice actionDice) {
 		this.actionDice = actionDice;
 	}
+	
 
 	public int getTimeLeft() {
 		return timeLeft;
@@ -134,11 +144,7 @@ public class RacerBoard extends Board implements StartGameListener, CreatePlayer
 	}
 	
 	public RacerPlayer getPlayerToAnswer() {
-		return playerToAnswer;
-	}
-
-	public void setPlayerToAnswer(RacerPlayer playerToAnswer) {
-		this.playerToAnswer = playerToAnswer;
+		return (RacerPlayer) (getActionDice().getAction().isActionToNextPlayer()? super.getNextPLayer(): super.getCurrentPlayer());
 	}
 
 
@@ -161,9 +167,30 @@ public class RacerBoard extends Board implements StartGameListener, CreatePlayer
 	public int getLastId() {
 		return lastId;
 	}
+	
+	public String getCurrentActionDesc() {
+		return getActionDice().getAction().getDesc();
+	}
+	
+	public Color getCurrentActionColor() {
+		return getActionDice().getAction().getColor();
+	}
+
+	public BoardPaneGUI getBoardPane() {
+		return boardPane;
+	}
+
+	public void setBoardPane(BoardPaneGUI boardPane) {
+		this.boardPane = boardPane;
+	}
 
 	public void setLastId(int id) {
 		this.lastId = id;
+	}
+	
+	public void rollDices() {
+		dice.diceRoll();
+		actionDice.diceRoll();
 	}
 
 	public String genPlayersStatus() {
@@ -176,12 +203,7 @@ public class RacerBoard extends Board implements StartGameListener, CreatePlayer
 		return sb.toString();
 	}
 	
-	
-	public void addPlayer(String name, TeamColor tc, boolean expert, int timePerOption) {
-		RacerPlayer rp;
-		rp = (expert)? new RacerPlayerExpert(name, getLastId(), tc): new RacerPlayerBegginer(name, getLastId(), tc);
-		super.addPlayer(rp);
-	}
+
 	
 	public boolean validateFields(String name, int id) {
 		Iterator<Player> it = super.getPlayers().iterator();
@@ -206,30 +228,27 @@ public class RacerBoard extends Board implements StartGameListener, CreatePlayer
 	}
 	
 	public void playerBackToStart(Player p) {
-		p.setCurrentSquare(0);
-		super.getSquares().get(0).setCurPlayer(p);
+		p.setCurrentSquare(getBegginingSquareId());
+		super.getSquares().get(getBegginingSquareId()).setCurPlayer(p);
 	}
 	
 	public void movePlayer(Player p, int number) {
 		ArrayList<Square> squares = super.getSquares();
 		squares.get(p.getCurrentSquare()).setCurPlayer(null);
-		p.moves(number);
-		if(p.getCurrentSquare() <= squares.size() - 1) {
-			Player curPlayer = squares.get(p.getCurrentSquare()).getCurPlayer();
-			squares.get(p.getCurrentSquare()).setCurPlayer(p);
-			if(curPlayer != null) {
-				if(number > 0) {
-					playerBackToStart(curPlayer);
-				} else playerBackToStart(p);
-				
-			}
-		} else {
-			squares.get(squares.size()-1).setCurPlayer(p);
-			p.setCurrentSquare(squares.size() - 1);
+		p.moves(number, super.getFinalSquareId());
+		
+		Player curPlayer = squares.get(p.getCurrentSquare()).getCurPlayer();
+		squares.get(p.getCurrentSquare()).setCurPlayer(p);
+		
+		if(curPlayer != null) {
+			if(number > 0) {
+				playerBackToStart(curPlayer);
+			} else playerBackToStart(p);
+			
 		}
 	}
 	
-	public Question getQuestion(RacerPlayer p) {
+	public Question genQuestionForPlayer(RacerPlayer p) {
 		Question ques;
 		List<Question> filteredQuestions;
 		
@@ -250,13 +269,13 @@ public class RacerBoard extends Board implements StartGameListener, CreatePlayer
 		return ques;
 	}
 	
-	public void executeAction(Action action, ArrayList<JPanel> squarePanels, int diceValue, boolean correct) {
+	public void executeAction(ArrayList<JPanel> squarePanels, boolean correct) {
 		RacerPlayer rp = (RacerPlayer) getPlayerToAnswer();
 		if(rp.getCurrentSquare() != 0) {
-			squarePanels.get(rp.getCurrentSquare()-1).setBackground(new Color(255, 255, 255));
+			squarePanels.get(rp.getCurrentSquare()-1).setBackground(null);
 		}
 		
-		action.doAction(this, rp, diceValue, correct);
+		getActionDice().getAction().doAction(this, rp, getDice().getValue(), correct);
 		if(rp.getCurrentSquare() != 0) {
 			squarePanels.get(rp.getCurrentSquare()-1).setBackground(rp.getTeamColor().getCol());
 		}
@@ -269,26 +288,9 @@ public class RacerBoard extends Board implements StartGameListener, CreatePlayer
 	
 	@Override
 	public void listenStartGame(StartGameEvent e) {
-		e.starGame(this);
+		e.starGame();
+		setBoardPane(e.getBoardPane());
 	}
-	
-	/*public void setTimer() {
-		
-		timer.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				timeLeft--;
-				if(timeLeft == 0) {
-					timer.stop();
-				}
-				questionPanel.updateTimeLeft(timeLeft);
-			}
-			
-		});
-
-	
-	}*/
 	
 	public void startTimer() {
 		timer.start();
@@ -403,7 +405,13 @@ public class RacerBoard extends Board implements StartGameListener, CreatePlayer
 
 	@Override
 	public void listenCreate(CreatePlayerEvent e) {
-		e.create(this);
+		if (getPlayers().size() > 0) {
+			setLastId(getLastId() + 1);
+		} else {
+			setLastId(1);
+		}
+		
+		super.addPlayer(e.generatePlayer(getLastId(), getBegginingSquareId()));
 	}
 
 	@Override
@@ -423,14 +431,74 @@ public class RacerBoard extends Board implements StartGameListener, CreatePlayer
 		
 	}
 	
-	public void executeWin() {
-		this.listenWin(null);
+	public void executeWin(RacerPlayer winner) {
+		listenWin(new WinEvent(new WinPanel(winner.getName(), this, this, getBoardPane())));
 	}
 
 	@Override
 	public void listenStartQuestion(StartQuestionEvent e) {
-		e.startQuestion(this);
 		
+		e.startQuestion(this);
+		setTimer(e.getTimer());
+		
+	}
+	
+	public void concludesTurnAction(boolean correct, ArrayList<JPanel> squarePanels, JButton btnStartQuestion, JButton btnEndTurn, JTextPane textPaneAction) {
+		executeAction(squarePanels, correct);
+		if(getActionDice().getAction().isQuestionNeeded() && correct) {						
+			System.out.println("Correct");
+		} else {
+			System.out.println("Incorrect");
+		}
+			
+		//rb.movePlayer(player, diceValue);
+
+		getSquares().get(getPlayerToAnswer().getCurrentSquare()).doSquareAction(this, correct); 
+
+		
+		
+	
+	}
+
+	@Override
+	public void listenQuestionSquare(QuestionSquareEvent e) {
+		e.setActDice(getActionDice());
+		e.setBtnStartQuestion(boardPane.getBtnStartQuestion());
+		e.setTextPaneAction(boardPane.getTextPaneAction());
+		
+		
+		e.activateQuestionSquare();
+		
+	}
+	
+	public void finishTurn() {
+		boardPane.getBtnEndTurn().setVisible(true);
+	}
+	
+	public void genOptionButtonGroup(ButtonGroup bg, ArrayList<JRadioButton> rdbtnOptions, JPanel questionContentPane) {
+		
+		Question question = getCurQuestion();
+		
+		for(Option op: getCurQuestion().getOptions()) {
+			op.setSortNum((int) Math.ceil(Math.random()*9));
+		}
+		Collections.sort(question.getOptions(), new Comparator<Option>() {
+
+			@Override
+			public int compare(Option o1, Option o2) {
+				return o1.getSortNum() - o2.getSortNum();
+			}
+			
+		});
+		
+		for(Option op : question.getOptions()) {
+			int i = question.getOptions().indexOf(op);
+			JRadioButton rdbtn = new JRadioButton(op.getDescripcion());
+			bg.add(rdbtn);
+			rdbtnOptions.add(rdbtn);
+			questionContentPane.add(rdbtn, "cell 0 "+ (i+3));
+		}
+	
 	}
 		
 }
