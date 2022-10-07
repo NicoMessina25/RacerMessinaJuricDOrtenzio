@@ -1,6 +1,7 @@
 package Controller;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -14,6 +15,7 @@ import java.util.List;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextPane;
@@ -33,6 +35,7 @@ import Events.ExitEvent;
 import Events.QuestionSquareEvent;
 import Events.ResetEvent;
 import Events.StartGameEvent;
+import Events.StartPreGameEvent;
 import Events.StartQuestionEvent;
 import Events.WinEvent;
 
@@ -41,6 +44,7 @@ import Listeners.ExitListener;
 import Listeners.QuestionSquareListener;
 import Listeners.ResetListener;
 import Listeners.StartGameListener;
+import Listeners.StartPreGameListener;
 import Listeners.StartQuestionListener;
 import Listeners.WinListener;
 
@@ -56,14 +60,18 @@ import RacerModel.PlayerPckg.RacerPlayerExpert;
 import RacerModel.SquarePckg.Square;
 import Views.BoardPaneGUI;
 import Views.WinPanel;
+import Views.CustomComponents.RacerButton;
 
 
 
 
-public class RacerBoard extends Board implements StartGameListener, CreatePlayerListener, WinListener, ResetListener, ExitListener, StartQuestionListener,QuestionSquareListener {
+public class RacerBoard extends Board implements StartGameListener, CreatePlayerListener, WinListener, ResetListener, ExitListener, StartQuestionListener,QuestionSquareListener, StartPreGameListener {
 	
 	private final int MAX_PLAYERS = 4;
 	private final int MIN_PLAYERS = 2;
+	private final Color PRIMARY_COLOR = new Color(255, 28, 0);
+	private final Color SECONDARY_COLOR = new Color(51, 6, 0);
+	private final Font PRIMARY_FONT = new Font("Swis721 Hv BT", Font.BOLD | Font.ITALIC, 23);
 	private ArrayList<Question> questions = new ArrayList<Question>();
 	private ArrayList<Category> categories = new ArrayList<Category>();
 	private Dice dice = new Dice();
@@ -188,6 +196,18 @@ public class RacerBoard extends Board implements StartGameListener, CreatePlayer
 		this.lastId = id;
 	}
 	
+	public Color getPRIMARY_COLOR() {
+		return PRIMARY_COLOR;
+	}
+
+	public Color getSECONDARY_COLOR() {
+		return SECONDARY_COLOR;
+	}
+
+	public Font getPRIMARY_FONT() {
+		return PRIMARY_FONT;
+	}
+
 	public void rollDices() {
 		dice.diceRoll();
 		actionDice.diceRoll();
@@ -296,7 +316,7 @@ public class RacerBoard extends Board implements StartGameListener, CreatePlayer
 		timer.start();
 	}
 	
-	public void updateDelButton(JTextPane textPanePlayersCreated, ArrayList<JButton> btnsDelete, JComboBox<TeamColor> cbTeams) {
+	public void updateDelButton(JTextPane textPanePlayersCreated, ArrayList<RacerButton> btnsDelete, JComboBox<TeamColor> cbTeams, JLabel title) {
 		for(int i = 0; i < btnsDelete.size();i++) {
 			if(btnsDelete.get(i).getActionListeners().length > 0) {
 				btnsDelete.get(i).removeActionListener(btnsDelete.get(i).getActionListeners()[0]);
@@ -313,11 +333,11 @@ public class RacerBoard extends Board implements StartGameListener, CreatePlayer
 					getPlayers().remove(j);
 					//btnDelete.removeActionListener(btnDelete.getActionListeners()[0]);
 					lastId--;
-					
+					title.setText("Player " + (getLastId()+1));
 					for(int k = j; k<getPlayers().size(); k++) {
 						getPlayers().get(k).setId(k+1);
 					}
-					updateDelButton(textPanePlayersCreated, btnsDelete, cbTeams);
+					updateDelButton(textPanePlayersCreated, btnsDelete, cbTeams, title);
 					updateComboBox(cbTeams);
 					//System.out.println("xd");
 					textPanePlayersCreated.setText(genPlayersStatus());
@@ -432,7 +452,7 @@ public class RacerBoard extends Board implements StartGameListener, CreatePlayer
 	}
 	
 	public void executeWin(RacerPlayer winner) {
-		listenWin(new WinEvent(new WinPanel(winner.getName(), this, this, getBoardPane())));
+		listenWin(new WinEvent(new WinPanel(winner.getName(), this, getBoardPane())));
 	}
 
 	@Override
@@ -499,6 +519,11 @@ public class RacerBoard extends Board implements StartGameListener, CreatePlayer
 			questionContentPane.add(rdbtn, "cell 0 "+ (i+3));
 		}
 	
+	}
+
+	@Override
+	public void listenStarPreGame(StartPreGameEvent e) {
+		e.startPreGame();		
 	}
 		
 }

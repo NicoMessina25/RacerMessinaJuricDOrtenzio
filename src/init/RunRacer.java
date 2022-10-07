@@ -1,6 +1,7 @@
 package init;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.util.ArrayList;
 
 import Controller.RacerBoard;
@@ -15,7 +16,7 @@ import RacerModel.SquarePckg.BegginingSquare;
 import RacerModel.SquarePckg.FinishSquare;
 import RacerModel.SquarePckg.QuestionSquare;
 import RacerModel.SquarePckg.Square;
-import Views.RacerGUI;
+import Views.WelcomePanel;
 
 public class RunRacer {
 
@@ -86,12 +87,16 @@ public class RunRacer {
 		
 	
 		
-		RacerGUI frame = new RacerGUI(rb);
+		/*RacerGUI frame = new RacerGUI(rb);
 		frame.setStartGameListener(rb);
 		frame.setCreatePlayerListener(rb);
 		frame.setSize(500, 500);
+		frame.setVisible(true);*/
+		WelcomePanel frame = new WelcomePanel(rb);
+		frame.setSize(1280, 720);
 		frame.setVisible(true);
-
+		//frame.setMinimumSize(new Dimension(500, 500));
+		frame.setMaximumSize(new Dimension(WelcomePanel.HEIGHT, WelcomePanel.WIDTH));
 	}
 	
 	public static boolean validIndex(ArrayList<Integer> questionIndexes, int ind) {

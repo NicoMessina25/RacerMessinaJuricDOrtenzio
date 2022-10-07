@@ -13,6 +13,7 @@ import java.awt.event.ActionListener;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
+import Controller.RacerBoard;
 import Events.ExitEvent;
 import Events.ResetEvent;
 
@@ -32,14 +33,14 @@ public class WinPanel extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public WinPanel(String winnerName, ResetListener resListener, ExitListener exListener, BoardPaneGUI bp) {
+	public WinPanel(String winnerName, RacerBoard rb, BoardPaneGUI bp) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 167);
 		contentPane = new JPanel();
 		contentPane.setLayout(new MigLayout("", "[][][][][][][][][][][][][][][][]", "[][][][][]"));
 		setContentPane(contentPane);
-		setResetListener(resListener);
-		setExitListener(exListener);
+		setResetListener(rb);
+		setExitListener(rb);
 		
 		JLabel lblWinner = new JLabel("Ganó " + winnerName + "!!!");
 		lblWinner.setHorizontalAlignment(SwingConstants.CENTER);
@@ -56,7 +57,7 @@ public class WinPanel extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				resetListener.listenReset(new ResetEvent((WinPanel) SwingUtilities.getWindowAncestor(contentPane), bp, new WelcomePanel()));
+				resetListener.listenReset(new ResetEvent((WinPanel) SwingUtilities.getWindowAncestor(contentPane), bp, new WelcomePanel(rb)));
 			}
 		});
 		

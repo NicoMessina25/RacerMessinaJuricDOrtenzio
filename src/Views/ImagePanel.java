@@ -17,13 +17,16 @@ public class ImagePanel extends JPanel {
 	 */
 	private static final long serialVersionUID = 1L;
 	private Image img;
+	private int height;
 	//private int i = 0;
 
-	  public ImagePanel(String img) {
-	    this(new ImageIcon(img).getImage());
+	  public ImagePanel(String img, int h) {
+	    this(new ImageIcon(img).getImage(),h);
+	    
 	  }
 
-	  public ImagePanel(Image img) {
+	  public ImagePanel(Image img, int h) {
+		height = h;
 	    setImg(img);
 	  }
 
@@ -37,7 +40,7 @@ public class ImagePanel extends JPanel {
 	}
 
 	public void setImg(Image img) {
-		BufferedImage bi = new BufferedImage(img.getWidth(null)*200/img.getHeight(null), 200, BufferedImage.TYPE_INT_RGB);
+		BufferedImage bi = new BufferedImage(img.getWidth(null)*height/img.getHeight(null), height, BufferedImage.TYPE_INT_RGB);
         Graphics2D g2d = (Graphics2D)bi.createGraphics();
         g2d.addRenderingHints(new RenderingHints(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY));
         g2d.drawImage(img, 0, 0, bi.getWidth(), bi.getHeight(), null);
@@ -50,6 +53,7 @@ public class ImagePanel extends JPanel {
 	    
 		//this.img = img;
 	}
+
 
 }
 
