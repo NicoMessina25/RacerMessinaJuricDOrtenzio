@@ -78,8 +78,9 @@ public class WelcomePanel extends JFrame {
 				sPreGameL.listenStarPreGame(new StartPreGameEvent((WelcomePanel) SwingUtilities.getWindowAncestor(contentPane), createPlayersPanel));
 				
 				
-				
-				Clip soundEffect;
+				SoundClip soundEffect = new SoundClip(FileSystems.getDefault().getPath("soundEffects", "ArrancaF1.wav").toString());
+				soundEffect.play();
+				/*Clip soundEffect;
 				
 				try {
 					soundEffect = AudioSystem.getClip();
@@ -94,7 +95,7 @@ public class WelcomePanel extends JFrame {
 				} catch (LineUnavailableException e1) {
 				
 					e1.printStackTrace();
-				}
+				}*/
 				
 				
 				
