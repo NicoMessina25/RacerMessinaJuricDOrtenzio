@@ -54,6 +54,14 @@ public class ImagePanel extends JPanel {
 		//this.img = img;
 	}
 
+	public int getHeight() {
+		return height;
+	}
+
+	public void setHeight(int height) {
+		this.height = height;
+	}
+
 
 }
 

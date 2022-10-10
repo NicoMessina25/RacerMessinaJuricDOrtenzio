@@ -4,23 +4,25 @@ import RacerModel.TeamColor;
 import RacerModel.PlayerPckg.RacerPlayer;
 import RacerModel.PlayerPckg.RacerPlayerBegginer;
 import RacerModel.PlayerPckg.RacerPlayerExpert;
+import Views.CustomComponents.RacerPanel;
 
 public class CreatePlayerEvent {
 	
-	private String name;
-	private TeamColor tc;
-	private boolean expert;
+	private RacerPlayer player;
+
 	
+
+	
+
 
 	public CreatePlayerEvent(String name, Object tc, boolean expert) {
-		this.name = name;
-		this.tc = (TeamColor) tc;
-		this.expert = expert;
+		player = (expert)? new RacerPlayerExpert(name, 0, (TeamColor) tc, 0): new RacerPlayerBegginer(name, 0, (TeamColor) tc, 0);
+	}
 
+
+	public RacerPlayer getPlayer() {
+		return player;
 	}
-	
-	public RacerPlayer generatePlayer(int id, int begginingSquareId) {
-		return (expert)? new RacerPlayerExpert(name, id, tc, begginingSquareId): new RacerPlayerBegginer(name, id, tc, begginingSquareId);
-	}
+
 
 }

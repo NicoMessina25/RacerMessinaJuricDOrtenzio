@@ -48,4 +48,16 @@ public class RacerPlayerExpert extends RacerPlayer {
 		return sb.toString();
 	}
 
+	@Override
+	public Question getQuestionAdapted(Question q) {
+		// TODO Auto-generated method stub
+		return q;
+	}
+
+	@Override
+	public String typeToString() {
+		// TODO Auto-generated method stub
+		return "Experto";
+	}
+
 }

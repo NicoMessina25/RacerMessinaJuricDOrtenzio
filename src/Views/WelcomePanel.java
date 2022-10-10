@@ -61,11 +61,11 @@ public class WelcomePanel extends JFrame {
 		contentPane.add(background, "cell 0 0,alignx center,growy");
 		background.setLayout(new MigLayout("", "[grow]", "[grow][grow]"));
 		
-		RacerButton btnStart = new RacerButton("Comenzar", rb.getPRIMARY_COLOR(), rb.getSECONDARY_COLOR());
+		RacerButton btnStart = new RacerButton("Comenzar", rb.getSECONDARY_COLOR(), rb.getPRIMARY_COLOR());
 		
 		btnStart.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				RacerGUI createPlayersPanel = new RacerGUI(rb);
+				PreGamePanel createPlayersPanel = new PreGamePanel(rb);
 				createPlayersPanel.setSize(1280, 720);
 				sPreGameL.listenStarPreGame(new StartPreGameEvent((WelcomePanel) SwingUtilities.getWindowAncestor(contentPane), createPlayersPanel));
 			}

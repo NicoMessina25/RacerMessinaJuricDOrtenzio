@@ -8,14 +8,14 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.JButton;
 
+import Controller.RacerBoard;
 import Interfaces.colorable;
 
-public class RacerButton extends JButton implements colorable {
+public class RacerButton extends JButton {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -2699829771131612801L;
-	private Color col, bgCol;
 	private Font font;
 
 	public RacerButton(Color col, Color bgCol) throws HeadlessException {
@@ -30,14 +30,6 @@ public class RacerButton extends JButton implements colorable {
 		
 		// TODO Auto-generated constructor stub
 	}
-
-	public Color getCol() {
-		return col;
-	}
-
-	public Color getBgCol() {
-		return bgCol;
-	}
 	
 	public Font getFont() {
 		return font;
@@ -48,44 +40,34 @@ public class RacerButton extends JButton implements colorable {
 	}
 	
 	public void setDefaultConfiguration(Color col, Color bgCol) {
-		setCol(col);
-		setBgCol(bgCol);
+		setForeground(col.darker());
+		setBackground(bgCol.brighter());
 		addMouseListener(new EventButton());
 		setBorderPainted(false);
 		setFocusable(false);
-		font = new Font("Swis721 Hv BT", Font.BOLD | Font.ITALIC, 26);
-		setFont(font);
+		font = new Font(RacerBoard.getPRIMARY_FONT_FAMILY(), Font.BOLD | Font.ITALIC, 26);
 	}
 
 	public class EventButton extends MouseAdapter{
 		
 		@Override
 		public void mouseEntered(MouseEvent e) {
-			setBackground(col);
-			setForeground(bgCol);
+			invertColors();
+			
 		}
 		
 		@Override
 		public void mouseExited(MouseEvent e) {
-			setForeground(col);
-			setBackground(bgCol);
+			invertColors();
 		}
 		
 	}
 
-	@Override
-	public void setCol(Color col) {
-		this.col = col;
-		setForeground(col);
-		
-	}
 
-	@Override
-	public void setBgCol(Color bgCol) {
-		this.bgCol = bgCol;
-		setBackground(bgCol);
+	public void invertColors() {
+		Color aux = getForeground();
+		setForeground(getBackground());
+		setBackground(aux);
 	}
-
-	
 
 }

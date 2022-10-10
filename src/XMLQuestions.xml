@@ -6,7 +6,7 @@
 		</Categoria>
 		<Categoria id="2">
 			<descripcion>Arte</descripcion>
-			<color>255 20 147</color>
+			<color>255 34 48</color>
 		</Categoria>
 		<Categoria id="3">
 			<descripcion>Geografía</descripcion>
@@ -14,7 +14,7 @@
 		</Categoria>
 		<Categoria id="4">
 			<descripcion>Historia</descripcion>
-			<color>0 0 255</color>
+			<color>3 56 255</color>
 		</Categoria>
 		<Categoria id="5">
 			<descripcion>FisicoQuímica</descripcion>

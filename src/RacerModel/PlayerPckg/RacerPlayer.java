@@ -45,6 +45,10 @@ public abstract class RacerPlayer extends Player {
 	
 	public abstract List<Question> getFilteredQuestions(ArrayList<Question> questions, Category catChosen);
 	
+	public abstract Question getQuestionAdapted(Question q);
+	
+	public abstract String typeToString();
+	
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
@@ -52,4 +56,6 @@ public abstract class RacerPlayer extends Player {
 		sb.append(" Team: " + tColor.toString());
 		return sb.toString();
 	}
+	
+	
 }

@@ -5,6 +5,9 @@ import javax.swing.JPanel;
 
 import Listeners.ExitListener;
 import Listeners.ResetListener;
+import Views.CustomComponents.RacerButton;
+import Views.CustomComponents.RacerLabel;
+import Views.CustomComponents.RacerPanel;
 import net.miginfocom.swing.MigLayout;
 import javax.swing.JLabel;
 import java.awt.Font;
@@ -25,7 +28,7 @@ public class WinPanel extends JFrame {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private JPanel contentPane;
+	private RacerPanel contentPane;
 	private ResetListener resetListener;
 	private ExitListener exitListener;
 	
@@ -35,23 +38,22 @@ public class WinPanel extends JFrame {
 	 */
 	public WinPanel(String winnerName, RacerBoard rb, BoardPaneGUI bp) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 167);
-		contentPane = new JPanel();
-		contentPane.setLayout(new MigLayout("", "[][][][][][][][][][][][][][][][]", "[][][][][]"));
+		setBounds(100, 100, 575, 376);
+		contentPane = new RacerPanel(rb.getSECONDARY_COLOR(), rb.getPRIMARY_COLOR(), rb.getSECONDARY_COLOR().darker());
+		contentPane.setLayout(new MigLayout("", "[][grow][]", "[][grow][][]"));
 		setContentPane(contentPane);
 		setResetListener(rb);
 		setExitListener(rb);
 		
-		JLabel lblWinner = new JLabel("Ganó " + winnerName + "!!!");
+		RacerLabel lblWinner = new RacerLabel("Ganó " + winnerName + "!!!", 70, rb.getSECONDARY_COLOR(), rb.getPRIMARY_COLOR());
 		lblWinner.setHorizontalAlignment(SwingConstants.CENTER);
-		lblWinner.setFont(new Font("Century Gothic", Font.PLAIN, 14));
-		contentPane.add(lblWinner, "cell 6 1 3 1,grow");
+		contentPane.add(lblWinner, "cell 0 1 3 1,grow");
 		
-		JButton btnReset = new JButton("Volver a Empezar");
-		contentPane.add(btnReset, "cell 6 3 3 1,growx");
+		RacerButton btnReset = new RacerButton("Volver a Empezar", rb.getSECONDARY_COLOR(), rb.getPRIMARY_COLOR());
+		contentPane.add(btnReset, "cell 1 2,growx");
 		
-		JButton btnExit = new JButton("Salir");
-		contentPane.add(btnExit, "cell 6 4 3 1,growx");
+		RacerButton btnExit = new RacerButton("Salir", rb.getSECONDARY_COLOR(), rb.getPRIMARY_COLOR());
+		contentPane.add(btnExit, "cell 1 3,growx");
 		
 		btnReset.addActionListener(new ActionListener() {
 			
@@ -65,7 +67,7 @@ public class WinPanel extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				exitListener.listenExit(new ExitEvent((JFrame) SwingUtilities.getWindowAncestor(contentPane)));
+				exitListener.listenExit(new ExitEvent((JFrame) SwingUtilities.getWindowAncestor(contentPane), bp));
 			}
 		});
 		

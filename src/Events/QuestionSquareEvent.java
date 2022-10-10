@@ -45,7 +45,7 @@ public class QuestionSquareEvent {
 
 	public void activateQuestionSquare() {
 	
-			btnStartQuestion.setVisible(true);
+			btnStartQuestion.setEnabled(true);
 			textPaneAction.setText("Casilla de Pregunta!");
 			
 			actDice.setValue(4); //amarillo

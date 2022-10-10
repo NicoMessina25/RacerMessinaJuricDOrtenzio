@@ -29,25 +29,25 @@ public class RunRacer {
 		RacerBoard rb = new RacerBoard(6, 7);
 		rb.setBegginingSquareId(0);
 		rb.setFinalSquareId(rb.getColumns()*rb.getRows());
-		
+		rb.setLastId(0);
 	
-		ArrayList<Integer> questionIndexes = new ArrayList<Integer>();
+		//ArrayList<Integer> questionIndexes = new ArrayList<Integer>();
 		
 		//HashSet<TeamColor> pickedCol = new HashSet<TeamColor>();
 		int LastSquareIndex = rb.getFinalSquareId();
 		//int amoPlay = 0;
 		
 		
-		rb.getTeamColors().add(new TeamColor("Alpha_Romeo", new Color(160, 12, 46))); //AlphaRomeo - 0
-		rb.getTeamColors().add(new TeamColor("Alpha_Tauri", new Color(83,100,120))); //AlphaTauri - 1
-		rb.getTeamColors().add(new TeamColor("Alpine", new Color(242,148,198)));//Alpine - 2
-		rb.getTeamColors().add(new TeamColor("Aston_Martin", new Color(0, 89, 79)));//AstonMartin - 3
-		rb.getTeamColors().add(new TeamColor("Ferrari", new Color(212, 0,0)));//Ferrari - 4
-		rb.getTeamColors().add(new TeamColor("Haas", new Color(255, 255, 255)));//Haas - 5
-		rb.getTeamColors().add(new TeamColor("McLaren", new Color(244,133, 0)));//McLaren - 6
-		rb.getTeamColors().add(new TeamColor("Mercedes", new Color(0, 0,0)));//Mercedes - 7
-		rb.getTeamColors().add(new TeamColor("Red_Bull", new Color(252,216,0)));//RedBull - 8
-		rb.getTeamColors().add(new TeamColor("Williams", new Color(0,160,222)));//Williams - 9
+		rb.getTeamColors().add(new TeamColor("Alpha Romeo", "AlphaR", new Color(160, 12, 46))); //AlphaRomeo - 0
+		rb.getTeamColors().add(new TeamColor("Alpha Tauri", "AlphaT", new Color(83,100,120))); //AlphaTauri - 1
+		rb.getTeamColors().add(new TeamColor("Alpine", "Alp", new Color(242,148,198)));//Alpine - 2
+		rb.getTeamColors().add(new TeamColor("Aston Martin", "AstonM", new Color(0, 89, 79)));//AstonMartin - 3
+		rb.getTeamColors().add(new TeamColor("Ferrari", "Frri", new Color(230, 10,0)));//Ferrari - 4
+		rb.getTeamColors().add(new TeamColor("Haas", "Haas", new Color(205, 205, 205)));//Haas - 5
+		rb.getTeamColors().add(new TeamColor("McLaren", "McLrn", new Color(244,133, 0)));//McLaren - 6
+		rb.getTeamColors().add(new TeamColor("Mercedes", "Mer", new Color(50, 50,50)));//Mercedes - 7
+		rb.getTeamColors().add(new TeamColor("Red Bull", "RBull", new Color(252,216,0)));//RedBull - 8
+		rb.getTeamColors().add(new TeamColor("Williams", "Wills", new Color(0,160,222)));//Williams - 9
 		
 		rb.getActionDice().getActions().add(new ActionRed("Avanza el valor obtenido en el dado numérico, pero pierde el próximo turno (no podrá lanzar los dados en el siguiente turno)", new Color(255, 0, 0), false, false));
 		rb.getActionDice().getActions().add(new ActionBlue("Duplica casillas a avanzar si contesta bien. Si contesta mal, no avanza y pierde el próximo turno.", new Color(0, 0, 255), true, false));
@@ -64,21 +64,21 @@ public class RunRacer {
 		rb.getSquares().set(rb.getBegginingSquareId(),new BegginingSquare(rb.getBegginingSquareId(), "Inicio", new Color(0,0,0), null));
 		rb.getSquares().set(rb.getFinalSquareId(), new FinishSquare(rb.getFinalSquareId(), "Fin", new Color(0,0,0), null));
 		
-		while (questionIndexes.size() < 4) {
+		/*while (questionIndexes.size() < 4) {
 			int ind;
 			do {
 				ind = (int) Math.floor(Math.random()*41 + 1);
 			} while(!validIndex(questionIndexes, ind));
 			questionIndexes.add(ind);
 			System.out.println(ind);
-		}
+		}*/
 		
-		rb.getSquares().get(0).setTag("Inicio");
+		rb.getSquares().get(rb.getBegginingSquareId()).setTag("Inicio");
 		rb.getSquares().get(LastSquareIndex).setTag("Fin");
 		
-		for(Integer i: questionIndexes) {
+		/*for(Integer i: questionIndexes) {
 			rb.getSquares().set(i, new QuestionSquare(i, "Pregunta", new Color(0,0,0), null));
-		}
+		}*/
 		
 		/*for(Square sq: rb.getSquares()) {
 			System.out.println(sq.toString());
@@ -99,7 +99,7 @@ public class RunRacer {
 		frame.setMaximumSize(new Dimension(WelcomePanel.HEIGHT, WelcomePanel.WIDTH));
 	}
 	
-	public static boolean validIndex(ArrayList<Integer> questionIndexes, int ind) {
+	/*public static boolean validIndex(ArrayList<Integer> questionIndexes, int ind) {
 		boolean valid = true;
 		int i = 0;
 		while(i < questionIndexes.size() && valid) {
@@ -107,7 +107,7 @@ public class RunRacer {
 			i++;
 		}
 		return valid;
-	}
+	}*/
 	
 	
 

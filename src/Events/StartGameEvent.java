@@ -1,5 +1,6 @@
 package Events;
 
+import java.awt.Dimension;
 import java.awt.Window;
 
 import javax.swing.JPanel;
@@ -35,6 +36,7 @@ public class StartGameEvent {
 	
 	public void starGame() {
 		boardPane.setVisible(true);
+		boardPane.setSize(new Dimension(1280, 720));
 		Window w = SwingUtilities.getWindowAncestor(playersPane);
 		w.dispose();
 	}

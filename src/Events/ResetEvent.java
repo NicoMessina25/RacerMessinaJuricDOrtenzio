@@ -1,5 +1,7 @@
 package Events;
 
+import java.awt.Dimension;
+
 import Views.BoardPaneGUI;
 import Views.WelcomePanel;
 import Views.WinPanel;
@@ -18,6 +20,7 @@ public class ResetEvent {
 	
 	public void reset() {
 		welP.setVisible(true);
+		welP.setSize(new Dimension(1280, 720));
 		bp.dispose();
 		winP.dispose();
 	}

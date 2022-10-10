@@ -1,5 +1,7 @@
 package Events;
 
+import java.awt.Dimension;
+
 import Views.WinPanel;
 
 public class WinEvent {

@@ -38,13 +38,31 @@ public class RacerPlayerBegginer extends RacerPlayer {
 		return questions.stream().filter(q -> q.getDificulty() <= 3 && q.getCategory().getDescription().equals(catChosen.getDescription())).toList();
 	}
 	
-	@Override
+	/*@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append(super.toString());
 		sb.append(" Experto: ");
 		sb.append("NO");
 		return sb.toString();
+	}*/
+
+	@Override
+	public Question getQuestionAdapted(Question q) {
+		int N = q.getOptions().size();
+		int i;
+		while(q.getOptions().size() > Math.ceil(N/2.0)) {
+			//System.out.println((N + " >= " + q.getOptions().size() + " > " + Math.ceil(N/2) + " > " + N/2));
+			i = (int) Math.ceil(Math.random()*(q.getOptions().size()-1)); 
+			q.getOptions().remove(i);
+		}
+		return q;
+	}
+
+	@Override
+	public String typeToString() {
+		// TODO Auto-generated method stub
+		return "Novato";
 	}
 	
 

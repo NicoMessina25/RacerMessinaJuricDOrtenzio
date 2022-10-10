@@ -29,7 +29,7 @@ public class StartQuestionEvent {
 		
 		
 		setTimeLeft(player.getTimePerOption()*question.getOptions().size());
-		questionPanel.setSize(400, 400);
+		questionPanel.setSize(720, 600);
 		questionPanel.setVisible(true);
 		questionPanel.setLocationRelativeTo(null);
 		timer = new Timer(1000, new ActionListener() {
