@@ -1,13 +1,21 @@
 package Views;
 
+import java.applet.AudioClip;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
@@ -68,6 +76,28 @@ public class WelcomePanel extends JFrame {
 				PreGamePanel createPlayersPanel = new PreGamePanel(rb);
 				createPlayersPanel.setSize(1280, 720);
 				sPreGameL.listenStarPreGame(new StartPreGameEvent((WelcomePanel) SwingUtilities.getWindowAncestor(contentPane), createPlayersPanel));
+				
+				
+				
+				Clip soundEffect;
+				
+				try {
+					soundEffect = AudioSystem.getClip();
+					try {
+						soundEffect.open(AudioSystem.getAudioInputStream(FileSystems.getDefault().getPath("soundEffects", "ArrancaF1.wav").toFile()));
+						soundEffect.setFramePosition(0);
+			            soundEffect.start();
+					} catch (IOException | UnsupportedAudioFileException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				} catch (LineUnavailableException e1) {
+				
+					e1.printStackTrace();
+				}
+				
+				
+				
 			}
 		});
 		
