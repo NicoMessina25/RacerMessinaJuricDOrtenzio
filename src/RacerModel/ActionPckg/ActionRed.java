@@ -6,6 +6,9 @@ import Controller.RacerBoard;
 import RacerModel.PlayerPckg.RacerPlayer;
 
 public class ActionRed extends ActionGreen {
+	
+
+	//------------------------------------------------>||CONSTRUCTORS||<------------------------------------------------------------\\
 
 	public ActionRed() {
 		// TODO Auto-generated constructor stub
@@ -15,7 +18,9 @@ public class ActionRed extends ActionGreen {
 		super(desc, color, questionNeeded, actionToNextPlayer);
 		// TODO Auto-generated constructor stub
 	}
-
+	
+	//------------------------------------------------>||CLASS METHODS||<--------------------------------------------------------\\
+	
 	@Override
 	public void doAction(RacerBoard rb, RacerPlayer rp, int diceValue, boolean correct) {
 		super.doAction(rb, rp, diceValue, correct);

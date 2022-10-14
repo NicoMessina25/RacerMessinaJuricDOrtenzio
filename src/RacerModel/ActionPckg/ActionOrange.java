@@ -7,6 +7,8 @@ import RacerModel.PlayerPckg.RacerPlayer;
 
 public class ActionOrange extends ActionFucsia {
 
+	// ------------------------------------------------>||CONSTRUCTORS||<------------------------------------------------------------\\
+
 	public ActionOrange() {
 		// TODO Auto-generated constructor stub
 	}
@@ -16,6 +18,7 @@ public class ActionOrange extends ActionFucsia {
 		// TODO Auto-generated constructor stub
 	}
 	
+	// ------------------------------------------------>||CLASS METHODS||<--------------------------------------------------------\\
 	
 	@Override
 	public void doAction(RacerBoard rb, RacerPlayer rp, int diceValue, boolean correct) {

@@ -6,16 +6,19 @@ import java.awt.Font;
 import javax.swing.Icon;
 import javax.swing.JLabel;
 
-import Controller.RacerBoard;
-import Interfaces.colorable;
-
 public class RacerLabel extends JLabel {
 
-	/**
-	 * 
-	 */
+	//------------------------------------------------>||ATTRIBUTES||<--------------------------------------------------------\\
+			
+			//----------------------------------------->|CONSTANTS|<-----------------------------------------------\\
+	
 	private static final long serialVersionUID = 9154301448000745661L;
+	
+			//----------------------------------------->|VARIABLES|<-----------------------------------------------\\
+	
 	private int fontSize;
+	
+	//------------------------------------------------>||CONSTRUCTORS||<------------------------------------------------------------\\
 
 	public RacerLabel() {
 		// TODO Auto-generated constructor stub
@@ -50,11 +53,7 @@ public class RacerLabel extends JLabel {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public void setDefaultConfiguration(int fSize, Color col, Color bgCol) {
-		setFont(new Font(RacerBoard.getPRIMARY_FONT_FAMILY(), Font.ITALIC, fSize));
-		setForeground(col);
-		setBackground(bgCol);
-	}
+	//------------------------------------------------>||GETTERS & SETTERS||<--------------------------------------------------------\\
 
 	public int getFontSize() {
 		return fontSize;
@@ -63,5 +62,12 @@ public class RacerLabel extends JLabel {
 	public void setFontSize(int fontSize) {
 		this.fontSize = fontSize;
 	}
-
+	
+	//------------------------------------------------>||CLASS METHODS||<--------------------------------------------------------\\
+	
+	public void setDefaultConfiguration(int fSize, Color col, Color bgCol) {
+			setFont(new Font(RacerPanel.getPrimaryFontFamily(), Font.ITALIC, fSize));
+			setForeground(col);
+			setBackground(bgCol);
+		}
 }

@@ -6,6 +6,9 @@ import Controller.RacerBoard;
 import RacerModel.PlayerPckg.Player;
 
 public class FinishSquare extends Square {
+	
+	
+	//------------------------------------------------>||CONSTRUCTORS||<------------------------------------------------------------\\
 
 	public FinishSquare() {
 		// TODO Auto-generated constructor stub
@@ -15,6 +18,8 @@ public class FinishSquare extends Square {
 		super(id, tag, color, curPlayer);
 		// TODO Auto-generated constructor stub
 	}
+	
+	//------------------------------------------------>||CLASS METHODS||<--------------------------------------------------------\\
 	
 	@Override
 	public void doSquareAction(RacerBoard rb, boolean correct) {

@@ -4,16 +4,22 @@ import javax.swing.JFrame;
 
 public class ExitEvent {
 	
-	private JFrame winFrame, boardPane;
+	//------------------------------------------------>||ATTRIBUTES||<--------------------------------------------------------\\
+
+			//----------------------------------------->|VARIABLES|<-----------------------------------------------\\
 	
-	public ExitEvent(JFrame wf, JFrame bp) {
-		winFrame = wf;
-		boardPane = bp;
+	private JFrame activeFrame;
+	
+	//------------------------------------------------>||CONSTRUCTORS||<------------------------------------------------------------\\
+	
+	public ExitEvent(JFrame f) {
+		activeFrame = f;
 	}
 	
+	//------------------------------------------------>||CLASS METHODS||<--------------------------------------------------------\\
+	
 	public void exit() {
-		boardPane.dispose();
-		winFrame.dispose();
+		activeFrame.dispose();
 	}
 
 }

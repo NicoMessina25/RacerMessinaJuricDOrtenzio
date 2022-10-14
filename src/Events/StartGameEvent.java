@@ -6,34 +6,40 @@ import java.awt.Window;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-import Controller.RacerBoard;
 import Views.BoardPaneGUI;
 
 public class StartGameEvent {
 	
+	//------------------------------------------------>||ATTRIBUTES||<--------------------------------------------------------\\
+
+			//----------------------------------------->|VARIABLES|<-----------------------------------------------\\
+			
 	private BoardPaneGUI boardPane;
 	private JPanel playersPane;
 	
+	//------------------------------------------------>||CONSTRUCTORS||<------------------------------------------------------------\\
+
 	public StartGameEvent() {
-		
+
 	}
-	
+
 	public StartGameEvent(BoardPaneGUI boardPane, JPanel playersPane) {
 		this.boardPane = boardPane;
 		this.playersPane = playersPane;
 	}
+	
+	//------------------------------------------------>||GETTERS & SETTERS||<--------------------------------------------------------\\
 
 	public BoardPaneGUI getBoardPane() {
 		return boardPane;
 	}
 
-
-
 	public void setBoardPane(BoardPaneGUI boardPane) {
 		this.boardPane = boardPane;
 	}
 	
-	
+	//------------------------------------------------>||CLASS METHODS||<--------------------------------------------------------\\
+
 	public void starGame() {
 		boardPane.setVisible(true);
 		boardPane.setSize(new Dimension(1280, 720));

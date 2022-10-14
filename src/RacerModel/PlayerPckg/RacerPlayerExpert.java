@@ -5,11 +5,18 @@ import java.util.List;
 
 import RacerModel.Category;
 import RacerModel.Question;
-import RacerModel.TeamColor;
+import RacerModel.Team;
 
 public class RacerPlayerExpert extends RacerPlayer {
 	
+	//------------------------------------------------>||ATTRIBUTES||<--------------------------------------------------------\\
+
+			//----------------------------------------->|VARIABLES|<-----------------------------------------------\\
+			
+	
 	private int timePerOption;
+	
+	//------------------------------------------------>||CONSTRUCTORS||<------------------------------------------------------------\\
 
 	public RacerPlayerExpert() {
 		// TODO Auto-generated constructor stub
@@ -20,10 +27,13 @@ public class RacerPlayerExpert extends RacerPlayer {
 		// TODO Auto-generated constructor stub
 	}
 
-	public RacerPlayerExpert(String name, int id, TeamColor tColor, int begginingSquareId) {
+	public RacerPlayerExpert(String name, int id, Team tColor, int begginingSquareId) {
 		super(name, id, tColor, begginingSquareId);
 		timePerOption = 10;
 	}
+	
+	//------------------------------------------------>||GETTERS & SETTERS||<--------------------------------------------------------\\
+
 	
 	@Override
 	public int getTimePerOption() {
@@ -33,6 +43,8 @@ public class RacerPlayerExpert extends RacerPlayer {
 	public void setTimePerOption(int timePOp) {
 		timePerOption = timePOp;
 	}
+	
+	//------------------------------------------------>||CLASS METHODS||<--------------------------------------------------------\\
 	
 	@Override
 	public List<Question> getFilteredQuestions(ArrayList<Question> questions, Category catChosen){		

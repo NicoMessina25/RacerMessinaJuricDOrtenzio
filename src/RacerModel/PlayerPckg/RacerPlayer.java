@@ -5,11 +5,20 @@ import java.util.List;
 
 import RacerModel.Category;
 import RacerModel.Question;
-import RacerModel.TeamColor;
+import RacerModel.Team;
 
 public abstract class RacerPlayer extends Player {
-	private TeamColor tColor;
+	
+	//------------------------------------------------>||ATTRIBUTES||<--------------------------------------------------------\\
+
+			//----------------------------------------->|VARIABLES|<-----------------------------------------------\\
+	
+	
+	private Team tColor;
 	private int lostTurns;
+	
+	//------------------------------------------------>||CONSTRUCTORS||<------------------------------------------------------------\\
+	
 
 	public RacerPlayer() {
 		super();
@@ -19,11 +28,14 @@ public abstract class RacerPlayer extends Player {
 		super(name);
 	}
 	
-	public RacerPlayer(String name, int id, TeamColor tColor, int begginingSquareId) {
+	public RacerPlayer(String name, int id, Team tColor, int begginingSquareId) {
 		super(name, id, begginingSquareId);
 		this.tColor = tColor;
 		this.lostTurns = 0;
 	}
+	
+	//------------------------------------------------>||GETTERS & SETTERS||<--------------------------------------------------------\\
+	
 
 	public int getLostTurns() {
 		return lostTurns;
@@ -33,13 +45,15 @@ public abstract class RacerPlayer extends Player {
 		this.lostTurns = lostTurns;
 	}
 	
-	public TeamColor getTeamColor() {
+	public Team getTeamColor() {
 		return tColor;
 	}
 
-	public void setTeamColor(TeamColor tColor) {
+	public void setTeamColor(Team tColor) {
 		this.tColor = tColor;
 	}
+	
+	//------------------------------------------------>||CLASS METHODS||<--------------------------------------------------------\\
 	
 	public abstract int getTimePerOption();
 	

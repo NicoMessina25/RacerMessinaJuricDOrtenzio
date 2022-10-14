@@ -5,8 +5,15 @@ package RacerModel;
 import java.awt.Color;
 
 public class Category {
+	
+	//------------------------------------------------>||ATTRIBUTES||<--------------------------------------------------------\\
+
+			//----------------------------------------->|VARIABLES|<-----------------------------------------------\\
+	
 	private String description;
 	private Color color;
+	
+	//------------------------------------------------>||CONSTRUCTORS||<------------------------------------------------------------\\
 		
 	public Category() {
 		
@@ -16,6 +23,8 @@ public class Category {
 		this.description = description;
 		this.color = color;
 	}
+	
+	//------------------------------------------------>||GETTERS & SETTERS||<--------------------------------------------------------\\
 
 	public String getDescription() {
 		return description;

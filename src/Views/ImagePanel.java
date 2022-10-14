@@ -12,14 +12,19 @@ import javax.swing.JPanel;
 
 public class ImagePanel extends JPanel {
 
-	 /**
-	 * 
-	 */
+	//------------------------------------------------>||ATTRIBUTES||<--------------------------------------------------------\\
+	
+			//----------------------------------------->|CONSTANTS|<-----------------------------------------------\\
+	
 	private static final long serialVersionUID = 1L;
+	
+			//----------------------------------------->|VARIABLES|<-----------------------------------------------\\
+	
 	private Image img;
 	private int height;
-	//private int i = 0;
 
+	//------------------------------------------------>||CONSTRUCTORS||<------------------------------------------------------------\\
+	
 	  public ImagePanel(String img, int h) {
 	    this(new ImageIcon(img).getImage(),h);
 	    
@@ -29,11 +34,8 @@ public class ImagePanel extends JPanel {
 		height = h;
 	    setImg(img);
 	  }
-
-	  public void paintComponent(Graphics g) {
-		g.drawImage(img, 0, 0, null);
-		//System.out.println(b + " " + (++i));
-	  }
+	  
+	//------------------------------------------------>||GETTERS & SETTERS||<--------------------------------------------------------\\
 
 	public Image getImg() {
 		return img;
@@ -61,8 +63,14 @@ public class ImagePanel extends JPanel {
 	public void setHeight(int height) {
 		this.height = height;
 	}
+	
+	//------------------------------------------------>||CLASS METHODS||<--------------------------------------------------------\\
 
-
+	public void paintComponent(Graphics g) {
+			g.drawImage(img, 0, 0, null);
+			//System.out.println(b + " " + (++i));
+		  }
+	
 }
 
 

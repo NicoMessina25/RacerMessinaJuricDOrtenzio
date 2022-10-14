@@ -3,34 +3,43 @@ package Views.CustomComponents;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.HeadlessException;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import javax.swing.JButton;
 
-import Controller.RacerBoard;
-import Interfaces.colorable;
+import Views.SoundClip;
 
 public class RacerButton extends JButton {
-	/**
-	 * 
-	 */
+	//------------------------------------------------>||ATTRIBUTES||<--------------------------------------------------------\\
+	
+			//----------------------------------------->|CONSTANTS|<-----------------------------------------------\\
+	
 	private static final long serialVersionUID = -2699829771131612801L;
-	private Font font;
 
-	public RacerButton(Color col, Color bgCol) throws HeadlessException {
-		setDefaultConfiguration(col, bgCol);
+			//----------------------------------------->|VARIABLES|<-----------------------------------------------\\
+	
+	private Font font;
+	
+	//------------------------------------------------>||CONSTRUCTORS||<------------------------------------------------------------\\
 		
-		
+
+	public RacerButton(Color col, Color bgCol, SoundClip soundEffect) throws HeadlessException {
+		setDefaultConfiguration(col, bgCol, soundEffect);
+
 	}
 
-	public RacerButton(String label, Color col, Color bgCol) throws HeadlessException {
+	public RacerButton(String label, Color col, Color bgCol, SoundClip soundEffect) throws HeadlessException {
 		super(label);
-		setDefaultConfiguration(col, bgCol);
-		
+		setDefaultConfiguration(col, bgCol, soundEffect);
+
 		// TODO Auto-generated constructor stub
 	}
 	
+	//------------------------------------------------>||GETTERS & SETTERS||<--------------------------------------------------------\\
+
 	public Font getFont() {
 		return font;
 	}
@@ -39,30 +48,42 @@ public class RacerButton extends JButton {
 		this.font = font;
 	}
 	
-	public void setDefaultConfiguration(Color col, Color bgCol) {
+	//------------------------------------------------>||CLASS METHODS||<--------------------------------------------------------\\
+
+	public void setDefaultConfiguration(Color col, Color bgCol, SoundClip soundEffect) {
 		setForeground(col.darker());
 		setBackground(bgCol.brighter());
 		addMouseListener(new EventButton());
 		setBorderPainted(false);
 		setFocusable(false);
-		font = new Font(RacerBoard.getPRIMARY_FONT_FAMILY(), Font.BOLD | Font.ITALIC, 26);
-	}
+		font = new Font(RacerPanel.getPrimaryFontFamily(), Font.BOLD | Font.ITALIC, 26);
+		addActionListener(new ActionListener() {
 
-	public class EventButton extends MouseAdapter{
-		
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				soundEffect.play();
+			}
+
+		});
+	}
+	
+	//------------------------------------------------>||INNER CLASSES||<--------------------------------------------------------\\
+
+	private class EventButton extends MouseAdapter {
+
 		@Override
 		public void mouseEntered(MouseEvent e) {
 			invertColors();
-			
+
 		}
-		
+
 		@Override
 		public void mouseExited(MouseEvent e) {
 			invertColors();
 		}
-		
-	}
 
+	}
 
 	public void invertColors() {
 		Color aux = getForeground();

@@ -7,10 +7,16 @@ import RacerModel.PlayerPckg.RacerPlayer;
 
 public abstract class Action {
 	
+	//------------------------------------------------>||ATTRIBUTES||<--------------------------------------------------------\\
+
+			//----------------------------------------->|VARIABLES|<-----------------------------------------------\\
+		
 	private String desc = new String();
 	private Color color;
 	private boolean questionNeeded;
 	private boolean actionToNextPlayer;
+	
+	//------------------------------------------------>||CONSTRUCTORS||<------------------------------------------------------------\\
 
 	public Action() {
 		
@@ -22,6 +28,8 @@ public abstract class Action {
 		this.questionNeeded = questionNeeded;
 		this.actionToNextPlayer = actionToNextPlayer;
 	}
+	
+	//------------------------------------------------>||GETTERS & SETTERS||<--------------------------------------------------------\\
 
 	public String getDesc() {
 		return desc;
@@ -54,9 +62,10 @@ public abstract class Action {
 	public void setActionToNextPlayer(boolean actionToNextPlayer) {
 		this.actionToNextPlayer = actionToNextPlayer;
 	}
+	
+	//------------------------------------------------>||CLASS METHODS||<--------------------------------------------------------\\
 
 
 	public abstract void doAction(RacerBoard rb, RacerPlayer rp, int diceValue, boolean correct);
-	
 
 }

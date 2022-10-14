@@ -5,13 +5,17 @@ import java.util.ArrayList;
 
 public class Question {
 	
+	//------------------------------------------------>||ATTRIBUTES||<--------------------------------------------------------\\
+
+			//----------------------------------------->|VARIABLES|<-----------------------------------------------\\
 
 	private int id, correctOptionId, dificulty;
 	private String statement;
 	private ArrayList<Option> options = new ArrayList<Option>(); // N CANTIDAD DE OPCIONES
 	private Category category;
 	
-	
+	//------------------------------------------------>||CONSTRUCTORS||<------------------------------------------------------------\\
+			
 	public Question(int id, int correctOptionId, Category cat, int dificulty, String statement, ArrayList<Option> options) {
 		this.id = id;
 		this.dificulty = dificulty;
@@ -20,6 +24,9 @@ public class Question {
 		this.correctOptionId = correctOptionId;
 		setCategory(cat);
 	}
+	
+	
+	//------------------------------------------------>||GETTERS & SETTERS||<--------------------------------------------------------\\
 
 
 	public int getId() {
@@ -55,17 +62,13 @@ public class Question {
 	public void setCategory(Category category) {
 		this.category = category;
 	}
+	
+	//------------------------------------------------>||CLASS METHODS||<--------------------------------------------------------\\
 
 
-	public boolean correctAnswer(int id) { //se le pasa el id de la opción
+	public boolean correctAnswer(int id) { 
 		
 		return id == correctOptionId;
-		
-		/*int opcionElegida = Integer.parseInt(id.toString());
-		
-		if (opcionElegida == idOpcionCorrecta) {
-			return opcionElegida.isCorrecta();
-		}*/
 	}
 	
 }

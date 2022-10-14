@@ -5,11 +5,19 @@ import java.util.List;
 
 import RacerModel.Category;
 import RacerModel.Question;
-import RacerModel.TeamColor;
+import RacerModel.Team;
 
 public class RacerPlayerBegginer extends RacerPlayer {
+	
+	//------------------------------------------------>||ATTRIBUTES||<--------------------------------------------------------\\
+
+			//----------------------------------------->|VARIABLES|<-----------------------------------------------\\
+		
 
 	private int timePerOption;
+	
+	//------------------------------------------------>||CONSTRUCTORS||<------------------------------------------------------------\\
+
 	
 	public RacerPlayerBegginer() {
 		super();
@@ -19,11 +27,13 @@ public class RacerPlayerBegginer extends RacerPlayer {
 		super(name);
 	}
 	
-	public RacerPlayerBegginer(String name, int id, TeamColor tColor, int begginingSquareId) {
+	public RacerPlayerBegginer(String name, int id, Team tColor, int begginingSquareId) {
 		super(name, id,  tColor, begginingSquareId);
 		timePerOption = 15;
 	}
 	
+	//------------------------------------------------>||GETTERS & SETTERS||<--------------------------------------------------------\\
+		
 	@Override
 	public int getTimePerOption() {
 		return timePerOption;
@@ -32,6 +42,8 @@ public class RacerPlayerBegginer extends RacerPlayer {
 	public void setTimePerOption(int timePOp) {
 		timePerOption = timePOp;
 	}
+	
+	//------------------------------------------------>||CLASS METHODS||<--------------------------------------------------------\\
 	
 	@Override
 	public List<Question> getFilteredQuestions(ArrayList<Question> questions, Category catChosen){		

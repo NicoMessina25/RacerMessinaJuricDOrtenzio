@@ -13,15 +13,18 @@ import java.util.ArrayList;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
-
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
 
 import Controller.RacerBoard;
+import Events.ExitEvent;
 import Events.StartQuestionEvent;
+import Listeners.ExitListener;
 import Listeners.StartQuestionListener;
 import Views.CustomComponents.RacerButton;
 import Views.CustomComponents.RacerLabel;
@@ -29,15 +32,17 @@ import Views.CustomComponents.RacerPanel;
 import Views.CustomComponents.RacerPanelCard;
 //import RacerModel.RacerPlayer.RacerPlayer;
 import net.miginfocom.swing.MigLayout;
-import javax.swing.SwingConstants;
-import javax.swing.Timer;
 
 public class BoardPaneGUI extends JFrame {
 
-	/**
-	 * 
-	 */
+	//------------------------------------------------>||ATTRIBUTES||<--------------------------------------------------------\\
+	
+			//----------------------------------------->|CONSTANTS|<-----------------------------------------------\\
+	
 	private static final long serialVersionUID = 1L;
+	
+			//----------------------------------------->|VARIABLES|<-----------------------------------------------\\
+	
 	private RacerPanel contentPane;
 	private RacerButton btnStartQuestion;
 	private RacerButton btnEndTurn;
@@ -46,20 +51,17 @@ public class BoardPaneGUI extends JFrame {
 	private StartQuestionListener startQuestionListener;
 	private RacerPanel dicesPanel;
 	private ArrayList<RacerPanelCard> playersPanelCards;
+	private ExitListener exitListener;
 
-	/**
-	 * Launch the application.
-	 */
-
-	/**
-	 * Create the frame.
-	 */
+	
+	//------------------------------------------------>||CONSTRUCTORS||<------------------------------------------------------------\\
+	
 	public BoardPaneGUI(RacerBoard rb) {
 		setTitle("Racer");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 800, 600);
-		contentPane = new RacerPanel(new MigLayout("fill", "[][][]", "[][][][]"), rb.getPRIMARY_COLOR(),
-				rb.getSECONDARY_COLOR().darker(), rb.getTERCIARY_COLOR());//
+		contentPane = new RacerPanel(new MigLayout("fill", "[][][]", "[][][][]"), RacerPanel.getPrimaryColor(),
+				RacerPanel.getSecondaryColor().darker(), RacerPanel.getTerciaryColor());//
 
 		Path path;
 		path = FileSystems.getDefault().getPath("img", "RACER_LOGO_MINI.png");
@@ -68,27 +70,23 @@ public class BoardPaneGUI extends JFrame {
 		setContentPane(contentPane);
 
 		setStartQuestionListener(rb);
+		setExitListener(rb);
 
 		rb.loadQuestions();
 
 		rb.setPlayerTurn(0);
 
-		RacerButton btnRollDice = new RacerButton("Tirar los dados", rb.getSECONDARY_COLOR(), rb.getPRIMARY_COLOR());
-		btnRollDice.setFont(new Font("Swis721 Hv BT", Font.BOLD | Font.ITALIC, 16));
-		// contentPane.add(btnRollDice, "flowx,cell 1 0,growx,aligny center");
-
-		// RacerLabel lblAction = new RacerLabel("Acción:", 16, rb.getPRIMARY_COLOR(),
-		// rb.getSECONDARY_COLOR());
-		// lblAction.setHorizontalAlignment(SwingConstants.CENTER);
-		// contentPane.add(lblAction, "cell 1 0,growx");
+		RacerButton btnRollDice = new RacerButton("Tirar los dados", RacerPanel.getSecondaryColor(),
+				RacerPanel.getPrimaryColor(), rb.getSounds().get("buttonSound.wav"));
+		btnRollDice.setFont(new Font(RacerPanel.getPrimaryFontFamily(), Font.BOLD | Font.ITALIC, 16));
 
 		JScrollPane scrollPaneAction = new JScrollPane();
-		scrollPaneAction.setBorder(new LineBorder(rb.getSECONDARY_COLOR().darker(), 3));
+		scrollPaneAction.setBorder(new LineBorder(RacerPanel.getSecondaryColor().darker(), 3));
 		scrollPaneAction.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		// contentPane.add(scrollPaneAction, "cell 2 3,grow");
 
-		playerStatusPanel = new RacerPanel(new MigLayout("fill", "[]", "[]"), rb.getPRIMARY_COLOR(),
-				rb.getSECONDARY_COLOR().brighter(), rb.getPRIMARY_COLOR().brighter());
+
+		playerStatusPanel = new RacerPanel(new MigLayout("fill", "[]", "[]"), RacerPanel.getPrimaryColor(),
+				RacerPanel.getSecondaryColor().brighter(), RacerPanel.getPrimaryColor().brighter());
 
 		contentPane.add(playerStatusPanel, "cell 0 0 1 2,grow");
 		playersPanelCards = rb.getPreGamePanel().getPlayersPanelCards();
@@ -97,23 +95,27 @@ public class BoardPaneGUI extends JFrame {
 		textPaneAction = new JTextPane();
 		textPaneAction.setEditable(false);
 		textPaneAction.setMinimumSize(new Dimension(20, 70));
-		textPaneAction.setSelectionColor(rb.getPRIMARY_COLOR().brighter());
-		textPaneAction.setSelectedTextColor(rb.getSECONDARY_COLOR().darker());
-		textPaneAction.setForeground(rb.getTERCIARY_COLOR());
-		textPaneAction.setFont(new Font(RacerBoard.getPRIMARY_FONT_FAMILY(), Font.ITALIC, 14));
-		textPaneAction.setText("Acción:");
-		textPaneAction.setBackground(rb.getSECONDARY_COLOR().brighter());
+		textPaneAction.setSelectionColor(RacerPanel.getPrimaryColor().brighter());
+		textPaneAction.setSelectedTextColor(RacerPanel.getSecondaryColor().darker());
+		textPaneAction.setForeground(RacerPanel.getTerciaryColor());
+		textPaneAction.setFont(new Font(RacerPanel.getPrimaryFontFamily(), Font.ITALIC, 14));
+		textPaneAction.setText("Acciï¿½n:");
+		textPaneAction.setBackground(RacerPanel.getSecondaryColor().brighter());
 		scrollPaneAction.setViewportView(textPaneAction);
 
-		RacerLabel lblDice = new RacerLabel("Dado: ", 16, rb.getPRIMARY_COLOR(), rb.getSECONDARY_COLOR());
+		RacerLabel lblDice = new RacerLabel("", 16, RacerPanel.getPrimaryColor(), RacerPanel.getSecondaryColor());
+		lblDice.setIcon(new ImageIcon(FileSystems.getDefault().getPath("img", "rollingDice.gif").toString()));
 		lblDice.setHorizontalAlignment(SwingConstants.CENTER);
-		// contentPane.add(lblDice, "cell 1 1,grow, center");
+		
+		//ImagePanel gifDice = new ImagePanel(FileSystems.getDefault().getPath("img", "rollingDice.gif").toString(), 150);
+
 
 		JPanel panelActionColor = new JPanel();
-		// contentPane.add(panelActionColor, "cell 2 2,growx,aligny top");
 
-		btnStartQuestion = new RacerButton("Iniciar Pregunta", rb.getSECONDARY_COLOR(),rb.getPRIMARY_COLOR());
-		btnStartQuestion.setFont(new Font(RacerBoard.getPRIMARY_FONT_FAMILY(), Font.BOLD | Font.ITALIC, 20));
+
+		btnStartQuestion = new RacerButton("Iniciar Pregunta", RacerPanel.getSecondaryColor(),
+				RacerPanel.getPrimaryColor(), rb.getSounds().get("buttonSound.wav"));
+		btnStartQuestion.setFont(new Font(RacerPanel.getPrimaryFontFamily(), Font.BOLD | Font.ITALIC, 20));
 		contentPane.add(btnStartQuestion, "flowx,cell 1 0,growx,aligny center");
 		btnStartQuestion.setEnabled(false);
 
@@ -129,15 +131,11 @@ public class BoardPaneGUI extends JFrame {
 
 		panelBoardGrid.add(panelStart, "cell 0 0, width 80px, height 80px");
 
-		btnEndTurn = new RacerButton("Finalizar Turno", rb.getSECONDARY_COLOR(), rb.getPRIMARY_COLOR());
-		btnEndTurn.setFont(new Font(RacerBoard.getPRIMARY_FONT_FAMILY(), Font.BOLD | Font.ITALIC, 20));
+		btnEndTurn = new RacerButton("Finalizar Turno", RacerPanel.getSecondaryColor(), RacerPanel.getPrimaryColor(),
+				rb.getSounds().get("buttonSound.wav"));
+		btnEndTurn.setFont(new Font(RacerPanel.getPrimaryFontFamily(), Font.BOLD | Font.ITALIC, 20));
 		contentPane.add(btnEndTurn, "cell 1 1,growx,aligny center");
 
-		// RacerLabel lblPlayerTurn = new RacerLabel("Turno de:" +
-		// rb.getPlayers().get(rb.getPlayerTurn()).getName(), 18, rb.getPRIMARY_COLOR(),
-		// rb.getSECONDARY_COLOR());
-		// lblPlayerTurn.setHorizontalAlignment(SwingConstants.CENTER);
-		// contentPane.add(lblPlayerTurn, "cell 0 1,growx");
 
 		btnEndTurn.setEnabled(false);
 
@@ -145,47 +143,23 @@ public class BoardPaneGUI extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// rb.getSquares().get(rb.getPlayerToAnswer().getCurrentSquare()).doSquareAction(rb);
-
-				if (rb.getPlayerToAnswer().getCurrentSquare() == rb.getSquares().size() - 1) {
-					// winListener.listenWin(new WinEvent(new
-					// WinPanel(rb.getPlayerToAnswer().getName(), rb, rb, (BoardPaneGUI)
-					// SwingUtilities.getWindowAncestor(contentPane))));
-					// lblPlayerTurn.setText("Turn: " + rb.getPlayerToAnswer().getName() + "
-					// wins!!!");
-				} else {
 					btnRollDice.setEnabled(true);
-					// playersPanelCards.get(rb.getPlayerTurn()).setBackground((!toggleCardColor)?
-					// playersPanelCards.get(rb.getPlayerTurn()).getBackground().darker():
-					// playersPanelCards.get(rb.getPlayerTurn()).getBackground());
+	
 					playersPanelCards.get(rb.getPlayerTurn()).stopTurnAnimation();
 					rb.nextTurn();
 					playersPanelCards.get(rb.getPlayerTurn()).startTurnAnimation();
-					// lblNextTurn.setText("Next Turn: " +
-					// rb.getPlayers().get(rb.getPlayerTurn()).getName());
+			
 					lblDice.setText("Dado: --");
-					// lblPlayerTurn.setText("Turn: " +
-					// rb.getPlayers().get(rb.getPlayerTurn()).getName());
+		
 					btnEndTurn.setEnabled(false);
 					textPaneAction.setText("Acción:");
-
-					/*
-					 * if(rb.getCurQuestion() != null) {
-					 * 
-					 * 
-					 * for(int j = 0; j < rb.getCurQuestion().getOptions().size(); j++) {
-					 * 
-					 * } }
-					 */
-
-				}
 
 			}
 
 		});
 
-		for (int i = 0; i < rb.getRows(); i++) {
-			for (int j = 1; j <= rb.getColumns(); j++) {
+		for (int i = 0; i < (rb.getAmountSquares() - 1) / 7; i++) {
+			for (int j = 1; j <= (rb.getAmountSquares() - 1) / 6; j++) {
 				JPanel jp = new JPanel();
 				jp.setBorder(new LineBorder(new Color(0, 0, 0)));
 				// jp.setSize(10, 10);
@@ -200,11 +174,12 @@ public class BoardPaneGUI extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 
 				rb.rollDices();
+
 				panelActionColor.setEnabled(true);
 				panelActionColor.setBackground(rb.getCurrentActionColor());
 				textPaneAction.setText("Acción: " + rb.getCurrentActionDesc());
 
-				lblDice.setText("Dice: " + rb.getDice().getValue());
+				lblDice.setText("Dado: " + rb.getDice().getValue());
 
 				btnRollDice.setEnabled(false);
 
@@ -215,16 +190,6 @@ public class BoardPaneGUI extends JFrame {
 
 				} else {
 					rb.concludesTurnAction(true, squarePanels, btnStartQuestion, btnEndTurn, textPaneAction);
-					/*
-					 * rb.executeAction(squarePanels, true);
-					 * if(rb.getSquares().get(rb.getPlayerToAnswer().getCurrentSquare()).getTag().
-					 * equalsIgnoreCase("Pregunta")) { btnStartQuestion.setVisible(true);
-					 * 
-					 * rb.getActionDice().setValue(4);
-					 * textPaneAction.setText("Casilla de Pregunta!");
-					 * 
-					 * } else { btnEndTurn.setVisible(true); }
-					 */
 
 				}
 
@@ -246,17 +211,34 @@ public class BoardPaneGUI extends JFrame {
 			}
 		});
 
-		dicesPanel = new RacerPanel(new MigLayout(), rb.getPRIMARY_COLOR(), rb.getSECONDARY_COLOR().darker(),
-				rb.getSECONDARY_COLOR());
+		dicesPanel = new RacerPanel(new MigLayout("fill", "[grow]", "[grow]"), RacerPanel.getPrimaryColor(),
+				RacerPanel.getSecondaryColor().darker(), RacerPanel.getSecondaryColor());
 		contentPane.add(dicesPanel, "cell 2 0 1 4, grow");
 		dicesPanel.add(btnRollDice, "cell 0 0, grow");
 		dicesPanel.add(lblDice, "cell 0 1, grow");
+		//dicesPanel.add(gifDice, "cell 0 1, grow");
 		dicesPanel.add(panelActionColor, "cell 0 2,grow");
 		dicesPanel.add(scrollPaneAction, "cell 0 3,grow");
 
 		playersPanelCards.get(rb.getPlayerTurn()).startTurnAnimation();
 
+		RacerButton btnExit = new RacerButton("Salir", RacerPanel.getSecondaryColor(), RacerPanel.getPrimaryColor(),
+				rb.getSounds().get("buttonSound.wav"));
+		btnExit.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				exitListener.listenExit(new ExitEvent((JFrame) SwingUtilities.getWindowAncestor(contentPane)));
+
+			}
+
+		});
+
+		dicesPanel.add(btnExit, "cell 0 4,grow");
+
 	}
+	
+	//------------------------------------------------>||GETTERS & SETTERS||<--------------------------------------------------------\\
 
 	public void setStartQuestionListener(StartQuestionListener I) {
 		startQuestionListener = I;
@@ -294,13 +276,23 @@ public class BoardPaneGUI extends JFrame {
 		this.playersPanelCards = playersPanelCards;
 	}
 
+	public ExitListener getExitListener() {
+		return exitListener;
+	}
+
+	public void setExitListener(ExitListener exitListener) {
+		this.exitListener = exitListener;
+	}
+	
+	//------------------------------------------------>||CLASS METHODS||<--------------------------------------------------------\\
+
 	public void addPlayersPanelCards() {
 		for (int i = 0; i < playersPanelCards.size(); i++) {
 			RacerPanelCard rpc = playersPanelCards.get(i);
 			rpc.remove(rpc.getBtnDel());
-			rpc.getLblName().setFont(new Font("Swis721 Hv BT", Font.BOLD | Font.ITALIC, 16));
-			rpc.getLblTeam().setFont(new Font("Swis721 Hv BT", Font.ITALIC, 12));
-			rpc.getLblExpert().setFont(new Font("Swis721 Hv BT", Font.ITALIC, 12));
+			rpc.getLblName().setFont(new Font(RacerPanel.getPrimaryFontFamily(), Font.BOLD | Font.ITALIC, 16));
+			rpc.getLblTeam().setFont(new Font(RacerPanel.getPrimaryFontFamily(), Font.ITALIC, 12));
+			rpc.getLblExpert().setFont(new Font(RacerPanel.getPrimaryFontFamily(), Font.ITALIC, 12));
 			rpc.getTeamLogoPanel().setHeight(70);
 			rpc.getTeamLogoPanel().setImg(rpc.getTeamLogoPanel().getImg());
 			;

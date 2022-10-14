@@ -5,14 +5,22 @@ package RacerModel;
 
 public class Option {
 	
-	private int id; // id es la respuesta
+	//------------------------------------------------>||ATTRIBUTES||<--------------------------------------------------------\\
+
+			//----------------------------------------->|VARIABLES|<-----------------------------------------------\\
+	
+	private int id; 
 	private String descripcion;
 	private int sortNum;
+	
+	//------------------------------------------------>||CONSTRUCTORS||<------------------------------------------------------------\\
 	
 	public Option(int id, String description) {
 		this.id = id;
 		this.descripcion = description;
 	}
+	
+	//------------------------------------------------>||GETTERS & SETTERS||<--------------------------------------------------------\\
 
 	public int getId() {
 		return id;

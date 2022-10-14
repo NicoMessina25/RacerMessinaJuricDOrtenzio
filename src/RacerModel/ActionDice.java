@@ -7,15 +7,20 @@ import RacerModel.ActionPckg.Action;
 
 public class ActionDice extends Dice {
 	
+	//------------------------------------------------>||ATTRIBUTES||<--------------------------------------------------------\\
+
+			//----------------------------------------->|VARIABLES|<-----------------------------------------------\\
+	
 	private ArrayList<Action> actions = new ArrayList<Action>(6);
+	
+	//------------------------------------------------>||CONSTRUCTORS||<------------------------------------------------------------\\
 
 	public ActionDice() {
 		
 	}
 	
-	public Action getAction() {
-		return actions.get(super.getValue()-1);
-	}
+	//------------------------------------------------>||GETTERS & SETTERS||<--------------------------------------------------------\\
+
 	
 	public ArrayList<Action> getActions(){
 		return actions;
@@ -23,6 +28,12 @@ public class ActionDice extends Dice {
 	
 	public void setActions(ArrayList<Action> actions) {
 		this.actions = actions;
+	}
+	
+	//------------------------------------------------>||CLASS METHODS||<--------------------------------------------------------\\
+	
+	public Action getAction() {
+		return actions.get(super.getValue()-1);
 	}
 }
 

@@ -5,6 +5,9 @@ import java.awt.Color;
 import RacerModel.PlayerPckg.Player;
 
 public class BegginingSquare extends Square {
+	
+
+	//------------------------------------------------>||CONSTRUCTORS||<------------------------------------------------------------\\
 
 	public BegginingSquare() {
 		// TODO Auto-generated constructor stub

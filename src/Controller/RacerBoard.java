@@ -2,11 +2,13 @@ package Controller;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -52,7 +54,7 @@ import RacerModel.Category;
 import RacerModel.Dice;
 import RacerModel.Option;
 import RacerModel.Question;
-import RacerModel.TeamColor;
+import RacerModel.Team;
 import RacerModel.PlayerPckg.Player;
 import RacerModel.PlayerPckg.RacerPlayer;
 import RacerModel.PlayerPckg.RacerPlayerExpert;
@@ -61,40 +63,78 @@ import RacerModel.SquarePckg.Square;
 import Views.BoardPaneGUI;
 import Views.ImagePanel;
 import Views.PreGamePanel;
+import Views.SoundClip;
 import Views.WinPanel;
 import Views.CustomComponents.RacerPanel;
 import Views.CustomComponents.RacerPanelCard;
 
+/**
+ * This class extends from the Board class. Implements the listeners of the events that happen in the game, so 
+ * this class provides methods to handle all this events.
+ */
+
 public class RacerBoard extends Board implements StartGameListener, CreatePlayerListener, WinListener, ResetListener,
 		ExitListener, StartQuestionListener, QuestionSquareListener, StartPreGameListener, DeletePlayerListener {
-
+	
+	//------------------------------------------------>||ATTRIBUTES||<--------------------------------------------------------------\\
+	
+			//----------------------------------------->|CONSTANTS|<-----------------------------------------------\\
+	
+	/** maximum number of players in the game*/
 	private final int MAX_PLAYERS = 4;
+	/** minimum number of players in the game*/
 	private final int MIN_PLAYERS = 2;
-	private static final Color PRIMARY_COLOR = new Color(214, 164, 12);
-	private static final Color SECONDARY_COLOR = new Color(184, 0, 0);
-	private static final Color TERCIARY_COLOR = new Color(0, 0, 0);
-	private static final String PRIMARY_FONT_FAMILY = "Swis721 Hv BT";
+	
+	
+			//----------------------------------------->|VARIABLES|<-----------------------------------------------\\
+	
+	/** array of questions to display during the game*/
 	private ArrayList<Question> questions = new ArrayList<Question>();
+	/** array of categories to classify the questions*/
 	private ArrayList<Category> categories = new ArrayList<Category>();
+	/** array of teams the players can choose before the game starts*/
+	private ArrayList<Team> teams = new ArrayList<Team>();
+	
+	/** dice to roll every time a player starts a turn*/
 	private Dice dice = new Dice();
-	private ArrayList<TeamColor> teamColors = new ArrayList<TeamColor>();
+	/** array of teams the players can choose before the game starts*/
 	private ActionDice actionDice = new ActionDice();
-	private Question curQuestion;
-	private Timer timer;
-	private int timeLeft;
+	
+	/** the id of the last player created */
 	private int lastId;
+	
+	/** the current question the player has to answer */
+	private Question curQuestion;
+	
+	/** timer that controls the time left the player has to answer the question */
+	private Timer timer;
+	
+	/** panel of the game's board */
 	private BoardPaneGUI boardPane;
+	/** panel of the game's player selector */
 	private PreGamePanel preGamePanel;
+	
+	/** player that has to answer the current question */
 	private RacerPlayer playerToAnswer;
-
+	
+	/** hashMap of the different sounds effects the game implements */
+	private HashMap<String, SoundClip> soundEffectsMap = new HashMap<String, SoundClip>();
+	
+	//------------------------------------------------>||CONSTRUCTORS||<------------------------------------------------------------\\
 	public RacerBoard() {
 	}
-
-	public RacerBoard(int rows, int columns) {
-		super(rows, columns);
+	/**
+	 * @param squares: an integer of the number of squares of the board
+	 */
+	public RacerBoard(int squares) {
+		super(squares);
 
 	}
-
+	
+	//------------------------------------------------>||GETTERS & SETTERS||<--------------------------------------------------------\\
+	
+	
+	
 	public ArrayList<Question> getQuestions() {
 		return questions;
 	}
@@ -119,12 +159,12 @@ public class RacerBoard extends Board implements StartGameListener, CreatePlayer
 		this.dice = dice;
 	}
 
-	public ArrayList<TeamColor> getTeamColors() {
-		return teamColors;
+	public ArrayList<Team> getTeamColors() {
+		return teams;
 	}
 
-	public void setTeamColors(ArrayList<TeamColor> teamColors) {
-		this.teamColors = teamColors;
+	public void setTeamColors(ArrayList<Team> teamColors) {
+		this.teams = teamColors;
 	}
 
 	public ActionDice getActionDice() {
@@ -135,14 +175,6 @@ public class RacerBoard extends Board implements StartGameListener, CreatePlayer
 		this.actionDice = actionDice;
 	}
 
-	public int getTimeLeft() {
-		return timeLeft;
-	}
-
-	public void setTimeLeft(int timeLeft) {
-		this.timeLeft = timeLeft;
-	}
-
 	public Question getCurQuestion() {
 		return curQuestion;
 	}
@@ -150,7 +182,9 @@ public class RacerBoard extends Board implements StartGameListener, CreatePlayer
 	public void setCurQuestion(Question curQuestion) {
 		this.curQuestion = curQuestion;
 	}
-
+	
+	
+	
 	public void setPlayerToAnswer() {
 		playerToAnswer = (RacerPlayer) (getActionDice().getAction().isActionToNextPlayer() ? super.getNextPLayer()
 				: super.getCurrentPlayer());
@@ -179,15 +213,11 @@ public class RacerBoard extends Board implements StartGameListener, CreatePlayer
 	public int getLastId() {
 		return lastId;
 	}
-
-	public String getCurrentActionDesc() {
-		return getActionDice().getAction().getDesc();
+	
+	public void setLastId(int id) {
+		this.lastId = id;
 	}
-
-	public Color getCurrentActionColor() {
-		return getActionDice().getAction().getColor();
-	}
-
+	
 	public BoardPaneGUI getBoardPane() {
 		return boardPane;
 	}
@@ -196,9 +226,7 @@ public class RacerBoard extends Board implements StartGameListener, CreatePlayer
 		this.boardPane = boardPane;
 	}
 
-	public void setLastId(int id) {
-		this.lastId = id;
-	}
+	
 
 	public PreGamePanel getPreGamePanel() {
 		return preGamePanel;
@@ -207,26 +235,27 @@ public class RacerBoard extends Board implements StartGameListener, CreatePlayer
 	public void setPreGamePanel(PreGamePanel racerGUI) {
 		this.preGamePanel = racerGUI;
 	}
+	
+	public HashMap<String, SoundClip> getSounds(){
+		return soundEffectsMap;
+	}
+	
 
-	public Color getPRIMARY_COLOR() {
-		return PRIMARY_COLOR;
+
+	//------------------------------------------------>||CLASS METHODS||<--------------------------------------------------------\\
+	
+	public String getCurrentActionDesc() {
+		return getActionDice().getAction().getDesc();
 	}
 
-	public Color getSECONDARY_COLOR() {
-		return SECONDARY_COLOR;
-	}
-
-	public Color getTERCIARY_COLOR() {
-		return TERCIARY_COLOR;
-	}
-
-	public static String getPRIMARY_FONT_FAMILY() {
-		return PRIMARY_FONT_FAMILY;
+	public Color getCurrentActionColor() {
+		return getActionDice().getAction().getColor();
 	}
 
 	public void rollDices() {
 		dice.diceRoll();
 		actionDice.diceRoll();
+		soundEffectsMap.get("diceSound.wav").play();
 	}
 
 	public String genPlayersStatus() {
@@ -255,13 +284,14 @@ public class RacerBoard extends Board implements StartGameListener, CreatePlayer
 		int lostTurns = ((RacerPlayer) getPlayers().get(getPlayerTurn())).getLostTurns();
 		while (lostTurns > 0) {
 			((RacerPlayer) getPlayers().get(getPlayerTurn())).setLostTurns(lostTurns - 1);
-			System.out.println(getPlayers().get(getPlayerTurn()).getName() + " perdió un turno");
+			System.out.println(getPlayers().get(getPlayerTurn()).getName() + " perdio un turno");
 			if (lostTurns - 1 == 0) {
 				RacerPanelCard panelPlayerCard = boardPane.getPlayersPanelCards().get(getPlayerTurn());
 				panelPlayerCard.getTeamLogoPanel()
 						.setImg(new ImageIcon(FileSystems.getDefault()
 								.getPath("img", "logo" + panelPlayerCard.getTeamId() + "F1.jpg").toString())
 								.getImage());
+				soundEffectsMap.get("boxesSound.wav").play();
 			}
 			super.nextTurn();
 			lostTurns = ((RacerPlayer) getPlayers().get(getPlayerTurn())).getLostTurns();
@@ -269,11 +299,13 @@ public class RacerBoard extends Board implements StartGameListener, CreatePlayer
 	}
 
 	public void playerBackToStart(Player p) {
-		p.setCurrentSquare(getBegginingSquareId());
-		super.getSquares().get(getBegginingSquareId()).setCurPlayer(p);
+		p.setCurrentSquare(getBeginningSquareId());
+		super.getSquares().get(getBeginningSquareId()).setCurPlayer(p);
 	}
 
 	public void movePlayer(Player p, int number) {
+
+		
 		ArrayList<Square> squares = super.getSquares();
 		squares.get(p.getCurrentSquare()).setCurPlayer(null);
 		p.moves(number, super.getFinalSquareId());
@@ -281,13 +313,21 @@ public class RacerBoard extends Board implements StartGameListener, CreatePlayer
 		Player curPlayer = squares.get(p.getCurrentSquare()).getCurPlayer();
 		squares.get(p.getCurrentSquare()).setCurPlayer(p);
 
+		
+
+		soundEffectsMap.get((number > 0) ? "accelerateSound.wav" : "brakeSound.wav").play();
+	
+		
 		if (curPlayer != null) {
+			soundEffectsMap.get("crashSound.wav").play();
 			if (number > 0) {
 				playerBackToStart(curPlayer);
 			} else
 				playerBackToStart(p);
 
 		}
+	
+		
 	}
 
 	public Question genQuestionForPlayer(RacerPlayer p) {
@@ -299,15 +339,6 @@ public class RacerBoard extends Board implements StartGameListener, CreatePlayer
 
 			filteredQuestions = p.getFilteredQuestions(questions, catChosen);
 
-			/*
-			 * if(p.isExpert()) { questionsToShow = questions.stream().filter(q ->
-			 * q.getDificulty() >= 3 &&
-			 * q.getCategory().getDescription().equals(catChosen.getDescription())).toList()
-			 * ; } else { questionsToShow = questions.stream().filter(q -> q.getDificulty()
-			 * <= 3 &&
-			 * q.getCategory().getDescription().equals(catChosen.getDescription())).toList()
-			 * ;; }
-			 */
 		} while (filteredQuestions.size() == 0);
 
 		ques = filteredQuestions.get((int) Math.floor(Math.random() * filteredQuestions.size()));
@@ -334,44 +365,11 @@ public class RacerBoard extends Board implements StartGameListener, CreatePlayer
 
 	}
 
-	@Override
-	public void listenStartGame(StartGameEvent e) {
-		e.starGame();
-		setBoardPane(e.getBoardPane());
-	}
+	
 
 	public void startTimer() {
 		timer.start();
 	}
-
-	/*
-	 * public void updateDelButton(RacerPanel panelCreatedPlayers,
-	 * ArrayList<RacerButton> btnsDelete, JComboBox<TeamColor> cbTeams, JLabel
-	 * title) { for(int i = 0; i < btnsDelete.size();i++) {
-	 * if(btnsDelete.get(i).getActionListeners().length > 0) {
-	 * btnsDelete.get(i).removeActionListener(btnsDelete.get(i).getActionListeners()
-	 * [0]); }
-	 * 
-	 * }
-	 * 
-	 * for(int i = 0; i < getPlayers().size(); i++) { int j = i;
-	 * btnsDelete.get(i).addActionListener(new ActionListener() {
-	 * 
-	 * @Override public void actionPerformed(ActionEvent e) {
-	 * getPlayers().remove(j);
-	 * //btnDelete.removeActionListener(btnDelete.getActionListeners()[0]);
-	 * lastId--; title.setText("Jugador " + (getLastId()+1)); for(int k = j;
-	 * k<getPlayers().size(); k++) { getPlayers().get(k).setId(k+1); }
-	 * //updateDelButton(textPanePlayersCreated, btnsDelete, cbTeams, title);
-	 * updateComboBox(cbTeams); //System.out.println("xd");
-	 * //textPanePlayersCreated.setText(genPlayersStatus());
-	 * 
-	 * }
-	 * 
-	 * }); }
-	 * 
-	 * }
-	 */
 
 	public void loadQuestions() {
 		String file = new String("/XMLQuestions.xml");
@@ -391,7 +389,6 @@ public class RacerBoard extends Board implements StartGameListener, CreatePlayer
 			e.printStackTrace();
 		}
 
-		// Node categories = nodoRaiz.getChildNodes().item(0);
 		final NodeList nlDesc = doc.getElementsByTagName("descripcion");
 		final NodeList nlColor = doc.getElementsByTagName("color");
 
@@ -430,8 +427,8 @@ public class RacerBoard extends Board implements StartGameListener, CreatePlayer
 
 	}
 
-	public void updateComboBox(JComboBox<TeamColor> cbTeams) {
-		HashSet<TeamColor> selectedTeams = new HashSet<TeamColor>();
+	public void updateComboBox(JComboBox<Team> cbTeams) {
+		HashSet<Team> selectedTeams = new HashSet<Team>();
 
 		cbTeams.removeAllItems();
 
@@ -439,104 +436,29 @@ public class RacerBoard extends Board implements StartGameListener, CreatePlayer
 			selectedTeams.add(((RacerPlayer) rp).getTeamColor());
 		}
 
-		for (Iterator<TeamColor> iterator = getTeamColors().iterator(); iterator.hasNext();) {
-			TeamColor tcolor = iterator.next();
+		for (Iterator<Team> iterator = getTeamColors().iterator(); iterator.hasNext();) {
+			Team tcolor = iterator.next();
 			if (!selectedTeams.contains(tcolor)) {
 				cbTeams.addItem(tcolor);
 			}
 		}
 	}
-
-	/*
-	 * public void updatePanelCreatedPlayers() { ArrayList<Player> players =
-	 * super.getPlayers(); RacerPanel newPanelCreatedPlayers = new RacerPanel(new
-	 * MigLayout("fill", "[][][][]", "[28.00][]"), null, getSECONDARY_COLOR(),
-	 * getPRIMARY_COLOR().brighter());
-	 * 
-	 * 
-	 * for(Player p : players) { RacerPlayer rp = (RacerPlayer) p; RacerPanelCard
-	 * rpc = new RacerPanelCard(rp.getTeamColor().getCol().darker(),
-	 * rp.getTeamColor().getCol().brighter(), rp.getTeamColor().getCol(),
-	 * rp.getName(), rp.getTeamColor().getTeamName(), rp.getTeamColor().getTeamId(),
-	 * rp.getClass().getSimpleName().equals("RacerPlayerExpert"));
-	 * rpc.setDelPlayerListener(this); newPanelCreatedPlayers.add(rpc, "cell " +
-	 * rp.getId() + " 0"); }
-	 * 
-	 * 
-	 * racerGUI.setCreatedPlayersPanel(newPanelCreatedPlayers);
-	 * 
-	 * }
-	 */
-
-	@Override
-	public void listenCreate(CreatePlayerEvent e) {
-		RacerPlayer rp = e.getPlayer();
-
-		
-		setLastId(getLastId() + 1);
-		
-
-		rp.setId(getLastId());
-		rp.setCurrentSquare(getBegginingSquareId());
-
-		RacerPanelCard rpc = new RacerPanelCard(rp.getTeamColor().getCol().darker(),
-				rp.getTeamColor().getCol().brighter(), rp.getTeamColor().getCol(), rp.getName(),
-				rp.getTeamColor().getTeamName(), rp.getTeamColor().getTeamId(), rp.getId(), rp.typeToString());
-		rpc.setDelPlayerListener(this);
-		
-		rpc.addBtnDel(rpc.getBtnDel());
-		
-		preGamePanel.getPlayersPanelCards().add(rpc);
-		// System.out.println("listenCre:" + racerGUI.getPlayersPanelCards().size());
-		// rpc.addDeleteButton(racerGUI.getBtnsDelete().get(getLastId()-1));
-		// racerGUI.getPlayersPanelCards().get(getLastId()-
-		// 1).setDelPlayerListener(this);
-		super.addPlayer(rp);
-		preGamePanel.getCreatedPlayersPanel().add(preGamePanel.getPlayersPanelCards().get(getLastId() - 1),
-				"cell " + (rp.getId() - 1) + " 0, center");
-		// racerGUI.createRacerPanelCard(e.getName(), e.getTc().getTeamName(),
-		// e.getTc().getTeamId(), e.getTc().getCol(), e.isExpert(), getLastId(), this);
-	}
-
-	@Override
-	public void listenWin(WinEvent e) {
-		e.win();
-	}
-
-	@Override
-	public void listenReset(ResetEvent e) {
-		e.reset();
-		setLastId(0);
-	}
-
-	@Override
-	public void listenExit(ExitEvent e) {
-		e.exit();
-
-	}
-
+	
 	public void executeWin(RacerPlayer winner) {
 		listenWin(new WinEvent(new WinPanel(winner.getName(), this, getBoardPane())));
 	}
-
-	@Override
-	public void listenStartQuestion(StartQuestionEvent e) {
-
-		e.startQuestion(this);
-		setTimer(e.getTimer());
-
-	}
-
+	
 	public void concludesTurnAction(boolean correct, ArrayList<JPanel> squarePanels, JButton btnStartQuestion,
 			JButton btnEndTurn, JTextPane textPaneAction) {
-		executeAction(squarePanels, correct);
-		if (getActionDice().getAction().isQuestionNeeded() && correct) {
-			System.out.println("Correct");
-		} else {
-			System.out.println("Incorrect");
-		}
+		
 
-		// rb.movePlayer(player, diceValue);
+		if (getActionDice().getAction().isQuestionNeeded()) {
+			
+			soundEffectsMap.get((correct)? "correctSound.wav":"incorrectSound.wav").play(0);
+			
+		}
+		
+		executeAction(squarePanels, correct);
 
 		getSquares().get(getPlayerToAnswer().getCurrentSquare()).doSquareAction(this, correct);
 
@@ -544,25 +466,30 @@ public class RacerBoard extends Board implements StartGameListener, CreatePlayer
 			ImagePanel logoPanel = boardPane.getPlayersPanelCards().get(getPlayerTurn()).getTeamLogoPanel();
 			logoPanel.setImg(new ImageIcon(FileSystems.getDefault().getPath("img", "boxes.jpg").toString()).getImage());
 			logoPanel.repaint();
+			soundEffectsMap.get("boxesSound.wav").play();
 		}
 
 	}
-
-	@Override
-	public void listenQuestionSquare(QuestionSquareEvent e) {
-		e.setActDice(getActionDice());
-		e.setBtnStartQuestion(boardPane.getBtnStartQuestion());
-		e.setTextPaneAction(boardPane.getTextPaneAction());
-
-		e.activateQuestionSquare();
-
-	}
-
-	public void finishTurn() {
+	
+public void finishTurn() {
+		
+		/*Timer t = new Timer(getActiveSoundEffectsDelay(),new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				
+			}
+		});
+		
+		t.setRepeats(false);
+		t.start();*/
 		boardPane.getBtnEndTurn().setEnabled(true);
+		
 	}
 
-	public void genOptionButtonGroup(ButtonGroup bg, ArrayList<JRadioButton> rdbtnOptions, RacerPanel questionContentPane) {
+	public void genOptionButtonGroup(ButtonGroup bg, ArrayList<JRadioButton> rdbtnOptions,
+			RacerPanel questionContentPane) {
 
 		Question question = getCurQuestion();
 
@@ -583,51 +510,14 @@ public class RacerBoard extends Board implements StartGameListener, CreatePlayer
 			JRadioButton rdbtn = new JRadioButton(op.getDescripcion());
 			rdbtn.setForeground(questionContentPane.getForeground());
 			rdbtn.setBackground(questionContentPane.getBackground());
-			rdbtn.setFont(new Font(getPRIMARY_FONT_FAMILY(), Font.BOLD | Font.ITALIC, 18));
+			rdbtn.setFont(new Font(RacerPanel.getPrimaryFontFamily(), Font.BOLD | Font.ITALIC, 18));
 			bg.add(rdbtn);
 			rdbtnOptions.add(rdbtn);
 			questionContentPane.add(rdbtn, "cell 0 " + (i + 2));
 		}
 
 	}
-
-	@Override
-	public void listenStarPreGame(StartPreGameEvent e) {
-		e.getWelPanel().dispose();
-		e.getRacerGUI().setVisible(true);
-		setPreGamePanel(e.getRacerGUI());
-		setPlayers(new ArrayList<Player>());
-		
-
-		ArrayList<Integer> questionIndexes = new ArrayList<Integer>();
-
-		while (questionIndexes.size() < 4) {
-			int ind;
-			do {
-				ind = (int) Math.floor(Math.random() * 41 + 1);
-			} while (!validIndex(questionIndexes, ind));
-			questionIndexes.add(ind);
-			System.out.println(ind);
-		}
-
-		for (Integer i : questionIndexes) {
-			getSquares().set(i, new QuestionSquare(i, "Pregunta", new Color(0, 0, 0), null));
-		}
-
-	}
-
-	@Override
-	public void listenDeletePlayer(DeletePlayerEvent e) {
-		// racerGUI.getCreatedPlayersPanel().remove(racerGUI.getPlayersPanelCards().get(e.getPlayerId()-1));
-		preGamePanel.getPlayersPanelCards().remove(e.getPlayerId() - 1);
-		preGamePanel.addPlayersPanelCards();
-		getPlayers().remove(e.getPlayerId() - 1);
-		updateIds();
-		
-		updateComboBox(preGamePanel.getComboBoxTeams());
-
-	}
-
+	
 	public void updateIds() {
 		int i;
 		for (i = 0; i < getPlayers().size(); i++) {
@@ -655,7 +545,143 @@ public class RacerBoard extends Board implements StartGameListener, CreatePlayer
 		RacerPlayer rp = getPlayerToAnswer();
 		return new RacerPanelCard(rp.getTeamColor().getCol().darker(), rp.getTeamColor().getCol().brighter(),
 				rp.getTeamColor().getCol(), rp.getName(), rp.getTeamColor().getTeamName(),
-				rp.getTeamColor().getTeamId(), rp.getId(), rp.typeToString());
+				rp.getTeamColor().getTeamId(), rp.getId(), rp.typeToString(), getSounds().get("buttonSound.wav"));
 	}
+	
+	public void loadSoundEffects() {
+		
+		File[] soundEffectFiles = new File(FileSystems.getDefault().getPath("soundEffects").toString()).listFiles();
+		
+		for(File f : soundEffectFiles) {
+			if(f.isFile()) {
+				soundEffectsMap.put(f.getName(), new SoundClip(f.getPath().toString()));
+			}
+		}
+	}
+	
+	//------------------------------------------------>||LISTENER METHODS||<--------------------------------------------------------\\
+
+	@Override
+	public void listenCreate(CreatePlayerEvent e) {
+		RacerPlayer rp = e.getPlayer();
+
+		setLastId(getLastId() + 1);
+
+		rp.setId(getLastId());
+		rp.setCurrentSquare(getBeginningSquareId());
+
+		RacerPanelCard rpc = new RacerPanelCard(rp.getTeamColor().getCol().darker(),
+				rp.getTeamColor().getCol().brighter(), rp.getTeamColor().getCol(), rp.getName(),
+				rp.getTeamColor().getTeamName(), rp.getTeamColor().getTeamId(), rp.getId(), rp.typeToString(), getSounds().get("buttonSound.wav"));
+		rpc.setDelPlayerListener(this);
+
+		rpc.addBtnDel(rpc.getBtnDel());
+
+		preGamePanel.getPlayersPanelCards().add(rpc);
+		
+
+		super.addPlayer(rp);
+		preGamePanel.getCreatedPlayersPanel().add(preGamePanel.getPlayersPanelCards().get(getLastId() - 1),
+				"cell " + (rp.getId() - 1) + " 0, center");
+	}
+
+	@Override
+	public void listenWin(WinEvent e) {
+		e.win();
+	}
+
+	@Override
+	public void listenReset(ResetEvent e) {
+		e.reset();
+		setLastId(0);
+	}
+
+	@Override
+	public void listenExit(ExitEvent e) {
+		e.exit();
+
+	}
+	
+	@Override
+	public void listenStartGame(StartGameEvent e) {
+		e.starGame();
+		setBoardPane(e.getBoardPane());
+	}
+
+	
+
+	@Override
+	public void listenStartQuestion(StartQuestionEvent e) {
+
+		e.startQuestion(this);
+		setTimer(e.getTimer());
+
+	}
+
+	
+
+	@Override
+	public void listenQuestionSquare(QuestionSquareEvent e) {
+		e.setActDice(getActionDice());
+		e.setBtnStartQuestion(boardPane.getBtnStartQuestion());
+		e.setTextPaneAction(boardPane.getTextPaneAction());
+
+		e.activateQuestionSquare();
+
+	}
+
+	
+
+	@Override
+	public void listenStarPreGame(StartPreGameEvent e) {
+		e.getWelPanel().dispose();
+		e.getRacerGUI().setVisible(true);
+		setPreGamePanel(e.getRacerGUI());
+		setPlayers(new ArrayList<Player>());
+
+		ArrayList<Integer> questionIndexes = new ArrayList<Integer>();
+
+		while (questionIndexes.size() < 4) {
+			int ind;
+			do {
+				ind = (int) Math.floor(Math.random() * 41 + 1);
+			} while (!validIndex(questionIndexes, ind));
+			questionIndexes.add(ind);
+			System.out.println(ind);
+		}
+
+		for (Integer i : questionIndexes) {
+			getSquares().set(i, new QuestionSquare(i, "Pregunta", new Color(0, 0, 0), null));
+		}
+
+	}
+
+	@Override
+	public void listenDeletePlayer(DeletePlayerEvent e) {
+		// racerGUI.getCreatedPlayersPanel().remove(racerGUI.getPlayersPanelCards().get(e.getPlayerId()-1));
+		preGamePanel.getPlayersPanelCards().remove(e.getPlayerId() - 1);
+		preGamePanel.addPlayersPanelCards();
+		getPlayers().remove(e.getPlayerId() - 1);
+		updateIds();
+
+		updateComboBox(preGamePanel.getComboBoxTeams());
+
+	}
+
+	
+	
+	/*public int getActiveSoundEffectsDelay() {
+		delay = 0;
+		
+		soundEffectsMap.forEach((name, sc)->{
+			if(!name.equals("buttonSound.wav")) {
+				delay += sc.isPlaying()? sc.getTimeRemaining():0;
+			}
+		});
+		
+		return SoundClip.getDelay();
+	}*/
+	
+	
 
 }

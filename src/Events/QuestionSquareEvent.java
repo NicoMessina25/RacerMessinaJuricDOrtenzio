@@ -6,9 +6,16 @@ import javax.swing.JTextPane;
 import RacerModel.ActionDice;
 
 public class QuestionSquareEvent {
+	
+	//------------------------------------------------>||ATTRIBUTES||<--------------------------------------------------------\\
+
+			//----------------------------------------->|VARIABLES|<-----------------------------------------------\\
+		
 	JButton btnStartQuestion;
 	JTextPane textPaneAction;
 	ActionDice actDice;
+	
+	//------------------------------------------------>||CONSTRUCTORS||<------------------------------------------------------------\\
 	
 	public QuestionSquareEvent() {
 	}
@@ -18,6 +25,8 @@ public class QuestionSquareEvent {
 		this.actDice = actDice;
 		this.textPaneAction = textPaneAction;
 	}
+	
+	//------------------------------------------------>||GETTERS & SETTERS||<--------------------------------------------------------\\
 	
 	public JButton getBtnStartQuestion() {
 		return btnStartQuestion;
@@ -42,6 +51,8 @@ public class QuestionSquareEvent {
 	public void setActDice(ActionDice actDice) {
 		this.actDice = actDice;
 	}
+	
+	//------------------------------------------------>||CLASS METHODS||<--------------------------------------------------------\\
 
 	public void activateQuestionSquare() {
 	

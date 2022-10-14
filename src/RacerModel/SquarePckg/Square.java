@@ -6,10 +6,18 @@ import Controller.RacerBoard;
 import RacerModel.PlayerPckg.Player;
 
 public class Square {
+	
+	//------------------------------------------------>||ATTRIBUTES||<--------------------------------------------------------\\
+
+			//----------------------------------------->|VARIABLES|<-----------------------------------------------\\
+
 	private int id;
 	String tag;
 	private Color color;
 	private Player curPlayer = new Player();
+	
+	//------------------------------------------------>||CONSTRUCTORS||<------------------------------------------------------------\\
+
 
 	public Square() {
 		
@@ -21,6 +29,8 @@ public class Square {
 		this.tag = tag;
 		this.curPlayer = curPlayer;
 	}
+	
+	//------------------------------------------------>||GETTERS & SETTERS||<--------------------------------------------------------\\
 
 	public int getId() {
 		return id;
@@ -53,6 +63,8 @@ public class Square {
 	public void setCurPlayer(Player curPlayer) {
 		this.curPlayer = curPlayer;
 	}
+	
+	//------------------------------------------------>||CLASS METHODS||<--------------------------------------------------------\\
 	
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
