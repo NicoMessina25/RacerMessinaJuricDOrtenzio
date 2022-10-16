@@ -164,7 +164,7 @@ public class PreGamePanel extends JFrame {
 				Path path = FileSystems.getDefault().getPath("img",
 						"logo" + ((Team) e.getItem()).getTeamId() + "F1.jpg");
 				imgPanel.setImg(new ImageIcon(path.toString()).getImage());
-				
+				panelTeamLogo.updateUI();
 				panelTeamLogo.repaint();
 			
 

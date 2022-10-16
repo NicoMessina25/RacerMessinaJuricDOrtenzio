@@ -2,6 +2,8 @@ package Controller;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
@@ -58,13 +60,18 @@ import RacerModel.Team;
 import RacerModel.PlayerPckg.Player;
 import RacerModel.PlayerPckg.RacerPlayer;
 import RacerModel.PlayerPckg.RacerPlayerExpert;
+import RacerModel.SquarePckg.BegginingSquare;
+import RacerModel.SquarePckg.FinishSquare;
 import RacerModel.SquarePckg.QuestionSquare;
 import RacerModel.SquarePckg.Square;
 import Views.BoardPaneGUI;
+import Views.GridBoard;
+import Views.GridBoardCoordinate;
 import Views.ImagePanel;
 import Views.PreGamePanel;
 import Views.SoundClip;
 import Views.WinPanel;
+import Views.CustomComponents.RacerLabel;
 import Views.CustomComponents.RacerPanel;
 import Views.CustomComponents.RacerPanelCard;
 
@@ -94,6 +101,8 @@ public class RacerBoard extends Board implements StartGameListener, CreatePlayer
 	private ArrayList<Category> categories = new ArrayList<Category>();
 	/** array of teams the players can choose before the game starts*/
 	private ArrayList<Team> teams = new ArrayList<Team>();
+	
+	
 	
 	/** dice to roll every time a player starts a turn*/
 	private Dice dice = new Dice();
@@ -248,11 +257,12 @@ public class RacerBoard extends Board implements StartGameListener, CreatePlayer
 		return getActionDice().getAction().getDesc();
 	}
 
-	public Color getCurrentActionColor() {
-		return getActionDice().getAction().getColor();
+	public String getCurrentActionImgPath() {
+		return getActionDice().getAction().getImg();
 	}
 
 	public void rollDices() {
+		
 		dice.diceRoll();
 		actionDice.diceRoll();
 		soundEffectsMap.get("diceSound.wav").play();
@@ -291,6 +301,7 @@ public class RacerBoard extends Board implements StartGameListener, CreatePlayer
 						.setImg(new ImageIcon(FileSystems.getDefault()
 								.getPath("img", "logo" + panelPlayerCard.getTeamId() + "F1.jpg").toString())
 								.getImage());
+				panelPlayerCard.updateUI();
 				soundEffectsMap.get("boxesSound.wav").play();
 			}
 			super.nextTurn();
@@ -299,8 +310,20 @@ public class RacerBoard extends Board implements StartGameListener, CreatePlayer
 	}
 
 	public void playerBackToStart(Player p) {
+		int lastSquare = p.getCurrentSquare();
 		p.setCurrentSquare(getBeginningSquareId());
 		super.getSquares().get(getBeginningSquareId()).setCurPlayer(p);
+		Timer delay = new Timer(2000, new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				boardPane.getPanelBoardGrid().movePlayer(p.getId(), getBeginningSquareId(), lastSquare);
+				boardPane.getPlayersPanelCards().get(p.getId()-1).getLblExpert().setText(((RacerPlayer) p).typeToString() + " - Vuelta " + boardPane.getPanelBoardGrid().getPlayerLap(p.getCurrentSquare()));
+			}
+		});
+		delay.setRepeats(false);
+		delay.start();
+		
 	}
 
 	public void movePlayer(Player p, int number) {
@@ -320,11 +343,7 @@ public class RacerBoard extends Board implements StartGameListener, CreatePlayer
 		
 		if (curPlayer != null) {
 			soundEffectsMap.get("crashSound.wav").play();
-			if (number > 0) {
-				playerBackToStart(curPlayer);
-			} else
-				playerBackToStart(p);
-
+			playerBackToStart((number > 0)? curPlayer: p);
 		}
 	
 		
@@ -348,16 +367,16 @@ public class RacerBoard extends Board implements StartGameListener, CreatePlayer
 		return ques;
 	}
 
-	public void executeAction(ArrayList<JPanel> squarePanels, boolean correct) {
+	public void executeAction(GridBoard panelGridBoard, boolean correct) {
 		RacerPlayer rp = (RacerPlayer) getPlayerToAnswer();
-		if (rp.getCurrentSquare() != 0) {
-			squarePanels.get(rp.getCurrentSquare() - 1).setBackground(null);
-		}
+		int oldSquare = rp.getCurrentSquare();
 
 		getActionDice().getAction().doAction(this, rp, getDice().getValue(), correct);
-		if (rp.getCurrentSquare() != 0) {
-			squarePanels.get(rp.getCurrentSquare() - 1).setBackground(rp.getTeamColor().getCol());
-		}
+		
+		
+		
+		panelGridBoard.movePlayer(rp.getId(), rp.getCurrentSquare(), oldSquare);
+		boardPane.getPlayersPanelCards().get(rp.getId()-1).getLblExpert().setText(rp.typeToString() + " - Vuelta " + panelGridBoard.getPlayerLap(rp.getCurrentSquare()));
 
 		if (timer != null) {
 			timer.stop();
@@ -372,6 +391,8 @@ public class RacerBoard extends Board implements StartGameListener, CreatePlayer
 	}
 
 	public void loadQuestions() {
+		questions = new ArrayList<Question>();
+		
 		String file = new String("/XMLQuestions.xml");
 		final DocumentBuilderFactory dbfac = DocumentBuilderFactory.newInstance();
 		DocumentBuilder docBuilder = null;
@@ -433,7 +454,7 @@ public class RacerBoard extends Board implements StartGameListener, CreatePlayer
 		cbTeams.removeAllItems();
 
 		for (Player rp : getPlayers()) {
-			selectedTeams.add(((RacerPlayer) rp).getTeamColor());
+			selectedTeams.add(((RacerPlayer) rp).getTeam());
 		}
 
 		for (Iterator<Team> iterator = getTeamColors().iterator(); iterator.hasNext();) {
@@ -448,7 +469,7 @@ public class RacerBoard extends Board implements StartGameListener, CreatePlayer
 		listenWin(new WinEvent(new WinPanel(winner.getName(), this, getBoardPane())));
 	}
 	
-	public void concludesTurnAction(boolean correct, ArrayList<JPanel> squarePanels, JButton btnStartQuestion,
+	public void concludesTurnAction(boolean correct, GridBoard panelGridBoard, JButton btnStartQuestion,
 			JButton btnEndTurn, JTextPane textPaneAction) {
 		
 
@@ -458,14 +479,16 @@ public class RacerBoard extends Board implements StartGameListener, CreatePlayer
 			
 		}
 		
-		executeAction(squarePanels, correct);
+		executeAction(panelGridBoard, correct);
 
 		getSquares().get(getPlayerToAnswer().getCurrentSquare()).doSquareAction(this, correct);
+		
+		System.out.println(genPlayersStatus());
 
 		if (((RacerPlayer) getPlayers().get(getPlayerTurn())).getLostTurns() > 0) {
 			ImagePanel logoPanel = boardPane.getPlayersPanelCards().get(getPlayerTurn()).getTeamLogoPanel();
 			logoPanel.setImg(new ImageIcon(FileSystems.getDefault().getPath("img", "boxes.jpg").toString()).getImage());
-			logoPanel.repaint();
+			logoPanel.updateUI();
 			soundEffectsMap.get("boxesSound.wav").play();
 		}
 
@@ -543,9 +566,9 @@ public void finishTurn() {
 
 	public RacerPanelCard getPlayerToAnswerPanelCard() {
 		RacerPlayer rp = getPlayerToAnswer();
-		return new RacerPanelCard(rp.getTeamColor().getCol().darker(), rp.getTeamColor().getCol().brighter(),
-				rp.getTeamColor().getCol(), rp.getName(), rp.getTeamColor().getTeamName(),
-				rp.getTeamColor().getTeamId(), rp.getId(), rp.typeToString(), getSounds().get("buttonSound.wav"));
+		return new RacerPanelCard(rp.getTeam().getCol().darker(), rp.getTeam().getCol().brighter(),
+				rp.getTeam().getCol(), rp.getName(), rp.getTeam().getTeamName(),
+				rp.getTeam().getTeamId(), rp.getId(), rp.typeToString(), getSounds().get("buttonSound.wav"));
 	}
 	
 	public void loadSoundEffects() {
@@ -570,9 +593,9 @@ public void finishTurn() {
 		rp.setId(getLastId());
 		rp.setCurrentSquare(getBeginningSquareId());
 
-		RacerPanelCard rpc = new RacerPanelCard(rp.getTeamColor().getCol().darker(),
-				rp.getTeamColor().getCol().brighter(), rp.getTeamColor().getCol(), rp.getName(),
-				rp.getTeamColor().getTeamName(), rp.getTeamColor().getTeamId(), rp.getId(), rp.typeToString(), getSounds().get("buttonSound.wav"));
+		RacerPanelCard rpc = new RacerPanelCard(rp.getTeam().getCol().darker(),
+				rp.getTeam().getCol().brighter(), rp.getTeam().getCol(), rp.getName(),
+				rp.getTeam().getTeamName(), rp.getTeam().getTeamId(), rp.getId(), rp.typeToString(), getSounds().get("buttonSound.wav"));
 		rpc.setDelPlayerListener(this);
 
 		rpc.addBtnDel(rpc.getBtnDel());
@@ -588,6 +611,8 @@ public void finishTurn() {
 	@Override
 	public void listenWin(WinEvent e) {
 		e.win();
+		RacerPlayer winner = getPlayerToAnswer();
+		boardPane.getPlayersPanelCards().get(winner.getId()-1).getLblExpert().setText(winner.typeToString());
 	}
 
 	@Override
@@ -639,20 +664,7 @@ public void finishTurn() {
 		setPreGamePanel(e.getRacerGUI());
 		setPlayers(new ArrayList<Player>());
 
-		ArrayList<Integer> questionIndexes = new ArrayList<Integer>();
-
-		while (questionIndexes.size() < 4) {
-			int ind;
-			do {
-				ind = (int) Math.floor(Math.random() * 41 + 1);
-			} while (!validIndex(questionIndexes, ind));
-			questionIndexes.add(ind);
-			System.out.println(ind);
-		}
-
-		for (Integer i : questionIndexes) {
-			getSquares().set(i, new QuestionSquare(i, "Pregunta", new Color(0, 0, 0), null));
-		}
+		loadSquares();
 
 	}
 
@@ -666,6 +678,52 @@ public void finishTurn() {
 
 		updateComboBox(preGamePanel.getComboBoxTeams());
 
+	}
+	public ArrayList<RacerLabel> genPlayersRacerLabel() {
+		ArrayList<RacerLabel> playersRacerLabel = new ArrayList<RacerLabel>();
+		for (Player rp : getPlayers()) {
+			RacerLabel rl = new RacerLabel();
+			
+			rl.setIcon(new ImageIcon(FileSystems.getDefault().getPath("img/f1Cars", "car" + ((RacerPlayer) rp).getTeam().getTeamId() + ".png").toString()), 40);
+
+			playersRacerLabel.add(rl);
+		}
+		
+		return playersRacerLabel;
+		
+	}
+	
+	public void loadSquares() {
+		setSquares(new ArrayList<Square>());
+		
+		for (int i = 0; i <= getFinalSquareId(); i++) {
+			getSquares().add(new Square(i, "Normal", new Color(0, 0, 0), null));
+		}
+
+		getSquares().set(getBeginningSquareId(),
+				new BegginingSquare(getBeginningSquareId(), "Inicio", new Color(0, 0, 0), null));
+		getSquares().set(getFinalSquareId(),
+				new FinishSquare(getFinalSquareId(), "Fin", new Color(0, 0, 0), null));
+
+		getSquares().get(getBeginningSquareId()).setTag("Inicio");
+		getSquares().get(getFinalSquareId()).setTag("Fin");
+		
+		ArrayList<Integer> questionIndexes = new ArrayList<Integer>();
+
+		while (questionIndexes.size() < 4) {
+			int ind;
+			do {
+				ind = (int) Math.floor(Math.random() * 41 + 1);
+			} while (!validIndex(questionIndexes, ind));
+			questionIndexes.add(ind);
+			System.out.println(ind);
+		}
+		
+		for (Integer i : questionIndexes) {
+			getSquares().set(i, new QuestionSquare(i, "Pregunta", new Color(0, 0, 0), null));
+		}
+		
+		
 	}
 
 	

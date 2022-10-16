@@ -1,7 +1,5 @@
 package RacerModel.ActionPckg;
 
-import java.awt.Color;
-
 import Controller.RacerBoard;
 import RacerModel.PlayerPckg.RacerPlayer;
 
@@ -13,8 +11,8 @@ public class ActionOrange extends ActionFucsia {
 		// TODO Auto-generated constructor stub
 	}
 
-	public ActionOrange(String desc, Color color, boolean questionNeeded, boolean actionToNextPlayer) {
-		super(desc, color, questionNeeded, actionToNextPlayer);
+	public ActionOrange(String desc, String img, boolean questionNeeded, boolean actionToNextPlayer) {
+		super(desc, img, questionNeeded, actionToNextPlayer);
 		// TODO Auto-generated constructor stub
 	}
 	

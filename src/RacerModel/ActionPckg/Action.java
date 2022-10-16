@@ -13,6 +13,7 @@ public abstract class Action {
 		
 	private String desc = new String();
 	private Color color;
+	private String img;
 	private boolean questionNeeded;
 	private boolean actionToNextPlayer;
 	
@@ -22,9 +23,9 @@ public abstract class Action {
 		
 	}
 	
-	public Action(String desc, Color color, boolean questionNeeded, boolean actionToNextPlayer) {
+	public Action(String desc, String img, boolean questionNeeded, boolean actionToNextPlayer) {
 		this.desc = desc;
-		this.color = color;
+		this.img = img;
 		this.questionNeeded = questionNeeded;
 		this.actionToNextPlayer = actionToNextPlayer;
 	}
@@ -61,6 +62,14 @@ public abstract class Action {
 
 	public void setActionToNextPlayer(boolean actionToNextPlayer) {
 		this.actionToNextPlayer = actionToNextPlayer;
+	}
+	
+	public String getImg() {
+		return img;
+	}
+
+	public void setImg(String img) {
+		this.img = img;
 	}
 	
 	//------------------------------------------------>||CLASS METHODS||<--------------------------------------------------------\\

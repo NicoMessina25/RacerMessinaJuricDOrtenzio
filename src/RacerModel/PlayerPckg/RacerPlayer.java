@@ -45,11 +45,11 @@ public abstract class RacerPlayer extends Player {
 		this.lostTurns = lostTurns;
 	}
 	
-	public Team getTeamColor() {
+	public Team getTeam() {
 		return tColor;
 	}
 
-	public void setTeamColor(Team tColor) {
+	public void setTeam(Team tColor) {
 		this.tColor = tColor;
 	}
 	

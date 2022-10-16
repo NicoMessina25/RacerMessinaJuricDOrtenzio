@@ -2,6 +2,7 @@ package init;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.nio.file.FileSystems;
 
 import Controller.RacerBoard;
 import RacerModel.Team;
@@ -34,7 +35,8 @@ public class RunRacer {
 
 		rb.loadSoundEffects();
 
-		int LastSquareIndex = rb.getFinalSquareId();
+		
+		
 	
 
 		rb.getTeamColors().add(new Team("Alpha Romeo", "AlphaR", new Color(160, 12, 46))); // AlphaRomeo - 0
@@ -50,34 +52,22 @@ public class RunRacer {
 
 		rb.getActionDice().getActions().add(new ActionRed(
 				"Avanza el valor obtenido en el dado numérico, pero pierde el próximo turno (no podrá lanzar los dados en el siguiente turno)",
-				new Color(255, 0, 0), false, false));
+				FileSystems.getDefault().getPath("img/actionDice", "actionRed.png").toString(), false, false));
 		rb.getActionDice().getActions().add(new ActionBlue(
 				"Duplica casillas a avanzar si contesta bien. Si contesta mal, no avanza y pierde el próximo turno.",
-				new Color(0, 0, 255), true, false));
+				FileSystems.getDefault().getPath("img/actionDice", "actionBlue.png").toString(), true, false));
 		rb.getActionDice().getActions().add(new ActionOrange(
-				"El jugador que lanzó el dado no avanza ni retrocede. El jugador de “la derecha” (el del turno siguiente) deberá responder una pregunta. Si contesta bien, dicho jugador avanza el número obtenido en el dado numérico. Si contesta mal, dicho jugador retrocede esa cantidad de casillas. ",
-				new Color(255, 128, 0), true, true));
+				"El jugador que lanzó el dado no avanza ni retrocede. El jugador de del turno siguiente deberá responder una pregunta. Si contesta bien, dicho jugador avanza el número obtenido en el dado numérico. Si contesta mal, dicho jugador retrocede esa cantidad de casillas. ",
+				FileSystems.getDefault().getPath("img/actionDice", "actionOrange.png").toString(), true, true));
 		rb.getActionDice().getActions().add(new ActionYellow("Avanza si contesta bien. Si contesta mal, no avanza.",
-				new Color(255, 255, 0), true, false));
+				FileSystems.getDefault().getPath("img/actionDice", "actionYellow.png").toString(), true, false));
 		rb.getActionDice().getActions()
 				.add(new ActionGreen("Avanza directamente la cantidad de casillas indicada por el dado numérico.",
-						new Color(0, 255, 0), false, false));
+						FileSystems.getDefault().getPath("img/actionDice", "actionGreen.png").toString(), false, false));
 		rb.getActionDice().getActions().add(new ActionFucsia("Avanza si contesta bien. Retrocede si contesta mal.",
-				new Color(255, 0, 255), true, false));
-
-		for (int i = 0; i <= LastSquareIndex; i++) {
-			rb.getSquares().add(new Square(i, "Normal", new Color(0, 0, 0), null));
-		}
-
-		rb.getSquares().set(rb.getBeginningSquareId(),
-				new BegginingSquare(rb.getBeginningSquareId(), "Inicio", new Color(0, 0, 0), null));
-		rb.getSquares().set(rb.getFinalSquareId(),
-				new FinishSquare(rb.getFinalSquareId(), "Fin", new Color(0, 0, 0), null));
-
-	
-
-		rb.getSquares().get(rb.getBeginningSquareId()).setTag("Inicio");
-		rb.getSquares().get(LastSquareIndex).setTag("Fin");
+				FileSystems.getDefault().getPath("img/actionDice", "actionFuchsia.png").toString(), true, false));
+		
+		
 
 
 		WelcomePanel frame = new WelcomePanel(rb);

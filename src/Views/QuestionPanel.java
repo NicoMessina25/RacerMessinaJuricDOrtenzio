@@ -49,7 +49,7 @@ public class QuestionPanel extends JFrame {
 	
 	//------------------------------------------------>||CONSTRUCTORS||<------------------------------------------------------------\\
 	
-	public QuestionPanel(RacerBoard rb, ArrayList<JPanel> squarePanels, JButton btnStartQuestion, JButton btnEndTurn,
+	public QuestionPanel(RacerBoard rb, GridBoard panelGridBoard, JButton btnStartQuestion, JButton btnEndTurn,
 			JTextPane textPaneAction, RacerPanelCard playerToAnswerPanel) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -117,7 +117,7 @@ public class QuestionPanel extends JFrame {
 				isCorrect = isTimeLeft && i < rdbtnOptions.size()
 						&& rb.getCurQuestion().correctAnswer(rb.getCurQuestion().getOptions().get(i).getId());
 
-				rb.concludesTurnAction(isCorrect, squarePanels, btnStartQuestion, btnEndTurn, textPaneAction);
+				rb.concludesTurnAction(isCorrect, panelGridBoard, btnStartQuestion, btnEndTurn, textPaneAction);
 				Window w = SwingUtilities.getWindowAncestor(contentPane);
 				w.dispose();
 

@@ -1,6 +1,5 @@
 package RacerModel.ActionPckg;
 
-import java.awt.Color;
 import Controller.RacerBoard;
 import RacerModel.PlayerPckg.RacerPlayer;
 
@@ -13,7 +12,7 @@ public class ActionFucsia extends ActionGreen {
 
 	}
 
-	public ActionFucsia(String desc, Color color, boolean questionNeeded, boolean actionToNextPlayer) {
+	public ActionFucsia(String desc, String color, boolean questionNeeded, boolean actionToNextPlayer) {
 		super(desc, color, questionNeeded, actionToNextPlayer);
 	}
 	

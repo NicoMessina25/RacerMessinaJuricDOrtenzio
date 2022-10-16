@@ -2,8 +2,12 @@ package Views.CustomComponents;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
 
 import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
 public class RacerLabel extends JLabel {
@@ -17,6 +21,7 @@ public class RacerLabel extends JLabel {
 			//----------------------------------------->|VARIABLES|<-----------------------------------------------\\
 	
 	private int fontSize;
+	private int spin = 45;
 	
 	//------------------------------------------------>||CONSTRUCTORS||<------------------------------------------------------------\\
 
@@ -63,6 +68,18 @@ public class RacerLabel extends JLabel {
 		this.fontSize = fontSize;
 	}
 	
+	public int getSpin() {
+		return spin;
+	}
+
+	public void setSpin(int spin) {
+		this.spin = spin;
+	}
+
+	public void setIcon(ImageIcon imgIcon, int height) {
+		super.setIcon(new ImageIcon(imgIcon.getImage().getScaledInstance(imgIcon.getIconWidth()*height/imgIcon.getIconHeight(), height, Image.SCALE_DEFAULT)));
+	}
+	
 	//------------------------------------------------>||CLASS METHODS||<--------------------------------------------------------\\
 	
 	public void setDefaultConfiguration(int fSize, Color col, Color bgCol) {
@@ -70,4 +87,14 @@ public class RacerLabel extends JLabel {
 			setForeground(col);
 			setBackground(bgCol);
 		}
+	
+	/*@Override
+	public void paintComponent(Graphics g) {
+		super.paintComponent(g);
+		Graphics2D g2d = (Graphics2D)g;
+		//g2d.translate(this.getX(), this.getY());
+		g2d.rotate(Math.toRadians(180));
+		this.repaint();
+	}*/
+	
 }
