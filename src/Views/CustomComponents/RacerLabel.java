@@ -21,7 +21,7 @@ public class RacerLabel extends JLabel {
 			//----------------------------------------->|VARIABLES|<-----------------------------------------------\\
 	
 	private int fontSize;
-	private int spin = 45;
+	//private int spin = 45;
 	
 	//------------------------------------------------>||CONSTRUCTORS||<------------------------------------------------------------\\
 
@@ -68,13 +68,13 @@ public class RacerLabel extends JLabel {
 		this.fontSize = fontSize;
 	}
 	
-	public int getSpin() {
+	/*public int getSpin() {
 		return spin;
 	}
 
 	public void setSpin(int spin) {
 		this.spin = spin;
-	}
+	}*/
 
 	public void setIcon(ImageIcon imgIcon, int height) {
 		super.setIcon(new ImageIcon(imgIcon.getImage().getScaledInstance(imgIcon.getIconWidth()*height/imgIcon.getIconHeight(), height, Image.SCALE_DEFAULT)));
@@ -83,7 +83,7 @@ public class RacerLabel extends JLabel {
 	//------------------------------------------------>||CLASS METHODS||<--------------------------------------------------------\\
 	
 	public void setDefaultConfiguration(int fSize, Color col, Color bgCol) {
-			setFont(new Font(RacerPanel.getPrimaryFontFamily(), Font.ITALIC, fSize));
+			setFont(RacerPanel.getPrimaryFont().deriveFont(Font.ITALIC, fSize));
 			setForeground(col);
 			setBackground(bgCol);
 		}

@@ -2,6 +2,9 @@ package Events;
 
 import java.awt.Dimension;
 
+import javax.swing.JFrame;
+
+import Controller.RacerBoard;
 import Views.BoardPaneGUI;
 import Views.WelcomePanel;
 import Views.WinPanel;
@@ -12,25 +15,23 @@ public class ResetEvent {
 
 			//----------------------------------------->|VARIABLES|<-----------------------------------------------\\
 	
-	private WinPanel winP;
-	private BoardPaneGUI bp;
-	private WelcomePanel welP;
+	private JFrame fToClose;
+	
 	
 	//------------------------------------------------>||CONSTRUCTORS||<------------------------------------------------------------\\
 
-	public ResetEvent(WinPanel winP, BoardPaneGUI bp, WelcomePanel welP) {
-		this.winP = winP;
-		this.bp = bp;
-		this.welP = welP;
+	public ResetEvent(JFrame frameToClose) {
+		this.fToClose = frameToClose;
 	}
 	
 	//------------------------------------------------>||CLASS METHODS||<--------------------------------------------------------\\
 	
-	public void reset() {
+	public void reset(RacerBoard rb) {
+		WelcomePanel welP = new WelcomePanel(rb);
 		welP.setVisible(true);
 		welP.setSize(new Dimension(1280, 720));
-		bp.dispose();
-		winP.dispose();
+		fToClose.dispose();
+		
 	}
 
 	

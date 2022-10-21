@@ -19,6 +19,7 @@ public class ExitEvent {
 	//------------------------------------------------>||CLASS METHODS||<--------------------------------------------------------\\
 	
 	public void exit() {
+		
 		activeFrame.dispose();
 	}
 

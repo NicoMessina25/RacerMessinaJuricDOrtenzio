@@ -19,6 +19,7 @@ import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextPane;
@@ -350,20 +351,25 @@ public class RacerBoard extends Board implements StartGameListener, CreatePlayer
 	}
 
 	public Question genQuestionForPlayer(RacerPlayer p) {
-		Question ques;
+		Question ques = null;
 		List<Question> filteredQuestions;
+		List<Category> categoriesCopy = categories.subList(0, categories.size()-1);
 
 		do {
-			Category catChosen = categories.get((int) Math.floor(Math.random() * categories.size()));
+			Category catChosen = categoriesCopy.get((int) Math.floor(Math.random() * categoriesCopy.size()));
+			categoriesCopy.remove(catChosen);
 
 			filteredQuestions = p.getFilteredQuestions(questions, catChosen);
 
-		} while (filteredQuestions.size() == 0);
+		} while (filteredQuestions.size() == 0 && categoriesCopy.size() > 0);
+		
+		if(categoriesCopy.size() > 0) {
+			ques = filteredQuestions.get((int) Math.floor(Math.random() * filteredQuestions.size()));
+			questions.remove(ques);
+			ques = p.getQuestionAdapted(ques);
+			setCurQuestion(ques);
+		}
 
-		ques = filteredQuestions.get((int) Math.floor(Math.random() * filteredQuestions.size()));
-		questions.remove(ques);
-		ques = p.getQuestionAdapted(ques);
-		setCurQuestion(ques);
 		return ques;
 	}
 
@@ -390,10 +396,10 @@ public class RacerBoard extends Board implements StartGameListener, CreatePlayer
 		timer.start();
 	}
 
-	public void loadQuestions() {
+	public void loadQuestions() throws ParserConfigurationException, SAXException, IOException {
 		questions = new ArrayList<Question>();
 		
-		String file = new String("/XMLQuestions.xml");
+		String file = new String("/racerQuestions.xml");
 		final DocumentBuilderFactory dbfac = DocumentBuilderFactory.newInstance();
 		DocumentBuilder docBuilder = null;
 		try {
@@ -423,12 +429,16 @@ public class RacerBoard extends Board implements StartGameListener, CreatePlayer
 					new Color(Integer.parseInt(rgb[0]), Integer.parseInt(rgb[1]), Integer.parseInt(rgb[2]))));
 
 		}
-
+		
+		
 		final NodeList nlIds = doc.getElementsByTagName("id");
 		final NodeList nlDificulties = doc.getElementsByTagName("dificultad");
 		final NodeList nlStatement = doc.getElementsByTagName("enunciado");
 		final NodeList nlCategory = doc.getElementsByTagName("categoria");
 		final NodeList nlOptions = doc.getElementsByTagName("opciones");
+		
+		final NodeList questionList = ((Element) doc.getElementsByTagName("ListaPreguntas").item(0)).getElementsByTagName("Pregunta");
+		
 
 		for (int i = 0; i < nlIds.getLength(); i++) {
 			final Element elemOptions = (Element) nlOptions.item(i);
@@ -466,7 +476,7 @@ public class RacerBoard extends Board implements StartGameListener, CreatePlayer
 	}
 	
 	public void executeWin(RacerPlayer winner) {
-		listenWin(new WinEvent(new WinPanel(winner.getName(), this, getBoardPane())));
+		listenWin(new WinEvent(new WinPanel(winner.getName(), winner.getTeam().getTeamId(), this, getBoardPane())));
 	}
 	
 	public void concludesTurnAction(boolean correct, GridBoard panelGridBoard, JButton btnStartQuestion,
@@ -533,7 +543,7 @@ public void finishTurn() {
 			JRadioButton rdbtn = new JRadioButton(op.getDescripcion());
 			rdbtn.setForeground(questionContentPane.getForeground());
 			rdbtn.setBackground(questionContentPane.getBackground());
-			rdbtn.setFont(new Font(RacerPanel.getPrimaryFontFamily(), Font.BOLD | Font.ITALIC, 18));
+			rdbtn.setFont(RacerPanel.getPrimaryFont().deriveFont(Font.BOLD | Font.ITALIC, 18));
 			bg.add(rdbtn);
 			rdbtnOptions.add(rdbtn);
 			questionContentPane.add(rdbtn, "cell 0 " + (i + 2));
@@ -617,7 +627,7 @@ public void finishTurn() {
 
 	@Override
 	public void listenReset(ResetEvent e) {
-		e.reset();
+		e.reset(this);
 		setLastId(0);
 	}
 
@@ -637,9 +647,10 @@ public void finishTurn() {
 
 	@Override
 	public void listenStartQuestion(StartQuestionEvent e) {
-
-		e.startQuestion(this);
-		setTimer(e.getTimer());
+		if(e.getQuestion() != null) {
+			e.startQuestion(this);
+			setTimer(e.getTimer());
+		} else JOptionPane.showMessageDialog(null, "No hay más preguntas para los jugadores " + getPlayerToAnswer().typeToString() + ". No es posible continuar el juego");
 
 	}
 

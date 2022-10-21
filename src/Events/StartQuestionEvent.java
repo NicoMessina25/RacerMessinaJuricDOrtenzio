@@ -29,7 +29,7 @@ public class StartQuestionEvent {
 		
 		
 		setTimeLeft(player.getTimePerOption()*question.getOptions().size());
-		questionPanel.setSize(720, 600);
+		questionPanel.setSize(900, 500);
 		questionPanel.setVisible(true);
 		questionPanel.setLocationRelativeTo(null);
 		timer = new Timer(1000, new ActionListener() {
@@ -63,6 +63,14 @@ public class StartQuestionEvent {
 
 	public void setTimer(Timer timer) {
 		this.timer = timer;
+	}
+
+	public Question getQuestion() {
+		return question;
+	}
+
+	public void setQuestion(Question question) {
+		this.question = question;
 	}
 
 }

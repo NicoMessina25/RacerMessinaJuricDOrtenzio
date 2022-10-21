@@ -56,7 +56,7 @@ public class RacerButton extends JButton {
 		addMouseListener(new EventButton());
 		setBorderPainted(false);
 		setFocusable(false);
-		font = new Font(RacerPanel.getPrimaryFontFamily(), Font.BOLD | Font.ITALIC, 26);
+		font = RacerPanel.getPrimaryFont().deriveFont(Font.BOLD | Font.ITALIC, 26); //Font.BOLD | Font.ITALIC, 26
 		addActionListener(new ActionListener() {
 
 			@Override

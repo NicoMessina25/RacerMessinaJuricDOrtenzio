@@ -16,6 +16,7 @@ import RacerModel.SquarePckg.BegginingSquare;
 import RacerModel.SquarePckg.FinishSquare;
 import RacerModel.SquarePckg.Square;
 import Views.WelcomePanel;
+import Views.CustomComponents.RacerPanel;
 
 public class RunRacer {
 	
@@ -35,8 +36,7 @@ public class RunRacer {
 
 		rb.loadSoundEffects();
 
-		
-		
+		RacerPanel.setPrimaryFont();
 	
 
 		rb.getTeamColors().add(new Team("Alpha Romeo", "AlphaR", new Color(160, 12, 46))); // AlphaRomeo - 0

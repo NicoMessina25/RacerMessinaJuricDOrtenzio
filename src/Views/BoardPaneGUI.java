@@ -6,6 +6,7 @@ import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -21,11 +22,16 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import javax.swing.border.LineBorder;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.xml.sax.SAXException;
 
 import Controller.RacerBoard;
 import Events.ExitEvent;
+import Events.ResetEvent;
 import Events.StartQuestionEvent;
 import Listeners.ExitListener;
+import Listeners.ResetListener;
 import Listeners.StartQuestionListener;
 import Views.CustomComponents.RacerButton;
 import Views.CustomComponents.RacerLabel;
@@ -52,7 +58,7 @@ public class BoardPaneGUI extends JFrame {
 	private StartQuestionListener startQuestionListener;
 	private RacerPanel dicesPanel;
 	private ArrayList<RacerPanelCard> playersPanelCards;
-	private ExitListener exitListener;
+	private ResetListener resetListener;
 	private GridBoard panelBoardGrid;
 	
 
@@ -79,15 +85,19 @@ public class BoardPaneGUI extends JFrame {
 		setContentPane(contentPane);
 
 		setStartQuestionListener(rb);
-		setExitListener(rb);
+		setResetListener(rb);
 
-		rb.loadQuestions();
+		try {
+			rb.loadQuestions();
+		} catch (ParserConfigurationException | SAXException | IOException e1) {
+			e1.printStackTrace();
+		}
 
 		rb.setPlayerTurn(0);
 
 		RacerButton btnRollDice = new RacerButton("Tirar los dados", RacerPanel.getSecondaryColor(),
 				RacerPanel.getPrimaryColor(), rb.getSounds().get("buttonSound.wav"));
-		btnRollDice.setFont(new Font(RacerPanel.getPrimaryFontFamily(), Font.BOLD | Font.ITALIC, 16));
+		btnRollDice.setFont(RacerPanel.getPrimaryFont().deriveFont(Font.BOLD | Font.ITALIC, 16));
 
 		JScrollPane scrollPaneAction = new JScrollPane();
 		scrollPaneAction.setBorder(new LineBorder(RacerPanel.getSecondaryColor().darker(), 3));
@@ -107,7 +117,7 @@ public class BoardPaneGUI extends JFrame {
 		textPaneAction.setSelectionColor(RacerPanel.getPrimaryColor().brighter());
 		textPaneAction.setSelectedTextColor(RacerPanel.getSecondaryColor().darker());
 		textPaneAction.setForeground(RacerPanel.getTerciaryColor());
-		textPaneAction.setFont(new Font(RacerPanel.getPrimaryFontFamily(), Font.ITALIC, 14));
+		textPaneAction.setFont(RacerPanel.getPrimaryFont().deriveFont(Font.ITALIC, 14));
 		textPaneAction.setText("Acción:");
 		textPaneAction.setBackground(RacerPanel.getSecondaryColor().brighter());
 		scrollPaneAction.setViewportView(textPaneAction);
@@ -128,7 +138,7 @@ public class BoardPaneGUI extends JFrame {
 
 		btnStartQuestion = new RacerButton("Iniciar Pregunta", RacerPanel.getSecondaryColor(),
 				RacerPanel.getPrimaryColor(), rb.getSounds().get("buttonSound.wav"));
-		btnStartQuestion.setFont(new Font(RacerPanel.getPrimaryFontFamily(), Font.BOLD | Font.ITALIC, 20));
+		btnStartQuestion.setFont(RacerPanel.getPrimaryFont().deriveFont(Font.BOLD | Font.ITALIC, 20));
 		contentPane.add(btnStartQuestion, "flowx,cell 1 0,growx,aligny center");
 		btnStartQuestion.setEnabled(false);
 
@@ -147,7 +157,7 @@ public class BoardPaneGUI extends JFrame {
 
 		btnEndTurn = new RacerButton("Finalizar Turno", RacerPanel.getSecondaryColor(), RacerPanel.getPrimaryColor(),
 				rb.getSounds().get("buttonSound.wav"));
-		btnEndTurn.setFont(new Font(RacerPanel.getPrimaryFontFamily(), Font.BOLD | Font.ITALIC, 20));
+		btnEndTurn.setFont(RacerPanel.getPrimaryFont().deriveFont(Font.BOLD | Font.ITALIC, 20));
 		contentPane.add(btnEndTurn, "cell 1 1,growx,aligny center");
 
 
@@ -258,13 +268,13 @@ public class BoardPaneGUI extends JFrame {
 
 		playersPanelCards.get(rb.getPlayerTurn()).startTurnAnimation();
 
-		RacerButton btnExit = new RacerButton("Salir", RacerPanel.getSecondaryColor(), RacerPanel.getPrimaryColor(),
+		RacerButton btnExit = new RacerButton("Salir al Inicio", RacerPanel.getSecondaryColor(), RacerPanel.getPrimaryColor(),
 				rb.getSounds().get("buttonSound.wav"));
 		btnExit.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				exitListener.listenExit(new ExitEvent((JFrame) SwingUtilities.getWindowAncestor(contentPane)));
+				resetListener.listenReset(new ResetEvent((JFrame) SwingUtilities.getWindowAncestor(contentPane)));
 
 			}
 
@@ -320,12 +330,12 @@ public class BoardPaneGUI extends JFrame {
 		this.panelBoardGrid = panelBoardGrid;
 	}
 
-	public ExitListener getExitListener() {
-		return exitListener;
+	public ResetListener getResetListener() {
+		return resetListener;
 	}
 
-	public void setExitListener(ExitListener exitListener) {
-		this.exitListener = exitListener;
+	public void setResetListener(ResetListener resetListener) {
+		this.resetListener = resetListener;
 	}
 	
 	//------------------------------------------------>||CLASS METHODS||<--------------------------------------------------------\\
@@ -334,9 +344,9 @@ public class BoardPaneGUI extends JFrame {
 		for (int i = 0; i < playersPanelCards.size(); i++) {
 			RacerPanelCard rpc = playersPanelCards.get(i);
 			rpc.remove(rpc.getBtnDel());
-			rpc.getLblName().setFont(new Font(RacerPanel.getPrimaryFontFamily(), Font.BOLD | Font.ITALIC, 16));
-			rpc.getLblTeam().setFont(new Font(RacerPanel.getPrimaryFontFamily(), Font.ITALIC, 12));
-			rpc.getLblExpert().setFont(new Font(RacerPanel.getPrimaryFontFamily(), Font.ITALIC, 12));
+			rpc.getLblName().setFont(RacerPanel.getPrimaryFont().deriveFont(Font.BOLD | Font.ITALIC, 16));
+			rpc.getLblTeam().setFont(RacerPanel.getPrimaryFont().deriveFont(Font.ITALIC, 12));//
+			rpc.getLblExpert().setFont(RacerPanel.getPrimaryFont().deriveFont(Font.ITALIC, 12));
 			rpc.getTeamLogoPanel().setHeight(70);
 			rpc.getTeamLogoPanel().setImg(rpc.getTeamLogoPanel().getImg());
 			;

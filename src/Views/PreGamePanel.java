@@ -27,9 +27,11 @@ import javax.swing.border.LineBorder;
 import Controller.RacerBoard;
 import Events.CreatePlayerEvent;
 import Events.ExitEvent;
+import Events.ResetEvent;
 import Events.StartGameEvent;
 import Listeners.CreatePlayerListener;
 import Listeners.ExitListener;
+import Listeners.ResetListener;
 import Listeners.StartGameListener;
 import RacerModel.Team;
 import Views.CustomComponents.RacerButton;
@@ -59,7 +61,7 @@ public class PreGamePanel extends JFrame {
 	private RacerButton btnCreate;
 	private RacerButton btnExit;
 	private RacerLabel lblTitlePlayer;
-	private ExitListener exitListener;
+	private ResetListener resetListener;
 	private JComboBox<Team> comboBoxTeams;
 	
 	//------------------------------------------------>||CONSTRUCTORS||<------------------------------------------------------------\\
@@ -68,7 +70,8 @@ public class PreGamePanel extends JFrame {
 		setTitle("PreGame - Racer");
 		setCreatePlayerListener(rb);
 		setStartGameListener(rb);
-		setExitListener(rb);
+		setResetListener(rb);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		Path path;
 		path = FileSystems.getDefault().getPath("img", "RACER_LOGO_MINI.png");
 		setIconImage(Toolkit.getDefaultToolkit().getImage(path.toString()));
@@ -110,7 +113,7 @@ public class PreGamePanel extends JFrame {
 		lblTitlePlayer = new RacerLabel("Jugador " + (rb.getLastId() + 1), 23, RacerPanel.getPrimaryColor(),
 				RacerPanel.getSecondaryColor());
 		lblTitlePlayer.setHorizontalAlignment(SwingConstants.CENTER);
-		lblTitlePlayer.setFont(new Font(RacerPanel.getPrimaryFontFamily(), Font.BOLD | Font.ITALIC, 23));
+		lblTitlePlayer.setFont(RacerPanel.getPrimaryFont().deriveFont(Font.BOLD | Font.ITALIC, 23));
 		lblTitlePlayer.setForeground(RacerPanel.getPrimaryColor());
 		lblTitlePlayer.setBackground(RacerPanel.getSecondaryColor());
 		panelPlayer.add(lblTitlePlayer, "cell 0 0 2 1,growx");
@@ -119,7 +122,7 @@ public class PreGamePanel extends JFrame {
 		panelTeamLogo.setBackground(RacerPanel.getSecondaryColor());
 		panelTeamLogo.setBounds(11, 161, 178, 123);
 		panelPlayer.add(panelTeamLogo, "cell 2 0 1 4,grow");
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
 
 
 
@@ -139,7 +142,7 @@ public class PreGamePanel extends JFrame {
 		textFieldName.setSelectionColor(RacerPanel.getPrimaryColor().brighter());
 		textFieldName.setSelectedTextColor(RacerPanel.getSecondaryColor().darker());
 		textFieldName.setForeground(RacerPanel.getTerciaryColor());
-		textFieldName.setFont(new Font(RacerPanel.getPrimaryFontFamily(), Font.ITALIC, 14));
+		textFieldName.setFont(RacerPanel.getPrimaryFont().deriveFont(Font.ITALIC, 14));
 		textFieldName.setBackground(RacerPanel.getSecondaryColor().brighter());
 		textFieldName.setMinimumSize(new Dimension(70, 20));
 		// textFieldName.setBounds(111, 21, 86, 20);
@@ -150,7 +153,7 @@ public class PreGamePanel extends JFrame {
 		comboBoxTeams.setMaximumRowCount(10);
 		comboBoxTeams.setForeground(RacerPanel.getTerciaryColor());
 		comboBoxTeams.setBackground(RacerPanel.getSecondaryColor().brighter());
-		comboBoxTeams.setFont(new Font(RacerPanel.getPrimaryFontFamily(), Font.ITALIC, 14));
+		comboBoxTeams.setFont(RacerPanel.getPrimaryFont().deriveFont(Font.ITALIC, 14));
 		comboBoxTeams.setMaximumSize(new Dimension(32767, 20));
 
 		// comboBoxTeams.setBounds(207, 39, 172, 22);
@@ -175,7 +178,7 @@ public class PreGamePanel extends JFrame {
 		JCheckBox chckbxExpert = new JCheckBox("Experto");
 		chckbxExpert.setFocusable(false);
 		chckbxExpert.setForeground(RacerPanel.getPrimaryColor());
-		chckbxExpert.setFont(new Font(RacerPanel.getPrimaryFontFamily(), Font.ITALIC, 14));
+		chckbxExpert.setFont(RacerPanel.getPrimaryFont().deriveFont(Font.ITALIC, 14));
 		chckbxExpert.setBackground(RacerPanel.getSecondaryColor());
 		chckbxExpert.setBounds(11, 116, 97, 23);
 		panelPlayer.add(chckbxExpert, "flowx,cell 0 3,alignx center,aligny top");
@@ -228,12 +231,13 @@ public class PreGamePanel extends JFrame {
 		});
 		
 		
-		btnExit = new RacerButton("Salir", RacerPanel.getSecondaryColor(), RacerPanel.getPrimaryColor(), rb.getSounds().get("buttonSound.wav"));
+		btnExit = new RacerButton("Salir al Inicio", RacerPanel.getSecondaryColor(), RacerPanel.getPrimaryColor(), rb.getSounds().get("buttonSound.wav"));
 		btnExit.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				exitListener.listenExit(new ExitEvent((JFrame) SwingUtilities.getWindowAncestor(playersPane)));
+				//JOptionPane.showConfirmDialog(null, "¿Volver al inicio?");
+				resetListener.listenReset(new ResetEvent((JFrame) SwingUtilities.getWindowAncestor(playersPane)));
 				
 			}
 			
@@ -297,12 +301,12 @@ public class PreGamePanel extends JFrame {
 		startGameListener = I;
 	}
 
-	public ExitListener getExitListener() {
-		return exitListener;
+	public ResetListener getResetListener() {
+		return resetListener;
 	}
 
-	public void setExitListener(ExitListener exitListener) {
-		this.exitListener = exitListener;
+	public void setResetListener(ResetListener resetListener) {
+		this.resetListener = resetListener;
 	}
 	
 	//------------------------------------------------>||CLASS METHODS||<--------------------------------------------------------\\

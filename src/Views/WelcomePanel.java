@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
@@ -17,6 +18,7 @@ import Events.StartPreGameEvent;
 import Listeners.ExitListener;
 import Listeners.StartPreGameListener;
 import Views.CustomComponents.RacerButton;
+import Views.CustomComponents.RacerLabel;
 import Views.CustomComponents.RacerPanel;
 import net.miginfocom.swing.MigLayout;
 
@@ -38,7 +40,7 @@ public class WelcomePanel extends JFrame {
 	private ExitListener exitListener;
 	
 	//------------------------------------------------>||CONSTRUCTORS||<------------------------------------------------------------\\
-
+	
 	public WelcomePanel(RacerBoard rb) {
 		SoundClip music = rb.getSounds().get("introMusic.wav");
 		music.loop();
@@ -51,17 +53,21 @@ public class WelcomePanel extends JFrame {
 		setIconImage(Toolkit.getDefaultToolkit().getImage(path.toString()));
 	
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
 
 		setMaximumSize(new Dimension(WIDTH, HEIGHT));
 		contentPane = new JPanel();
 		contentPane.setLayout(null);
 		setContentPane(contentPane);
 
-		path = FileSystems.getDefault().getPath("img", "Start.jpg");
+		path = FileSystems.getDefault().getPath("img", "fondo.jpg");
 		ImagePanel background = new ImagePanel(path.toString(), 720);
 
 		contentPane.add(background, "cell 0 0,alignx center,growy");
-		background.setLayout(new MigLayout("", "[grow]", "[grow][grow]"));
+		background.setLayout(new MigLayout("", "[grow]", "[][][]"));
+		
+		RacerLabel lblLogo = new RacerLabel();
+		lblLogo.setIcon(new ImageIcon(FileSystems.getDefault().getPath("img","RACER_LOGO.png").toString()), 500);
 
 		RacerButton btnStart = new RacerButton("Comenzar", RacerPanel.getSecondaryColor(), RacerPanel.getPrimaryColor(), rb.getSounds().get("buttonSound.wav"));
 
@@ -79,7 +85,7 @@ public class WelcomePanel extends JFrame {
 			}
 		});
 		
-		RacerButton btnExit = new RacerButton("Salir", RacerPanel.getSecondaryColor(), RacerPanel.getPrimaryColor(), rb.getSounds().get("buttonSound.wav"));
+		RacerButton btnExit = new RacerButton("Salir al Escritorio", RacerPanel.getSecondaryColor(), RacerPanel.getPrimaryColor(), rb.getSounds().get("buttonSound.wav"));
 		btnExit.addActionListener(new ActionListener() {
 
 			@Override
@@ -90,6 +96,7 @@ public class WelcomePanel extends JFrame {
 			
 		});
 		
+		background.add(lblLogo, "cell 0 0, center");
 		background.add(btnStart, "cell 0 1,alignx center,aligny center");
 		background.add(btnExit, "cell 0 2,alignx center,aligny center");
 		

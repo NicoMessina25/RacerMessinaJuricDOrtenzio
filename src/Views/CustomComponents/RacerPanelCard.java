@@ -64,7 +64,7 @@ public class RacerPanelCard extends RacerPanel {
 		// lblTeam.setBounds(86, 130, 46, 14);
 		add(lblTeam, "cell 0 2,growx");
 
-		lblExpert = new RacerLabel(type, 18, col, bgCol);
+		lblExpert = new RacerLabel(type, 16, col, bgCol);
 		lblExpert.setHorizontalAlignment(SwingConstants.CENTER);
 		lblTeam.setHorizontalAlignment(SwingConstants.CENTER);
 		add(lblExpert, "cell 0 3,growx");

@@ -85,7 +85,7 @@ public class QuestionPanel extends JFrame {
 		textPaneQuestion.setSelectedTextColor(bgCol);
 		textPaneQuestion.setForeground(RacerPanel.getTerciaryColor());
 		textPaneQuestion.setBackground(bgCol);
-		textPaneQuestion.setFont(new Font(RacerPanel.getPrimaryFontFamily(), Font.ITALIC, 24));
+		textPaneQuestion.setFont(RacerPanel.getPrimaryFont().deriveFont(Font.ITALIC, 24));
 		textPaneQuestion.setEditable(false);
 
 		ButtonGroup bg = new ButtonGroup();

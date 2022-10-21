@@ -1,7 +1,11 @@
 package Views.CustomComponents;
 
 import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontFormatException;
 import java.awt.LayoutManager;
+import java.io.IOException;
+import java.nio.file.FileSystems;
 
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
@@ -20,7 +24,7 @@ public class RacerPanel extends JPanel {
 	private static final Color PRIMARY_COLOR = new Color(214, 164, 12);
 	private static final Color SECONDARY_COLOR = new Color(184, 0, 0);
 	private static final Color TERCIARY_COLOR = new Color(0, 0, 0);
-	private static final String PRIMARY_FONT_FAMILY = "Swis721 Hv BT";
+	private static Font primaryFont;
 
 	//------------------------------------------------>||CONSTRUCTORS||<------------------------------------------------------------\\
 
@@ -47,8 +51,20 @@ public class RacerPanel extends JPanel {
 		return TERCIARY_COLOR;
 	}
 
-	public static String getPrimaryFontFamily() {
-		return PRIMARY_FONT_FAMILY;
+	public static Font getPrimaryFont() {
+		return primaryFont;
+	}
+	
+	public static void setPrimaryFont() {
+		try {
+			primaryFont = Font.createFont(Font.TRUETYPE_FONT, FileSystems.getDefault().getPath("fonts", "Swis721_Hv_BT_Heavy.ttf").toFile());
+		} catch (FontFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	// ------------------------------------------------>||CLASS METHODS||<--------------------------------------------------------\\
