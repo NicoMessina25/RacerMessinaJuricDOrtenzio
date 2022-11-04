@@ -9,7 +9,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.nio.file.FileSystems;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -40,14 +39,14 @@ import net.miginfocom.swing.MigLayout;
 
 public class PreGamePanel extends JFrame {
 
-	//------------------------------------------------>||ATTRIBUTES||<--------------------------------------------------------\\
-	
-			//----------------------------------------->|CONSTANTS|<-----------------------------------------------\\
-	
+	// ------------------------------------------------>||ATTRIBUTES||<--------------------------------------------------------\\
+
+	// ----------------------------------------->|CONSTANTS|<-----------------------------------------------\\
+
 	private static final long serialVersionUID = 1L;
-		
-			//----------------------------------------->|VARIABLES|<-----------------------------------------------\\
-	
+
+	// ----------------------------------------->|VARIABLES|<-----------------------------------------------\\
+
 	private RacerPanel playersPane;
 	private RacerPanel panelCreatedPlayers;
 	private StartGameListener startGameListener;
@@ -61,34 +60,41 @@ public class PreGamePanel extends JFrame {
 	private RacerLabel lblTitlePlayer;
 	private ResetListener resetListener;
 	private JComboBox<Team> comboBoxTeams;
-	
-	//------------------------------------------------>||CONSTRUCTORS||<------------------------------------------------------------\\
+
+	// ------------------------------------------------>||CONSTRUCTORS||<------------------------------------------------------------\\
 
 	/**
 	 * 
 	 * @param rb
 	 */
 	public PreGamePanel(RacerBoard rb) {
+		SoundClip music;
+		JPanel panelPlayer, panelTeamLogo;
+		ImagePanel imgPanel;
+		RacerLabel lblName, lblTeams;
+		JCheckBox chckbxExpert;
+
 		setTitle("PreGame - Racer");
 		setCreatePlayerListener(rb);
 		setStartGameListener(rb);
 		setResetListener(rb);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		Path path;
-		path = FileSystems.getDefault().getPath("img", "RACER_LOGO_MINI.png");
-		setIconImage(Toolkit.getDefaultToolkit().getImage(path.toString()));
+
+		setIconImage(Toolkit.getDefaultToolkit()
+				.getImage(FileSystems.getDefault().getPath("img", "RACER_LOGO_MINI.png").toString()));
 
 		playersPane = new RacerPanel(new MigLayout("fill", "[45.00]", "[pref!][60.00]"), RacerPanel.getTerciaryColor(),
 				RacerPanel.getSecondaryColor().darker(), RacerPanel.getTerciaryColor());
 
 		setContentPane(playersPane);
-		
-		SoundClip music = rb.getSounds().get("playerSelect.wav");
-		
-		music.loop();;
 
-		JPanel panelPlayer = new RacerPanel(new MigLayout("fill", "[][][]", "[pref!][58.00][][150.00]"),
-				RacerPanel.getSecondaryColor(), RacerPanel.getSecondaryColor(), RacerPanel.getSecondaryColor().darker());
+		music = rb.getSounds().get("playerSelect.wav");
+		music.loop();
+		;
+
+		panelPlayer = new RacerPanel(new MigLayout("fill", "[][][]", "[pref!][58.00][][150.00]"),
+				RacerPanel.getSecondaryColor(), RacerPanel.getSecondaryColor(),
+				RacerPanel.getSecondaryColor().darker());
 		panelPlayer.setBackground(RacerPanel.getSecondaryColor());
 
 		playersPane.add(panelPlayer, "cell 0 0,grow");
@@ -98,7 +104,8 @@ public class PreGamePanel extends JFrame {
 
 		playersPane.add(panelCreatedPlayers, "cell 0 1,grow");
 
-		btnConfirm = new RacerButton("Confirmar", RacerPanel.getSecondaryColor(), RacerPanel.getPrimaryColor(), rb.getSounds().get("buttonSound.wav"));
+		btnConfirm = new RacerButton("Confirmar", RacerPanel.getSecondaryColor(), RacerPanel.getPrimaryColor(),
+				rb.getSounds().get("buttonSound.wav"));
 		panelCreatedPlayers.add(btnConfirm, "cell 0 1 2 1,alignx center");
 
 		btnConfirm.addActionListener(new ActionListener() {
@@ -124,24 +131,21 @@ public class PreGamePanel extends JFrame {
 		lblTitlePlayer.setBackground(RacerPanel.getSecondaryColor());
 		panelPlayer.add(lblTitlePlayer, "cell 0 0 2 1,growx");
 
-		JPanel panelTeamLogo = new RacerPanel(null, RacerPanel.getSecondaryColor(), null);
+		panelTeamLogo = new RacerPanel(null, RacerPanel.getSecondaryColor(), null);
 		panelTeamLogo.setBackground(RacerPanel.getSecondaryColor());
 		panelTeamLogo.setBounds(11, 161, 178, 123);
 		panelPlayer.add(panelTeamLogo, "cell 2 0 1 4,grow");
-		
 
-
-
-		ImagePanel imgPanel = new ImagePanel(path.toString(), 200);
+		imgPanel = new ImagePanel("", 200);
 		imgPanel.setBorder(new LineBorder(RacerPanel.getPrimaryColor().brighter(), 6));
 		panelTeamLogo.add(imgPanel);
 
-		RacerLabel lblName = new RacerLabel("Nombre", 19, RacerPanel.getPrimaryColor(), RacerPanel.getSecondaryColor());
+		lblName = new RacerLabel("Nombre", 19, RacerPanel.getPrimaryColor(), RacerPanel.getSecondaryColor());
 
 		panelPlayer.add(lblName, "flowx,cell 0 1,growx");
 		lblName.setHorizontalAlignment(SwingConstants.CENTER);
 
-		RacerLabel lblTeams = new RacerLabel("Equipo F1", 19, RacerPanel.getPrimaryColor(), RacerPanel.getSecondaryColor());
+		lblTeams = new RacerLabel("Equipo F1", 19, RacerPanel.getPrimaryColor(), RacerPanel.getSecondaryColor());
 		lblTeams.setHorizontalAlignment(SwingConstants.CENTER);
 
 		panelPlayer.add(lblTeams, "flowx,cell 1 1,growx");
@@ -169,19 +173,17 @@ public class PreGamePanel extends JFrame {
 
 			@Override
 			public void itemStateChanged(ItemEvent e) {
-		
-				Path path = FileSystems.getDefault().getPath("img",
-						"logo" + ((Team) e.getItem()).getTeamId() + "F1.jpg");
-				imgPanel.setImg(new ImageIcon(path.toString()).getImage());
+
+				imgPanel.setImg(new ImageIcon(FileSystems.getDefault()
+						.getPath("img", "logo" + ((Team) e.getItem()).getTeamId() + "F1.jpg").toString()).getImage());
 				panelTeamLogo.updateUI();
 				panelTeamLogo.repaint();
-			
 
 			}
 
 		});
 
-		JCheckBox chckbxExpert = new JCheckBox("Experto");
+		chckbxExpert = new JCheckBox("Experto");
 		chckbxExpert.setFocusable(false);
 		chckbxExpert.setForeground(RacerPanel.getPrimaryColor());
 		chckbxExpert.setFont(RacerPanel.getPrimaryFont().deriveFont(Font.ITALIC, 14));
@@ -189,7 +191,8 @@ public class PreGamePanel extends JFrame {
 		chckbxExpert.setBounds(11, 116, 97, 23);
 		panelPlayer.add(chckbxExpert, "flowx,cell 0 3,alignx center,aligny top");
 
-		btnCreate = new RacerButton("Crear", RacerPanel.getSecondaryColor(), RacerPanel.getPrimaryColor(), rb.getSounds().get("buttonSound.wav"));
+		btnCreate = new RacerButton("Crear", RacerPanel.getSecondaryColor(), RacerPanel.getPrimaryColor(),
+				rb.getSounds().get("buttonSound.wav"));
 		panelPlayer.add(btnCreate, "cell 1 3,growx,aligny top");
 		btnCreate.setBounds(90, 389, 89, 23);
 
@@ -235,20 +238,20 @@ public class PreGamePanel extends JFrame {
 
 			}
 		});
-		
-		
-		btnExit = new RacerButton("Salir al Inicio", RacerPanel.getSecondaryColor(), RacerPanel.getPrimaryColor(), rb.getSounds().get("buttonSound.wav"));
+
+		btnExit = new RacerButton("Salir al Inicio", RacerPanel.getSecondaryColor(), RacerPanel.getPrimaryColor(),
+				rb.getSounds().get("buttonSound.wav"));
 		btnExit.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				//JOptionPane.showConfirmDialog(null, "¿Volver al inicio?");
+				// JOptionPane.showConfirmDialog(null, "¿Volver al inicio?");
 				resetListener.listenReset(new ResetEvent((JFrame) SwingUtilities.getWindowAncestor(playersPane)));
 				music.stop();
 			}
-			
+
 		});
-		
+
 		panelCreatedPlayers.add(btnExit, "cell 2 1 2 1,alignx center");
 
 		for (Iterator<Team> iterator = rb.getTeams().iterator(); iterator.hasNext();) {
@@ -256,12 +259,11 @@ public class PreGamePanel extends JFrame {
 			comboBoxTeams.addItem(tc);
 
 		}
-		
 
 	}
-	
-	//------------------------------------------------>||GETTERS & SETTERS||<--------------------------------------------------------\\
-		
+
+	// ------------------------------------------------>||GETTERS &
+	// SETTERS||<--------------------------------------------------------\\
 
 	/**
 	 * 
@@ -366,9 +368,10 @@ public class PreGamePanel extends JFrame {
 	public void setResetListener(ResetListener resetListener) {
 		this.resetListener = resetListener;
 	}
-	
-	//------------------------------------------------>||CLASS METHODS||<--------------------------------------------------------\\
-	
+
+	// ------------------------------------------------>||CLASS
+	// METHODS||<--------------------------------------------------------\\
+
 	/**
 	 * 
 	 */

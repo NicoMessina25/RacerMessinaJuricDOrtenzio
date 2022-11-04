@@ -3,11 +3,9 @@ package Views;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Toolkit;
-import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.nio.file.FileSystems;
-import java.nio.file.Path;
 import java.util.ArrayList;
 
 import javax.swing.ButtonGroup;
@@ -30,24 +28,22 @@ import net.miginfocom.swing.MigLayout;
 
 public class QuestionPanel extends JFrame {
 
-	//------------------------------------------------>||ATTRIBUTES||<--------------------------------------------------------\\
-	
-			//----------------------------------------->|CONSTANTS|<-----------------------------------------------\\
-	
+	// ------------------------------------------------>||ATTRIBUTES||<--------------------------------------------------------\\
+
+	// ----------------------------------------->|CONSTANTS|<-----------------------------------------------\\
+
 	private static final long serialVersionUID = 1L;
-	
-			//----------------------------------------->|VARIABLES|<-----------------------------------------------\\
-	
-			
-	
+
+	// ----------------------------------------->|VARIABLES|<-----------------------------------------------\\
+
 	private RacerPanel contentPane;
 	private RacerLabel lblTimeLeft;
 	private boolean isTimeLeft;
 	private RacerButton btnAnswer;
 	private Color col, bgCol;
-	
-	//------------------------------------------------>||CONSTRUCTORS||<------------------------------------------------------------\\
-	
+
+	// ------------------------------------------------>||CONSTRUCTORS||<------------------------------------------------------------\\
+
 	/**
 	 * 
 	 * @param rb
@@ -59,6 +55,12 @@ public class QuestionPanel extends JFrame {
 	 */
 	public QuestionPanel(RacerBoard rb, GridBoard panelGridBoard, JButton btnStartQuestion, JButton btnEndTurn,
 			JTextPane textPaneAction, RacerPanelCard playerToAnswerPanel) {
+		RacerLabel lblCategory;
+		JScrollPane scrollPane;
+		JTextPane textPaneQuestion;
+		ButtonGroup bg;
+		ArrayList<JRadioButton> rdbtnOptions;
+
 		setUndecorated(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -66,24 +68,24 @@ public class QuestionPanel extends JFrame {
 		bgCol = rb.getCurQuestion().getCategory().getColor().brighter();
 
 		contentPane = new RacerPanel(new MigLayout("fill", "[][grow][]", "[][][]"), col, bgCol, col.darker());
-		Path path;
-		path = FileSystems.getDefault().getPath("img", "RACER_LOGO_MINI.png");
-		setIconImage(Toolkit.getDefaultToolkit().getImage(path.toString()));
+
+		setIconImage(Toolkit.getDefaultToolkit()
+				.getImage(FileSystems.getDefault().getPath("img", "RACER_LOGO_MINI.png").toString()));
 
 		setContentPane(contentPane);
 
 		contentPane.add(playerToAnswerPanel, "cell 2 1");
 
-		RacerLabel lblCategory = new RacerLabel(rb.getCurQuestion().getCategory().getDescription(), 42, col, bgCol);
+		lblCategory = new RacerLabel(rb.getCurQuestion().getCategory().getDescription(), 42, col, bgCol);
 		lblCategory.setHorizontalAlignment(SwingConstants.CENTER);
 		contentPane.add(lblCategory, "cell 0 0 3 1,growx");
 
-		JScrollPane scrollPane = new JScrollPane();
+		scrollPane = new JScrollPane();
 		scrollPane.setBorder(new LineBorder(col.darker(), 3));
 		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		contentPane.add(scrollPane, "flowx,cell 0 1 2 1,grow");
 
-		JTextPane textPaneQuestion = new JTextPane();
+		textPaneQuestion = new JTextPane();
 		scrollPane.setViewportView(textPaneQuestion);
 		textPaneQuestion.setText(rb.getCurQuestion().getStatement());
 		textPaneQuestion.setSelectionColor(col);
@@ -93,8 +95,8 @@ public class QuestionPanel extends JFrame {
 		textPaneQuestion.setFont(RacerPanel.getPrimaryFont().deriveFont(Font.ITALIC, 24));
 		textPaneQuestion.setEditable(false);
 
-		ButtonGroup bg = new ButtonGroup();
-		ArrayList<JRadioButton> rdbtnOptions = new ArrayList<JRadioButton>();
+		bg = new ButtonGroup();
+		rdbtnOptions = new ArrayList<JRadioButton>();
 
 		rb.genOptionButtonGroup(bg, rdbtnOptions, contentPane);
 
@@ -123,8 +125,7 @@ public class QuestionPanel extends JFrame {
 						&& rb.getCurQuestion().correctAnswer(rb.getCurQuestion().getOptions().get(i).getId());
 
 				rb.concludesTurnAction(isCorrect, panelGridBoard, btnStartQuestion, btnEndTurn, textPaneAction);
-				Window w = SwingUtilities.getWindowAncestor(contentPane);
-				w.dispose();
+				SwingUtilities.getWindowAncestor(contentPane).dispose();
 
 			}
 
@@ -133,7 +134,8 @@ public class QuestionPanel extends JFrame {
 		isTimeLeft = true;
 	}
 
-	//------------------------------------------------>||GETTERS & SETTERS||<--------------------------------------------------------\\
+	// ------------------------------------------------>||GETTERS &
+	// SETTERS||<--------------------------------------------------------\\
 
 	/**
 	 * 
@@ -158,9 +160,10 @@ public class QuestionPanel extends JFrame {
 	public Color getBgCol() {
 		return bgCol;
 	}
-	
-	//------------------------------------------------>||CLASS METHODS||<--------------------------------------------------------\\
-	
+
+	// ------------------------------------------------>||CLASS
+	// METHODS||<--------------------------------------------------------\\
+
 	/**
 	 * 
 	 * @param timeLeft
