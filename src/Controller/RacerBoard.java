@@ -459,24 +459,19 @@ public class RacerBoard extends Board implements StartGameListener, CreatePlayer
 		
 		soundEffectsMap.get((number > 0) ? "accelerateSound.wav" : "brakeSound.wav").play();
 		
-		if(!currentSquare.isMoreThanOnePlayer()) {
+		curPlayer = currentSquare.getCurPlayer();
+		
+		if(!currentSquare.isMoreThanOnePlayer() && curPlayer != null) {
+
+			soundEffectsMap.get("crashSound.wav").play();
 			
-			curPlayer = currentSquare.getCurPlayer();
-			
-			if (curPlayer != null) {
-				soundEffectsMap.get("crashSound.wav").play();
-				
-				if(number>0) {
-					playerBackToStart((RacerPlayer) curPlayer);
-					currentSquare.addPlayer(p);
-				} else {
-					playerBackToStart((RacerPlayer) p);
-				}
-				
-			} else {
+			if(number>0) {
+				playerBackToStart((RacerPlayer) curPlayer);
 				currentSquare.addPlayer(p);
+			} else {
+				playerBackToStart((RacerPlayer) p);
 			}
-			
+	
 		} else {
 			currentSquare.addPlayer(p);
 		}
