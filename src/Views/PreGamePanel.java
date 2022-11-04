@@ -26,11 +26,9 @@ import javax.swing.border.LineBorder;
 
 import Controller.RacerBoard;
 import Events.CreatePlayerEvent;
-import Events.ExitEvent;
 import Events.ResetEvent;
 import Events.StartGameEvent;
 import Listeners.CreatePlayerListener;
-import Listeners.ExitListener;
 import Listeners.ResetListener;
 import Listeners.StartGameListener;
 import RacerModel.Team;
@@ -66,6 +64,10 @@ public class PreGamePanel extends JFrame {
 	
 	//------------------------------------------------>||CONSTRUCTORS||<------------------------------------------------------------\\
 
+	/**
+	 * 
+	 * @param rb
+	 */
 	public PreGamePanel(RacerBoard rb) {
 		setTitle("PreGame - Racer");
 		setCreatePlayerListener(rb);
@@ -80,7 +82,10 @@ public class PreGamePanel extends JFrame {
 				RacerPanel.getSecondaryColor().darker(), RacerPanel.getTerciaryColor());
 
 		setContentPane(playersPane);
-		;
+		
+		SoundClip music = rb.getSounds().get("playerSelect.wav");
+		
+		music.loop();;
 
 		JPanel panelPlayer = new RacerPanel(new MigLayout("fill", "[][][]", "[pref!][58.00][][150.00]"),
 				RacerPanel.getSecondaryColor(), RacerPanel.getSecondaryColor(), RacerPanel.getSecondaryColor().darker());
@@ -104,6 +109,7 @@ public class PreGamePanel extends JFrame {
 					JOptionPane.showMessageDialog(null, "Ingrese los datos de todos los jugadores");
 				} else {
 					startGameListener.listenStartGame(new StartGameEvent(new BoardPaneGUI(rb), playersPane));
+					music.stop();
 				}
 
 			}
@@ -199,7 +205,7 @@ public class PreGamePanel extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
-				if (rb.validateFields(textFieldName.getText(), rb.getLastId())) {
+				if (rb.validateFields(textFieldName.getText())) {
 
 					createPlayerListener.listenCreate(new CreatePlayerEvent(textFieldName.getText().trim(),
 							comboBoxTeams.getSelectedItem(), chckbxExpert.isSelected()));
@@ -238,14 +244,14 @@ public class PreGamePanel extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				//JOptionPane.showConfirmDialog(null, "¿Volver al inicio?");
 				resetListener.listenReset(new ResetEvent((JFrame) SwingUtilities.getWindowAncestor(playersPane)));
-				
+				music.stop();
 			}
 			
 		});
 		
 		panelCreatedPlayers.add(btnExit, "cell 2 1 2 1,alignx center");
 
-		for (Iterator<Team> iterator = rb.getTeamColors().iterator(); iterator.hasNext();) {
+		for (Iterator<Team> iterator = rb.getTeams().iterator(); iterator.hasNext();) {
 			Team tc = iterator.next();
 			comboBoxTeams.addItem(tc);
 
@@ -257,60 +263,115 @@ public class PreGamePanel extends JFrame {
 	//------------------------------------------------>||GETTERS & SETTERS||<--------------------------------------------------------\\
 		
 
+	/**
+	 * 
+	 * @return
+	 */
 	public RacerButton getBtnCreate() {
 		return btnCreate;
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public ArrayList<RacerButton> getBtnsDelete() {
 		return btnsDelete;
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public JComboBox<Team> getComboBoxTeams() {
 		return comboBoxTeams;
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public RacerPanel getCreatedPlayersPanel() {
 		return panelCreatedPlayers;
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public ArrayList<RacerPanelCard> getPlayersPanelCards() {
 		return playersPanelCards;
 	}
 
+	/**
+	 * 
+	 * @param btnCreate
+	 */
 	public void setBtnCreate(RacerButton btnCreate) {
 		this.btnCreate = btnCreate;
 	}
 
+	/**
+	 * 
+	 * @param btnsDelete
+	 */
 	public void setBtnsDelete(ArrayList<RacerButton> btnsDelete) {
 		this.btnsDelete = btnsDelete;
 	}
 
+	/**
+	 * 
+	 * @param comboBoxTeams
+	 */
 	public void setComboBoxTeams(JComboBox<Team> comboBoxTeams) {
 		this.comboBoxTeams = comboBoxTeams;
 	}
 
+	/**
+	 * 
+	 * @param I
+	 */
 	public void setCreatePlayerListener(CreatePlayerListener I) {
 		createPlayerListener = I;
 	}
 
+	/**
+	 * 
+	 * @param playersPanelCards
+	 */
 	public void setPlayersPanelCards(ArrayList<RacerPanelCard> playersPanelCards) {
 		this.playersPanelCards = playersPanelCards;
 	}
 
+	/**
+	 * 
+	 * @param I
+	 */
 	public void setStartGameListener(StartGameListener I) {
 		startGameListener = I;
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public ResetListener getResetListener() {
 		return resetListener;
 	}
 
+	/**
+	 * 
+	 * @param resetListener
+	 */
 	public void setResetListener(ResetListener resetListener) {
 		this.resetListener = resetListener;
 	}
 	
 	//------------------------------------------------>||CLASS METHODS||<--------------------------------------------------------\\
 	
+	/**
+	 * 
+	 */
 	public void addPlayersPanelCards() {
 		RacerPanel createdPlayersPanel = getCreatedPlayersPanel();
 		createdPlayersPanel.removeAll();

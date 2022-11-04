@@ -9,7 +9,7 @@ import RacerModel.SquarePckg.Square;
  * This class is the controller between the view and the model of a board game
  */
 
-public class Board {
+public abstract class Board {
 	
 	//------------------------------------------------>||ATTRIBUTES||<--------------------------------------------------------------\\
 	
@@ -177,6 +177,8 @@ public class Board {
 	public void removePlayer(int id) {
 		players.remove(id);
 	}
+	
+	public abstract void movePlayer(Player p, int number);
 
 	/**
 	 * Returns the player who is playing this turn

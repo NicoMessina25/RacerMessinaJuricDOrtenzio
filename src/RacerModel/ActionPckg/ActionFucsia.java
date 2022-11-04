@@ -8,10 +8,20 @@ public class ActionFucsia extends ActionGreen {
 
 	//------------------------------------------------>||CONSTRUCTORS||<------------------------------------------------------------\\
 	
+	/**
+	 * 
+	 */
 	public ActionFucsia() {
 
 	}
-
+	
+	/**
+	 * 
+	 * @param desc
+	 * @param color
+	 * @param questionNeeded
+	 * @param actionToNextPlayer
+	 */
 	public ActionFucsia(String desc, String color, boolean questionNeeded, boolean actionToNextPlayer) {
 		super(desc, color, questionNeeded, actionToNextPlayer);
 	}

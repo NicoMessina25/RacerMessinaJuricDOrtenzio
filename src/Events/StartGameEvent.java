@@ -19,27 +19,46 @@ public class StartGameEvent {
 	
 	//------------------------------------------------>||CONSTRUCTORS||<------------------------------------------------------------\\
 
+	/**
+	 * 
+	 */
 	public StartGameEvent() {
 
 	}
-
+	
+	/**
+	 * 
+	 * @param boardPane
+	 * @param playersPane
+	 */
 	public StartGameEvent(BoardPaneGUI boardPane, JPanel playersPane) {
 		this.boardPane = boardPane;
 		this.playersPane = playersPane;
 	}
 	
 	//------------------------------------------------>||GETTERS & SETTERS||<--------------------------------------------------------\\
-
+	
+	/**
+	 * 
+	 * @return
+	 */
 	public BoardPaneGUI getBoardPane() {
 		return boardPane;
 	}
-
+	
+	/**
+	 * 
+	 * @param boardPane
+	 */
 	public void setBoardPane(BoardPaneGUI boardPane) {
 		this.boardPane = boardPane;
 	}
 	
 	//------------------------------------------------>||CLASS METHODS||<--------------------------------------------------------\\
-
+	
+	/**
+	 * 
+	 */
 	public void starGame() {
 		boardPane.setVisible(true);
 		boardPane.setSize(new Dimension(1280, 720));

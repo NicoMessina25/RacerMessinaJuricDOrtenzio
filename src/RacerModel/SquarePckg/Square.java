@@ -1,7 +1,5 @@
 package RacerModel.SquarePckg;
 
-import java.awt.Color;
-
 import Controller.RacerBoard;
 import RacerModel.PlayerPckg.Player;
 
@@ -12,70 +10,128 @@ public class Square {
 			//----------------------------------------->|VARIABLES|<-----------------------------------------------\\
 
 	private int id;
-	String tag;
-	private Color color;
-	private Player curPlayer = new Player();
+	private String tag;
+	private Player curPlayer;
+	private boolean moreThanOnePlayer;
 	
 	//------------------------------------------------>||CONSTRUCTORS||<------------------------------------------------------------\\
 
-
+	/**
+	 * 
+	 */
 	public Square() {
 		
 	}
-	
-	public Square(int id, String tag, Color color, Player curPlayer) { //tag es string
+	/**
+	 * 
+	 * @param id
+	 * @param tag
+	 * @param curPlayer
+	 * @param moreThanOnePlayer
+	 */
+	public Square(int id, String tag, Player curPlayer, boolean moreThanOnePlayer) { //tag es string
 		this.id = id;
-		this.color = color;
 		this.tag = tag;
 		this.curPlayer = curPlayer;
+		this.moreThanOnePlayer = moreThanOnePlayer;
 	}
 	
 	//------------------------------------------------>||GETTERS & SETTERS||<--------------------------------------------------------\\
-
+	
+	/**
+	 * 
+	 * @return
+	 */
 	public int getId() {
 		return id;
 	}
-
+	
+	/**
+	 * 
+	 * @param id
+	 */
 	public void setId(int id) {
 		this.id = id;
 	}
-
+	
+	/**
+	 * 
+	 * @return
+	 */
 	public String getTag() {
 		return tag;
 	}
 
+	/**
+	 * 
+	 * @param tag
+	 */
 	public void setTag(String tag) {
 		this.tag = tag;
 	}
-
-	public Color getColor() {
-		return color;
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public boolean isMoreThanOnePlayer() {
+		return moreThanOnePlayer;
+	}
+	
+	/**
+	 * 
+	 * @param moreThanOnePlayer
+	 */
+	public void setMoreThanOnePlayer(boolean moreThanOnePlayer) {
+		this.moreThanOnePlayer = moreThanOnePlayer;
 	}
 
-	public void setColor(Color color) {
-		this.color = color;
-	}
-
+	/**
+	 * 
+	 * @return
+	 */
 	public Player getCurPlayer() {
 		return curPlayer;
 	}
-
+	
+	/**
+	 * 
+	 * @param curPlayer
+	 */
 	public void setCurPlayer(Player curPlayer) {
 		this.curPlayer = curPlayer;
 	}
 	
 	//------------------------------------------------>||CLASS METHODS||<--------------------------------------------------------\\
 	
+	/**
+	 * 
+	 * @param rb
+	 * @param correct
+	 */
+	public void doSquareAction(RacerBoard rb, boolean correct) {
+		rb.finishTurn();
+	}
+	
+	/**
+	 * 
+	 * @param p
+	 */
+	public void addPlayer(Player p) {
+		setCurPlayer(p);
+	}
+	
+	public void removePlayer(Player p) {
+		setCurPlayer(null);
+	}
+	
+	/*@Override	
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("Id: " + id);
 		sb.append(" Tag: " + tag);
 		sb.append("\n");
 		return sb.toString();
-	}
-	
-	public void doSquareAction(RacerBoard rb, boolean correct) {
-		rb.finishTurn();
-	}
+	}*/
 
 }

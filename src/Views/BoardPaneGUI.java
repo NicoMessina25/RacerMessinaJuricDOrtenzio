@@ -6,7 +6,6 @@ import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -14,6 +13,7 @@ import java.util.ArrayList;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
@@ -22,9 +22,6 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import javax.swing.border.LineBorder;
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.xml.sax.SAXException;
 
 import Controller.RacerBoard;
 import Events.ExitEvent;
@@ -34,12 +31,14 @@ import Listeners.ExitListener;
 import Listeners.ResetListener;
 import Listeners.StartQuestionListener;
 import Views.CustomComponents.RacerButton;
-import Views.CustomComponents.RacerLabel;
+import Views.CustomComponents.RacerIcon;
 import Views.CustomComponents.RacerPanel;
 import Views.CustomComponents.RacerPanelCard;
-//import RacerModel.RacerPlayer.RacerPlayer;
 import net.miginfocom.swing.MigLayout;
 
+/**
+ *
+ */
 public class BoardPaneGUI extends JFrame {
 
 	//------------------------------------------------>||ATTRIBUTES||<--------------------------------------------------------\\
@@ -49,22 +48,27 @@ public class BoardPaneGUI extends JFrame {
 	private static final long serialVersionUID = 1L;
 	
 			//----------------------------------------->|VARIABLES|<-----------------------------------------------\\
-	
-	private RacerPanel contentPane;
-	private RacerButton btnStartQuestion;
-	private RacerButton btnEndTurn;
+	/**
+	 *
+	 */
+	private RacerPanel contentPane, playerStatusPanel, dicesPanel;
+	private QuestionPanel questionPanel;
+	private RacerButton btnStartQuestion, btnEndTurn, btnExit;
 	private JTextPane textPaneAction;
-	private RacerPanel playerStatusPanel;
 	private StartQuestionListener startQuestionListener;
-	private RacerPanel dicesPanel;
 	private ArrayList<RacerPanelCard> playersPanelCards;
 	private ResetListener resetListener;
 	private GridBoard panelBoardGrid;
+	private ExitListener exitListener;
 	
 
 	
 	//------------------------------------------------>||CONSTRUCTORS||<------------------------------------------------------------\\
 	
+	/**
+	 * 
+	 * @param rb
+	 */
 	public BoardPaneGUI(RacerBoard rb) {
 		setTitle("Racer");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -77,22 +81,19 @@ public class BoardPaneGUI extends JFrame {
 		setIconImage(Toolkit.getDefaultToolkit().getImage(path.toString()));
 		
 		
-		
+		SoundClip music = rb.getSounds().get("gameMusic.wav");
+		music.loop();
 		
 
-
+		questionPanel = null;
 
 		setContentPane(contentPane);
 
 		setStartQuestionListener(rb);
 		setResetListener(rb);
+		setExitListener(rb);
 
-		try {
-			rb.loadQuestions();
-		} catch (ParserConfigurationException | SAXException | IOException e1) {
-			e1.printStackTrace();
-		}
-
+		rb.loadQuestions();
 		rb.setPlayerTurn(0);
 
 		RacerButton btnRollDice = new RacerButton("Tirar los dados", RacerPanel.getSecondaryColor(),
@@ -122,19 +123,17 @@ public class BoardPaneGUI extends JFrame {
 		textPaneAction.setBackground(RacerPanel.getSecondaryColor().brighter());
 		scrollPaneAction.setViewportView(textPaneAction);
 
-		RacerLabel lblDice = new RacerLabel("", 16, RacerPanel.getPrimaryColor(), RacerPanel.getSecondaryColor());
+		RacerIcon iconDice = new RacerIcon(new ImageIcon(FileSystems.getDefault().getPath("img/dice", "dice1.png").toString()), 150);
 		
-		lblDice.setIcon(new ImageIcon(FileSystems.getDefault().getPath("img/dice", "dice1.png").toString()), 150);
-		lblDice.setHorizontalAlignment(SwingConstants.CENTER);
-		
-		//ImagePanel gifDice = new ImagePanel(FileSystems.getDefault().getPath("img", "rollingDice.gif").toString(), 150);
+		//iconDice.setIcon(new ImageIcon(FileSystems.getDefault().getPath("img/dice", "dice1.png").toString()), 150);
+		iconDice.setHorizontalAlignment(SwingConstants.CENTER);
 
 
 		JPanel panelActionColor = new JPanel(new MigLayout("fill", "[grow]", "[grow]"));
 		panelActionColor.setBackground(Color.BLACK);
-		RacerLabel lblActionDice = new RacerLabel();
-		lblActionDice.setHorizontalAlignment(SwingConstants.CENTER);
-		lblActionDice.setIcon(new ImageIcon(FileSystems.getDefault().getPath("img/actionDice", "actionRed.png").toString()), 150);
+		RacerIcon iconActionDice = new RacerIcon(new ImageIcon(FileSystems.getDefault().getPath("img/actionDice", "actionRed.png").toString()), 150);
+		iconActionDice.setHorizontalAlignment(SwingConstants.CENTER);
+		//iconActionDice.setIcon();
 
 		btnStartQuestion = new RacerButton("Iniciar Pregunta", RacerPanel.getSecondaryColor(),
 				RacerPanel.getPrimaryColor(), rb.getSounds().get("buttonSound.wav"));
@@ -194,7 +193,7 @@ public class BoardPaneGUI extends JFrame {
 			}
 		}*/
 		
-		panelBoardGrid.setPlayersRacerLabel(rb.genPlayersRacerLabel());		
+		panelBoardGrid.setPlayersRacerIcon(rb.genPlayersRacerIcon());		
 		panelBoardGrid.setStartingPositions();
 
 		btnRollDice.addActionListener(new ActionListener() {
@@ -202,8 +201,8 @@ public class BoardPaneGUI extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				
-				lblActionDice.setIcon(new ImageIcon(FileSystems.getDefault().getPath("img/actionDice","actionDice.gif").toString()), 150);
-				lblDice.setIcon(new ImageIcon(FileSystems.getDefault().getPath("img/dice", "rollingDice.gif").toString()), 150);
+				iconActionDice.setIcon(new ImageIcon(FileSystems.getDefault().getPath("img/actionDice","actionDice.gif").toString()), 150);
+				iconDice.setIcon(new ImageIcon(FileSystems.getDefault().getPath("img/dice", "rollingDice.gif").toString()), 150);
 				
 				btnRollDice.setEnabled(false);
 				
@@ -214,10 +213,10 @@ public class BoardPaneGUI extends JFrame {
 						rb.rollDices();
 						//panelActionColor.setEnabled(true);
 						//panelActionColor.setBackground(rb.getCurrentActionColor());
-						lblActionDice.setIcon(new ImageIcon(rb.getCurrentActionImgPath()), 150);
+						iconActionDice.setIcon(new ImageIcon(rb.getCurrentActionImgPath()), 150);
 						textPaneAction.setText("Acción: " + rb.getCurrentActionDesc());
 						dicesPanel.updateUI();
-						lblDice.setIcon(new ImageIcon(FileSystems.getDefault().getPath("img/dice", "dice" + rb.getDice().getValue()).toString() + ".png"), 150);
+						iconDice.setIcon(new ImageIcon(FileSystems.getDefault().getPath("img/dice", "dice" + rb.getDice().getValue()).toString() + ".png"), 150);
 						
 						rb.setPlayerToAnswer();
 						
@@ -246,9 +245,14 @@ public class BoardPaneGUI extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				
+				rb.genQuestionForPlayer(rb.getPlayerToAnswer());
+				
+				questionPanel = new QuestionPanel(rb, panelBoardGrid,
+						btnStartQuestion, btnEndTurn, textPaneAction, rb.getPlayerToAnswerPanelCard());
+				
 				startQuestionListener.listenStartQuestion(new StartQuestionEvent(rb.getPlayerToAnswer(),
-						rb.genQuestionForPlayer(rb.getPlayerToAnswer()), new QuestionPanel(rb, panelBoardGrid,
-								btnStartQuestion, btnEndTurn, textPaneAction, rb.getPlayerToAnswerPanelCard()))); 
+						rb.getCurQuestion(), questionPanel)); 
 
 				btnStartQuestion.setEnabled(false);
 
@@ -259,23 +263,31 @@ public class BoardPaneGUI extends JFrame {
 				RacerPanel.getSecondaryColor().darker(), RacerPanel.getSecondaryColor());
 		contentPane.add(dicesPanel, "cell 2 0 1 4, grow");
 		dicesPanel.add(btnRollDice, "cell 0 0, grow");
-		dicesPanel.add(lblDice, "cell 0 1, grow");
+		dicesPanel.add(iconDice, "cell 0 1, grow");
 		//dicesPanel.add(gifDice, "cell 0 1, grow");
 		dicesPanel.add(panelActionColor, "cell 0 2,grow");
-		panelActionColor.add(lblActionDice, "cell 0 0, growx");
+		panelActionColor.add(iconActionDice, "cell 0 0, growx");
 		//dicesPanel.add(lblActionDice, "cell 0 2,grow");
 		dicesPanel.add(scrollPaneAction, "cell 0 3,grow");
 
 		playersPanelCards.get(rb.getPlayerTurn()).startTurnAnimation();
 
-		RacerButton btnExit = new RacerButton("Salir al Inicio", RacerPanel.getSecondaryColor(), RacerPanel.getPrimaryColor(),
+		btnExit = new RacerButton("Salir al Inicio", RacerPanel.getSecondaryColor(), RacerPanel.getPrimaryColor(),
 				rb.getSounds().get("buttonSound.wav"));
 		btnExit.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				resetListener.listenReset(new ResetEvent((JFrame) SwingUtilities.getWindowAncestor(contentPane)));
-
+				if(JOptionPane.showConfirmDialog(null, "¿Seguro que quieres salir de la partida?", "¡Cuidado!", JOptionPane.YES_NO_OPTION) == 0){
+					resetListener.listenReset(new ResetEvent((JFrame) SwingUtilities.getWindowAncestor(contentPane)));
+					
+					if(questionPanel != null) {
+						exitListener.listenExit(new ExitEvent(questionPanel));
+					}
+					
+					music.stop();
+				}
+				
 			}
 
 		});
@@ -285,61 +297,148 @@ public class BoardPaneGUI extends JFrame {
 	}
 	
 	//------------------------------------------------>||GETTERS & SETTERS||<--------------------------------------------------------\\
-
+	
+	/**
+	 * 
+	 * @param I
+	 */
 	public void setStartQuestionListener(StartQuestionListener I) {
 		startQuestionListener = I;
 	}
-
+	
+	/**
+	 * 
+	 * @return
+	 */
 	public JButton getBtnStartQuestion() {
 		return btnStartQuestion;
 	}
-
+	
+	/**
+	 * 
+	 * @param btnStartQuestion
+	 */
 	public void setBtnStartQuestion(RacerButton btnStartQuestion) {
 		this.btnStartQuestion = btnStartQuestion;
 	}
-
+	
+	/**
+	 * 
+	 * @return
+	 */
 	public JTextPane getTextPaneAction() {
 		return textPaneAction;
 	}
-
+	
+	/**
+	 * 
+	 * @param textPaneAction
+	 */
 	public void setTextPaneAction(JTextPane textPaneAction) {
 		this.textPaneAction = textPaneAction;
 	}
-
+	
+	/**
+	 * 
+	 * @return
+	 */
 	public JButton getBtnEndTurn() {
 		return btnEndTurn;
 	}
-
+	
+	/**
+	 * 
+	 * @param btnEndTurn
+	 */
 	public void setBtnEndTurn(RacerButton btnEndTurn) {
 		this.btnEndTurn = btnEndTurn;
 	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public RacerButton getBtnExit() {
+		return btnExit;
+	}
+	
+	/**
+	 * 
+	 * @param btnExit
+	 */
+	public void setBtnExit(RacerButton btnExit) {
+		this.btnExit = btnExit;
+	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public ArrayList<RacerPanelCard> getPlayersPanelCards() {
 		return playersPanelCards;
 	}
-
+	
+	/**
+	 * 
+	 * @param playersPanelCards
+	 */
 	public void setPlayersPanelCards(ArrayList<RacerPanelCard> playersPanelCards) {
 		this.playersPanelCards = playersPanelCards;
 	}
-
+	
+	/**
+	 * 
+	 * @return
+	 */
 	public GridBoard getPanelBoardGrid() {
 		return panelBoardGrid;
 	}
-
+	
+	/**
+	 * 
+	 * @param panelBoardGrid
+	 */
 	public void setPanelBoardGrid(GridBoard panelBoardGrid) {
 		this.panelBoardGrid = panelBoardGrid;
 	}
-
+	
+	/**
+	 * 
+	 * @return
+	 */
 	public ResetListener getResetListener() {
 		return resetListener;
 	}
-
+	
+	/**
+	 * 
+	 * @param resetListener
+	 */
 	public void setResetListener(ResetListener resetListener) {
 		this.resetListener = resetListener;
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
+	public ExitListener getExitListener() {
+		return exitListener;
+	}
+	
+	/**
+	 * 
+	 * @param exitListener
+	 */
+	public void setExitListener(ExitListener exitListener) {
+		this.exitListener = exitListener;
+	}
+	
 	//------------------------------------------------>||CLASS METHODS||<--------------------------------------------------------\\
-
+	
+	/**
+	 * 
+	 */
 	public void addPlayersPanelCards() {
 		for (int i = 0; i < playersPanelCards.size(); i++) {
 			RacerPanelCard rpc = playersPanelCards.get(i);
@@ -353,6 +452,20 @@ public class BoardPaneGUI extends JFrame {
 			playerStatusPanel.add(rpc, "cell " + i + " 0, center");
 		}
 
+	}
+	
+	public void playerBackToStart(int playerId, String type, int currentSquareId, int lastSquare) {
+		
+		Timer delay = new Timer(2000, new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				getPanelBoardGrid().movePlayer(playerId, currentSquareId, lastSquare);
+				getPlayersPanelCards().get(playerId - 1).getLblExpert().setText(type + " - Vue. " + getPanelBoardGrid().getPlayerLap(currentSquareId) + "/2");
+			}
+		});
+		delay.setRepeats(false);
+		delay.start();
 	}
 
 }

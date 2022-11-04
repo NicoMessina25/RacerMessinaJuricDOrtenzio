@@ -14,10 +14,19 @@ public class Team {
 	
 	//------------------------------------------------>||CONSTRUCTORS||<------------------------------------------------------------\\
 
+	/**
+	 * 
+	 */
 	public Team() {
 
 	}
-
+	
+	/**
+	 * 
+	 * @param tName
+	 * @param tId
+	 * @param col
+	 */
 	public Team(String tName, String tId, Color col) {
 		teamName = tName;
 		this.col = col;
@@ -26,26 +35,50 @@ public class Team {
 	
 	//------------------------------------------------>||GETTERS & SETTERS||<--------------------------------------------------------\\
 
+	/**
+	 * 
+	 * @return
+	 */
 	public Color getCol() {
 		return col;
 	}
 
+	/**
+	 * 
+	 * @param col
+	 */
 	public void setCol(Color col) {
 		this.col = col;
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public String getTeamName() {
 		return teamName;
 	}
 
+	/**
+	 * 
+	 * @param teamName
+	 */
 	public void setTeamName(String teamName) {
 		this.teamName = teamName;
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public String getTeamId() {
 		return teamId;
 	}
 
+	/**
+	 * 
+	 * @param teamId
+	 */
 	public void setTeamId(String teamId) {
 		this.teamId = teamId;
 	}

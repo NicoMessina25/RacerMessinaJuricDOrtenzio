@@ -12,15 +12,27 @@ public class Player {
 	
 	//------------------------------------------------>||CONSTRUCTORS||<------------------------------------------------------------\\
 	
-
+	/**
+	 * 
+	 */
 	public Player(){
 		
 	}
 	
+	/**
+	 * 
+	 * @param name
+	 */
 	public Player(String name) {
 		this.name = name;
 	}
 	
+	/**
+	 * 
+	 * @param name
+	 * @param id
+	 * @param currentSquare
+	 */
 	public Player(String name, int id, int currentSquare) {
 		this.name = name;
 		this.id = id;
@@ -29,33 +41,61 @@ public class Player {
 	
 	//------------------------------------------------>||GETTERS & SETTERS||<--------------------------------------------------------\\
 
-
+	/**
+	 * 
+	 * @return
+	 */
 	public String getName() {
 		return name;
 	}
-
+	
+	/**
+	 * 
+	 * @param name
+	 */
 	public void setName(String name) {
 		this.name = name;
 	}
-
+	
+	/**
+	 * 
+	 * @return
+	 */
 	public int getId() {
 		return id;
 	}
-
+	
+	/**
+	 * 
+	 * @param id
+	 */
 	public void setId(int id) {
 		this.id = id;
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public int getCurrentSquare() {
 		return currentSquare;
 	}
-
+	
+	/**
+	 * 
+	 * @param currentSquare
+	 */
 	public void setCurrentSquare(int currentSquare) {
 		this.currentSquare = currentSquare;
 	}
 	
 	//------------------------------------------------>||CLASS METHODS||<--------------------------------------------------------\\
 	
+	/**
+	 * 
+	 * @param number
+	 * @param lastSquare
+	 */
 	public void moves(int number, int lastSquare) {
 		currentSquare += number;
 		if(currentSquare < 0) {
@@ -64,7 +104,8 @@ public class Player {
 			currentSquare = lastSquare;
 		}
 	}
-
+	
+	@Override
 	public String toString(){
 		StringBuilder sb = new StringBuilder();
 		sb.append("Name: " + name);

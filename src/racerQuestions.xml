@@ -1139,7 +1139,7 @@
 		<Pregunta>
 			<id>92</id>
 			<dificultad>3</dificultad>
-			<enunciado>>¿Cual de estos equipos  descendio a la segunda division del futbol argentino  el 26 de junio del 2011 </enunciado>
+			<enunciado>¿Cual de estos equipos  descendio a la segunda division del futbol argentino  el 26 de junio del 2011 </enunciado>
 			<opciones>
 				<opcion>River</opcion>
 				<opcion>Belgrano </opcion>
@@ -1284,8 +1284,8 @@
 			<dificultad>2</dificultad>
 			<enunciado> ¿Que pais deberia visitar para ver la Gran Muralla? </enunciado>
 			<opciones>
-				<opcion>Porcelana</opcion>
-				<opcion>japon </opcion>
+				<opcion>China</opcion>
+				<opcion>Japón </opcion>
 				<opcion>Nueva Zelanda</opcion>
 				<opcion>Reino Unido</opcion>
 			</opciones>

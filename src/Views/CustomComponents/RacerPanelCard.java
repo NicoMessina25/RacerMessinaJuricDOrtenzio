@@ -37,6 +37,18 @@ public class RacerPanelCard extends RacerPanel {
 	
 	//------------------------------------------------>||CONSTRUCTORS||<------------------------------------------------------------\\
 
+	/**
+	 * 
+	 * @param col
+	 * @param bgCol
+	 * @param borderCol
+	 * @param name
+	 * @param teamName
+	 * @param teamId
+	 * @param playerId
+	 * @param type
+	 * @param buttonSound
+	 */
 	public RacerPanelCard(Color col, Color bgCol, Color borderCol, String name, String teamName, String teamId,
 			int playerId, String type, SoundClip buttonSound) {
 		super(col, bgCol, borderCol);
@@ -82,72 +94,140 @@ public class RacerPanelCard extends RacerPanel {
 	
 	//------------------------------------------------>||GETTERS & SETTERS||<--------------------------------------------------------\\
 
+	/**
+	 * 
+	 * @return
+	 */
 	public DeletePlayerListener getDelPlayerListener() {
 		return delPlayerListener;
 	}
 
+	/**
+	 * 
+	 * @param delPlayerListener
+	 */
 	public void setDelPlayerListener(DeletePlayerListener delPlayerListener) {
 		this.delPlayerListener = delPlayerListener;
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public int getPlayerId() {
 		return playerId;
 	}
 
+	/**
+	 * 
+	 * @param playerId
+	 */
 	public void setPlayerId(int playerId) {
 		this.playerId = playerId;
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public RacerButton getBtnDel() {
 		return btnDel;
 	}
 
+	/**
+	 * 
+	 * @param btnDel
+	 */
 	public void setBtnDel(RacerButton btnDel) {
 		this.btnDel = btnDel;
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public RacerLabel getLblName() {
 		return lblName;
 	}
 
+	/**
+	 * 
+	 * @param lblName
+	 */
 	public void setLblName(RacerLabel lblName) {
 		this.lblName = lblName;
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public RacerLabel getLblTeam() {
 		return lblTeam;
 	}
 
+	/**
+	 * 
+	 * @param lblTeam
+	 */
 	public void setLblTeam(RacerLabel lblTeam) {
 		this.lblTeam = lblTeam;
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public RacerLabel getLblExpert() {
 		return lblExpert;
 	}
 
+	/**
+	 * 
+	 * @param lblExpert
+	 */
 	public void setLblExpert(RacerLabel lblExpert) {
 		this.lblExpert = lblExpert;
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public ImagePanel getTeamLogoPanel() {
 		return teamLogoPanel;
 	}
 
+	/**
+	 * 
+	 * @param teamLogoPanel
+	 */
 	public void setTeamLogoPanel(ImagePanel teamLogoPanel) {
 		this.teamLogoPanel = teamLogoPanel;
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public String getTeamId() {
 		return teamId;
 	}
 
+	/**
+	 * 
+	 * @param teamId
+	 */
 	public void setTeamId(String teamId) {
 		this.teamId = teamId;
 	}
 	
 	//------------------------------------------------>||CLASS METHODS||<--------------------------------------------------------\\
 
+	/**
+	 * 
+	 * @param btnDel
+	 */
 	public void addBtnDel(RacerButton btnDel) {
 		add(btnDel, "cell 0 4,alignx center");
 
@@ -161,6 +241,9 @@ public class RacerPanelCard extends RacerPanel {
 		});
 	}
 
+	/**
+	 * 
+	 */
 	public void invertColors() {
 		Color col1 = super.getForeground();
 		Color col2 = super.getBackground();
@@ -172,10 +255,16 @@ public class RacerPanelCard extends RacerPanel {
 
 	}
 
+	/**
+	 * 
+	 */
 	public void startTurnAnimation() {
 		playerTurnAnimation.start();
 	}
 
+	/**
+	 * 
+	 */
 	public void stopTurnAnimation() {
 		playerTurnAnimation.stop();
 		super.setBackground(bgCol);

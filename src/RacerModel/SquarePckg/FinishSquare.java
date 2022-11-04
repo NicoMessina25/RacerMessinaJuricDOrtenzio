@@ -1,28 +1,37 @@
 package RacerModel.SquarePckg;
 
-import java.awt.Color;
-
 import Controller.RacerBoard;
+import Events.WinEvent;
 import RacerModel.PlayerPckg.Player;
 
 public class FinishSquare extends Square {
 	
 	
 	//------------------------------------------------>||CONSTRUCTORS||<------------------------------------------------------------\\
-
+	
+	/**
+	 * 
+	 */
 	public FinishSquare() {
-		// TODO Auto-generated constructor stub
+		
 	}
-
-	public FinishSquare(int id, String tag, Color color, Player curPlayer) {
-		super(id, tag, color, curPlayer);
-		// TODO Auto-generated constructor stub
+	
+	/**
+	 * 
+	 * @param id
+	 * @param tag
+	 * @param curPlayer
+	 * @param moreThanOnePlayer 
+	 */
+	public FinishSquare(int id, String tag, Player curPlayer, boolean moreThanOnePlayer) {
+		super(id, tag, curPlayer, moreThanOnePlayer);
+		
 	}
 	
 	//------------------------------------------------>||CLASS METHODS||<--------------------------------------------------------\\
 	
 	@Override
 	public void doSquareAction(RacerBoard rb, boolean correct) {
-		rb.executeWin(rb.getPlayerToAnswer());
+		rb.listenWin(new WinEvent());
 	}
 }

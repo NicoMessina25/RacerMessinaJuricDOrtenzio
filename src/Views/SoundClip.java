@@ -10,6 +10,7 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
+import javax.swing.JOptionPane;
 import javax.swing.Timer;
 
 public class SoundClip {
@@ -24,19 +25,18 @@ public class SoundClip {
 	
 	//------------------------------------------------>||CONSTRUCTORS||<------------------------------------------------------------\\
 
-	// clip method
+	/**
+	 * clip method
+	 * @param path
+	 */
 	public SoundClip(String path) {
 		// create an AudioInputStream from a given sound file
 		File audioFile = new File(path);
 		try {
 			audioStream = AudioSystem.getAudioInputStream(audioFile);
 		} catch (IOException | UnsupportedAudioFileException e) {
-			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "Se produjo un error en el archivo de sonido. \nError: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 		}
-
-		// acquire audio format and create a DataLine.Info object
-		// AudioFormat format = audioStream.getFormat();
-		// var info = new DataLine.Info(Clip.class, format);
 
 		// obtain the Clip
 		try {
@@ -50,6 +50,9 @@ public class SoundClip {
 
 	//------------------------------------------------>||CLASS METHODS||<--------------------------------------------------------\\
 
+	/**
+	 * 
+	 */
 	public void play() {
 		new Thread(() -> {
 			audioClip.setFramePosition(0);
@@ -58,6 +61,9 @@ public class SoundClip {
 		}.start();
 	}
 
+	/**
+	 * 
+	 */
 	public void loop() {
 		new Thread(() -> {
 			audioClip.setFramePosition(0);
@@ -66,10 +72,17 @@ public class SoundClip {
 		}.start();
 	}
 
+	/**
+	 * 
+	 */
 	public void stop() {
 		audioClip.stop();
 	}
 
+	/**
+	 * 
+	 * @param miliSenconds
+	 */
 	public void play(int miliSenconds) {
 		
 		

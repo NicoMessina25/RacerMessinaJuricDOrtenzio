@@ -18,15 +18,28 @@ public class RacerPlayerBegginer extends RacerPlayer {
 	
 	//------------------------------------------------>||CONSTRUCTORS||<------------------------------------------------------------\\
 
-	
+	/**
+	 * 
+	 */
 	public RacerPlayerBegginer() {
 		super();
 	}
 	
+	/**
+	 * 
+	 * @param name
+	 */
 	public RacerPlayerBegginer(String name) {
 		super(name);
 	}
 	
+	/**
+	 * 
+	 * @param name
+	 * @param id
+	 * @param tColor
+	 * @param begginingSquareId
+	 */
 	public RacerPlayerBegginer(String name, int id, Team tColor, int begginingSquareId) {
 		super(name, id,  tColor, begginingSquareId);
 		timePerOption = 15;
@@ -38,7 +51,11 @@ public class RacerPlayerBegginer extends RacerPlayer {
 	public int getTimePerOption() {
 		return timePerOption;
 	}
-
+	
+	/**
+	 * 
+	 * @param timePOp
+	 */
 	public void setTimePerOption(int timePOp) {
 		timePerOption = timePOp;
 	}
@@ -47,25 +64,18 @@ public class RacerPlayerBegginer extends RacerPlayer {
 	
 	@Override
 	public List<Question> getFilteredQuestions(ArrayList<Question> questions, Category catChosen){		
-		return questions.stream().filter(q -> q.getDificulty() <= 3 && q.getCategory().getDescription().equals(catChosen.getDescription())).toList();
+		return questions.stream().filter(q -> q.getDificulty() <= 3 && q.getCategory()
+				.getDescription().equals(catChosen.getDescription())).toList();
 	}
 	
-	/*@Override
-	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append(super.toString());
-		sb.append(" Experto: ");
-		sb.append("NO");
-		return sb.toString();
-	}*/
+	
 
 	@Override
 	public Question getQuestionAdapted(Question q) {
 		int N = q.getOptions().size();
 		int i;
 		while(q.getOptions().size() > Math.ceil(N/2.0)) {
-			//System.out.println((N + " >= " + q.getOptions().size() + " > " + Math.ceil(N/2) + " > " + N/2));
-			i = (int) Math.ceil(Math.random()*(q.getOptions().size()-1)); 
+			i = (int) Math.floor(Math.random()*(q.getOptions().size()-1)) + 1; 
 			q.getOptions().remove(i);
 		}
 		return q;
@@ -77,6 +87,13 @@ public class RacerPlayerBegginer extends RacerPlayer {
 		return "Novato";
 	}
 	
-
+  /*@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(super.toString());
+		sb.append(" Experto: ");
+		sb.append("NO");
+		return sb.toString();
+	}*/
 
 }

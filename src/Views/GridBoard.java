@@ -3,26 +3,36 @@ package Views;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 
-import javax.swing.Action;
 import javax.swing.Timer;
 
-import Views.CustomComponents.RacerLabel;
+import Views.CustomComponents.RacerIcon;
 
 public class GridBoard extends ImagePanel {
 
-	/**
-	 * 
-	 */
+	
+	//------------------------------------------------>||ATTRIBUTES||<--------------------------------------------------------\\
+	
+			//----------------------------------------->|CONSTANTS|<-----------------------------------------------\\
+
 	private static final long serialVersionUID = -4893649118226554016L;
+
+			//----------------------------------------->|VARIABLES|<-----------------------------------------------\\
+	
 	
 	private ArrayList<GridBoardCoordinate> squareCoordinates = new ArrayList<GridBoardCoordinate>();
 	private ArrayList<GridBoardCoordinate> startingCoordinates = new ArrayList<GridBoardCoordinate>();
-	private ArrayList<RacerLabel> playersRacerLabel;
+	private ArrayList<RacerIcon> playersRacerIcon;
 	private int currentAnimatedSquare;
-
+	
+	//------------------------------------------------>||CONSTRUCTORS||<------------------------------------------------------------\\
+	
+	/**
+	 * 
+	 * @param img
+	 * @param h
+	 */
 	public GridBoard(String img, int h) {
 		super(img, h);
 		
@@ -34,7 +44,6 @@ public class GridBoard extends ImagePanel {
 		
 		//Set the grid coordinates the cars must follow
 		squareCoordinates.add(new GridBoardCoordinate(9, 13));
-		//squareCoordinates.add(new GridBoardCoordinate(9, 14));
 		squareCoordinates.add(new GridBoardCoordinate(9, 15));
 		squareCoordinates.add(new GridBoardCoordinate(8, 16));
 		squareCoordinates.add(new GridBoardCoordinate(6, 16));
@@ -59,40 +68,70 @@ public class GridBoard extends ImagePanel {
 		
 	}
 
+	/**
+	 * 
+	 * @param img
+	 * @param h
+	 */
 	public GridBoard(Image img, int h) {
 		super(img, h);
 		
 	}
 	
+	//------------------------------------------------>||GETTERS & SETTERS||<--------------------------------------------------------\\
+	
+	/**
+	 * 
+	 * @return
+	 */
 	public ArrayList<GridBoardCoordinate> getSquareCoordinates() {
 		return squareCoordinates;
 	}
 
+	/**
+	 * 
+	 * @param squareCoordinates
+	 */
 	public void setSquareCoordinates(ArrayList<GridBoardCoordinate> squareCoordinates) {
 		this.squareCoordinates = squareCoordinates;
 	}
 
-	public ArrayList<RacerLabel> getPlayersRacerLabel() {
-		return playersRacerLabel;
+	/**
+	 * 
+	 * @return
+	 */
+	public ArrayList<RacerIcon> getPlayersRacerIcon() {
+		return playersRacerIcon;
 	}
 
-	public void setPlayersRacerLabel(ArrayList<RacerLabel> playersRacerLabel) {
-		this.playersRacerLabel = playersRacerLabel;
+	/**
+	 * 
+	 * @param playersRacerIcon
+	 */
+	public void setPlayersRacerIcon(ArrayList<RacerIcon> playersRacerIcon) {
+		this.playersRacerIcon = playersRacerIcon;
 	}
 	
 	
+	//------------------------------------------------>||CLASS METHODS||<--------------------------------------------------------\\
 	
-	
+	/**
+	 * 
+	 */
 	public void setStartingPositions() {
 		
-		for(int i = 0; i < playersRacerLabel.size(); i++) {
-			add(playersRacerLabel.get(i), "cell " + startingCoordinates.get(i).getJ() +  " " + startingCoordinates.get(i).getI());
+		for(int i = 0; i < playersRacerIcon.size(); i++) {
+			add(playersRacerIcon.get(i), "cell " + startingCoordinates.get(i).getJ() +  " " + startingCoordinates.get(i).getI());
 		}
 	}
 
+	/**
+	 * 
+	 * @param playerId
+	 * @param currentSquare
+	 * @param oldSquare
+	 */
 	public void movePlayer(int playerId, int currentSquare, int oldSquare) {
-		//GridBoardCoordinate gBoardCoord = squareCoordinates.get(currentSquare % squareCoordinates.size());
-		//GridBoardCoordinate oldGBoardCoord = squareCoordinates.get(oldSquare % squareCoordinates.size());
 		currentAnimatedSquare = oldSquare;
 		if(currentSquare != oldSquare) {
 			Timer delay = new Timer(1500/(Math.abs(currentSquare - oldSquare)), null);
@@ -122,23 +161,32 @@ public class GridBoard extends ImagePanel {
 			delay.start();
 		}
 		
-		
-		
-		
-		/*add(playersRacerLabel.get(playerId-1), "cell " +  gBoardCoord.getJ() +  " " +  gBoardCoord.getI());
-		updateUI();*/
 	}
 	
+	/**
+	 * 
+	 * @param playerId
+	 * @param square
+	 */
 	public void movingAnimation(int playerId, int square) {
 		
-		GridBoardCoordinate gBoardCoord = squareCoordinates.get(square % squareCoordinates.size());
+		GridBoardCoordinate gBoardCoord;
 		
-		add(playersRacerLabel.get(playerId-1), "cell " +  gBoardCoord.getJ() +  " " +  gBoardCoord.getI());
+		if(square > 0) {
+			gBoardCoord = squareCoordinates.get(square % squareCoordinates.size());
+		} else {
+			gBoardCoord = startingCoordinates.get((playerId - 1) % startingCoordinates.size());
+		}
+		
+		add(playersRacerIcon.get(playerId-1), "cell " +  gBoardCoord.getJ() +  " " +  gBoardCoord.getI());
 		updateUI();
-		
-		
 	}
 	
+	/**
+	 * 
+	 * @param currentSquare
+	 * @return
+	 */
 	public int getPlayerLap(int currentSquare) {
 		return currentSquare / squareCoordinates.size() + 1;
 	}

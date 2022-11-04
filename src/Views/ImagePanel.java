@@ -25,22 +25,40 @@ public class ImagePanel extends JPanel {
 
 	//------------------------------------------------>||CONSTRUCTORS||<------------------------------------------------------------\\
 	
-	  public ImagePanel(String img, int h) {
+	/**
+	 * 
+	 * @param img
+	 * @param h
+	 */
+	public ImagePanel(String img, int h) {
 	    this(new ImageIcon(img).getImage(),h);
 	    
 	  }
 
-	  public ImagePanel(Image img, int h) {
+	/**
+	 * 
+	 * @param img
+	 * @param h
+	 */
+	public ImagePanel(Image img, int h) {
 		height = h;
 	    setImg(img);
 	  }
 	  
 	//------------------------------------------------>||GETTERS & SETTERS||<--------------------------------------------------------\\
 
+	/**
+	 * 
+	 * @return
+	 */
 	public Image getImg() {
 		return img;
 	}
 
+	/**
+	 * 
+	 * @param img
+	 */
 	public void setImg(Image img) {
 		BufferedImage bi = new BufferedImage(img.getWidth(null)*height/img.getHeight(null), height, BufferedImage.TYPE_INT_RGB);
         Graphics2D g2d = (Graphics2D)bi.createGraphics();
@@ -56,16 +74,26 @@ public class ImagePanel extends JPanel {
 		//this.img = img;
 	}
 
+	/**
+	 * 
+	 */
 	public int getHeight() {
 		return height;
 	}
 
+	/**
+	 * 
+	 * @param height
+	 */
 	public void setHeight(int height) {
 		this.height = height;
 	}
 	
 	//------------------------------------------------>||CLASS METHODS||<--------------------------------------------------------\\
-
+	
+	/**
+	 * 
+	 */
 	public void paintComponent(Graphics g) {
 			g.drawImage(img, 0, 0, null);
 			//System.out.println(b + " " + (++i));

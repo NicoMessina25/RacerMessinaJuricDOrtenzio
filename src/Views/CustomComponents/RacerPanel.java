@@ -21,17 +21,30 @@ public class RacerPanel extends JPanel {
 		//----------------------------------------->|VARIABLES|<-----------------------------------------------\\
 
 	/** primary color of the game */
-	private static final Color PRIMARY_COLOR = new Color(214, 164, 12);
-	private static final Color SECONDARY_COLOR = new Color(184, 0, 0);
-	private static final Color TERCIARY_COLOR = new Color(0, 0, 0);
+	private static final Color PRIMARY_COLOR =  new Color(251, 0, 0);//new Color(214, 164, 12);
+	private static final Color SECONDARY_COLOR = new Color(42, 37, 81); // new Color(184, 0, 0);
+	private static final Color TERCIARY_COLOR = new Color(255, 255, 255);
 	private static Font primaryFont;
 
 	//------------------------------------------------>||CONSTRUCTORS||<------------------------------------------------------------\\
 
+	/**
+	 * 
+	 * @param col
+	 * @param bgCol
+	 * @param borderCol
+	 */
 	public RacerPanel(Color col, Color bgCol, Color borderCol) {
 		setDefaultConfiguration(col, bgCol, borderCol);
 	}
 
+	/**
+	 * 
+	 * @param layout
+	 * @param col
+	 * @param bgCol
+	 * @param borderCol
+	 */
 	public RacerPanel(LayoutManager layout, Color col, Color bgCol, Color borderCol) {
 		super(layout);
 		setDefaultConfiguration(col, bgCol, borderCol);
@@ -39,36 +52,59 @@ public class RacerPanel extends JPanel {
 
 	//------------------------------------------------>||GETTERS & SETTERS||<--------------------------------------------------------\\
 
+	/**
+	 * 
+	 * @return
+	 */
 	public static Color getPrimaryColor() {
 		return PRIMARY_COLOR;
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public static Color getSecondaryColor() {
 		return SECONDARY_COLOR;
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public static Color getTerciaryColor() {
 		return TERCIARY_COLOR;
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public static Font getPrimaryFont() {
 		return primaryFont;
 	}
 	
+	/**
+	 * 
+	 */
 	public static void setPrimaryFont() {
 		try {
 			primaryFont = Font.createFont(Font.TRUETYPE_FONT, FileSystems.getDefault().getPath("fonts", "Swis721_Hv_BT_Heavy.ttf").toFile());
 		} catch (FontFormatException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
 	// ------------------------------------------------>||CLASS METHODS||<--------------------------------------------------------\\
 
+	/**
+	 * 
+	 * @param col
+	 * @param bgCol
+	 * @param borderCol
+	 */
 	public void setDefaultConfiguration(Color col, Color bgCol, Color borderCol) {
 		setForeground(col);
 		setBackground(bgCol);

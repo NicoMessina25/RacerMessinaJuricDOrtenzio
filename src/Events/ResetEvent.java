@@ -5,9 +5,7 @@ import java.awt.Dimension;
 import javax.swing.JFrame;
 
 import Controller.RacerBoard;
-import Views.BoardPaneGUI;
 import Views.WelcomePanel;
-import Views.WinPanel;
 
 public class ResetEvent {
 	
@@ -19,13 +17,21 @@ public class ResetEvent {
 	
 	
 	//------------------------------------------------>||CONSTRUCTORS||<------------------------------------------------------------\\
-
+	
+	/**
+	 * 
+	 * @param frameToClose
+	 */
 	public ResetEvent(JFrame frameToClose) {
 		this.fToClose = frameToClose;
 	}
 	
 	//------------------------------------------------>||CLASS METHODS||<--------------------------------------------------------\\
 	
+	/**
+	 * 
+	 * @param rb
+	 */
 	public void reset(RacerBoard rb) {
 		WelcomePanel welP = new WelcomePanel(rb);
 		welP.setVisible(true);

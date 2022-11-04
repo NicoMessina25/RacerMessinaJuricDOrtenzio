@@ -25,12 +25,26 @@ public class RacerButton extends JButton {
 	
 	//------------------------------------------------>||CONSTRUCTORS||<------------------------------------------------------------\\
 		
-
+	/**
+	 * 
+	 * @param col
+	 * @param bgCol
+	 * @param soundEffect
+	 * @throws HeadlessException
+	 */
 	public RacerButton(Color col, Color bgCol, SoundClip soundEffect) throws HeadlessException {
 		setDefaultConfiguration(col, bgCol, soundEffect);
 
 	}
 
+	/**
+	 * 
+	 * @param label
+	 * @param col
+	 * @param bgCol
+	 * @param soundEffect
+	 * @throws HeadlessException
+	 */
 	public RacerButton(String label, Color col, Color bgCol, SoundClip soundEffect) throws HeadlessException {
 		super(label);
 		setDefaultConfiguration(col, bgCol, soundEffect);
@@ -40,16 +54,24 @@ public class RacerButton extends JButton {
 	
 	//------------------------------------------------>||GETTERS & SETTERS||<--------------------------------------------------------\\
 
+	@Override
 	public Font getFont() {
 		return font;
 	}
-
+	
+	@Override
 	public void setFont(Font font) {
 		this.font = font;
 	}
 	
 	//------------------------------------------------>||CLASS METHODS||<--------------------------------------------------------\\
-
+	
+	/**
+	 * 
+	 * @param col
+	 * @param bgCol
+	 * @param soundEffect
+	 */
 	public void setDefaultConfiguration(Color col, Color bgCol, SoundClip soundEffect) {
 		setForeground(col.darker());
 		setBackground(bgCol.brighter());
@@ -84,7 +106,10 @@ public class RacerButton extends JButton {
 		}
 
 	}
-
+	
+	/**
+	 * 
+	 */
 	public void invertColors() {
 		Color aux = getForeground();
 		setForeground(getBackground());

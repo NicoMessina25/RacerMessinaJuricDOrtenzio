@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.nio.file.FileSystems;
 
+import javax.swing.JOptionPane;
+
 import Controller.RacerBoard;
 import RacerModel.Team;
 import RacerModel.ActionPckg.ActionBlue;
@@ -12,9 +14,6 @@ import RacerModel.ActionPckg.ActionGreen;
 import RacerModel.ActionPckg.ActionOrange;
 import RacerModel.ActionPckg.ActionRed;
 import RacerModel.ActionPckg.ActionYellow;
-import RacerModel.SquarePckg.BegginingSquare;
-import RacerModel.SquarePckg.FinishSquare;
-import RacerModel.SquarePckg.Square;
 import Views.WelcomePanel;
 import Views.CustomComponents.RacerPanel;
 
@@ -26,7 +25,11 @@ public class RunRacer {
 	public RunRacer() {
 
 	}
-
+	
+	/**
+	 * 
+	 * @param args
+	 */
 	public static void main(String[] args) {
 
 		RacerBoard rb = new RacerBoard(43);
@@ -39,16 +42,16 @@ public class RunRacer {
 		RacerPanel.setPrimaryFont();
 	
 
-		rb.getTeamColors().add(new Team("Alpha Romeo", "AlphaR", new Color(160, 12, 46))); // AlphaRomeo - 0
-		rb.getTeamColors().add(new Team("Alpha Tauri", "AlphaT", new Color(83, 100, 120))); // AlphaTauri - 1
-		rb.getTeamColors().add(new Team("Alpine", "Alp", new Color(242, 148, 198)));// Alpine - 2
-		rb.getTeamColors().add(new Team("Aston Martin", "AstonM", new Color(0, 89, 79)));// AstonMartin - 3
-		rb.getTeamColors().add(new Team("Ferrari", "Frri", new Color(230, 10, 0)));// Ferrari - 4
-		rb.getTeamColors().add(new Team("Haas", "Haas", new Color(205, 205, 205)));// Haas - 5
-		rb.getTeamColors().add(new Team("McLaren", "McLrn", new Color(244, 133, 0)));// McLaren - 6
-		rb.getTeamColors().add(new Team("Mercedes", "Mer", new Color(50, 50, 50)));// Mercedes - 7
-		rb.getTeamColors().add(new Team("Red Bull", "RBull", new Color(252, 216, 0)));// RedBull - 8
-		rb.getTeamColors().add(new Team("Williams", "Wills", new Color(0, 160, 222)));// Williams - 9
+		rb.getTeams().add(new Team("Alpha Romeo", "AlphaR", new Color(160, 12, 46))); // AlphaRomeo - 0
+		rb.getTeams().add(new Team("Alpha Tauri", "AlphaT", new Color(83, 100, 120))); // AlphaTauri - 1
+		rb.getTeams().add(new Team("Alpine", "Alp", new Color(242, 148, 198)));// Alpine - 2
+		rb.getTeams().add(new Team("Aston Martin", "AstonM", new Color(0, 89, 79)));// AstonMartin - 3
+		rb.getTeams().add(new Team("Ferrari", "Frri", new Color(230, 10, 0)));// Ferrari - 4
+		rb.getTeams().add(new Team("Haas", "Haas", new Color(205, 205, 205)));// Haas - 5
+		rb.getTeams().add(new Team("McLaren", "McLrn", new Color(244, 133, 0)));// McLaren - 6
+		rb.getTeams().add(new Team("Mercedes", "Mer", new Color(50, 50, 50)));// Mercedes - 7
+		rb.getTeams().add(new Team("Red Bull", "RBull", new Color(252, 216, 0)));// RedBull - 8
+		rb.getTeams().add(new Team("Williams", "Wills", new Color(0, 160, 222)));// Williams - 9
 
 		rb.getActionDice().getActions().add(new ActionRed(
 				"Avanza el valor obtenido en el dado numérico, pero pierde el próximo turno (no podrá lanzar los dados en el siguiente turno)",
@@ -68,7 +71,7 @@ public class RunRacer {
 				FileSystems.getDefault().getPath("img/actionDice", "actionFuchsia.png").toString(), true, false));
 		
 		
-
+		
 
 		WelcomePanel frame = new WelcomePanel(rb);
 		frame.setSize(1280, 720);

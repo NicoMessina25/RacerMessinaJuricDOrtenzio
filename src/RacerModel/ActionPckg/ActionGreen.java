@@ -7,11 +7,21 @@ public class ActionGreen extends Action {
 	
 
 	//------------------------------------------------>||CONSTRUCTORS||<------------------------------------------------------------\\
-
+	
+	/**
+	 * 
+	 */
 	public ActionGreen() {
 
 	}
-
+	
+	/**
+	 * 
+	 * @param desc
+	 * @param img
+	 * @param questionNeeded
+	 * @param actionToNextPlayer
+	 */
 	public ActionGreen(String desc, String img, boolean questionNeeded, boolean actionToNextPlayer) {
 		super(desc, img, questionNeeded, actionToNextPlayer);
 	}

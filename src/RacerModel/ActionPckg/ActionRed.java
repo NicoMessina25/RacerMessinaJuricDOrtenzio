@@ -7,14 +7,22 @@ public class ActionRed extends ActionGreen {
 	
 
 	//------------------------------------------------>||CONSTRUCTORS||<------------------------------------------------------------\\
-
+	
+	/**
+	 * 
+	 */
 	public ActionRed() {
-		// TODO Auto-generated constructor stub
 	}
-
+	
+	/**
+	 * 
+	 * @param desc
+	 * @param img
+	 * @param questionNeeded
+	 * @param actionToNextPlayer
+	 */
 	public ActionRed(String desc, String img, boolean questionNeeded, boolean actionToNextPlayer) {
 		super(desc, img, questionNeeded, actionToNextPlayer);
-		// TODO Auto-generated constructor stub
 	}
 	
 	//------------------------------------------------>||CLASS METHODS||<--------------------------------------------------------\\

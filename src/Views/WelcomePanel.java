@@ -18,7 +18,7 @@ import Events.StartPreGameEvent;
 import Listeners.ExitListener;
 import Listeners.StartPreGameListener;
 import Views.CustomComponents.RacerButton;
-import Views.CustomComponents.RacerLabel;
+import Views.CustomComponents.RacerIcon;
 import Views.CustomComponents.RacerPanel;
 import net.miginfocom.swing.MigLayout;
 
@@ -41,13 +41,16 @@ public class WelcomePanel extends JFrame {
 	
 	//------------------------------------------------>||CONSTRUCTORS||<------------------------------------------------------------\\
 	
+	/**
+	 * 
+	 * @param rb
+	 */
 	public WelcomePanel(RacerBoard rb) {
 		SoundClip music = rb.getSounds().get("introMusic.wav");
 		music.loop();
 		setsPreGameL(rb);
 		setExitListener(rb);
 		setTitle("RACER!");
-		setResizable(false);
 		Path path;
 		path = FileSystems.getDefault().getPath("img", "RACER_LOGO_MINI.png");
 		setIconImage(Toolkit.getDefaultToolkit().getImage(path.toString()));
@@ -66,8 +69,8 @@ public class WelcomePanel extends JFrame {
 		contentPane.add(background, "cell 0 0,alignx center,growy");
 		background.setLayout(new MigLayout("", "[grow]", "[][][]"));
 		
-		RacerLabel lblLogo = new RacerLabel();
-		lblLogo.setIcon(new ImageIcon(FileSystems.getDefault().getPath("img","RACER_LOGO.png").toString()), 500);
+		RacerIcon iconLogo = new RacerIcon(new ImageIcon(FileSystems.getDefault().getPath("img","RACER_LOGO.png").toString()), 500);
+		//iconLogo.setIcon();
 
 		RacerButton btnStart = new RacerButton("Comenzar", RacerPanel.getSecondaryColor(), RacerPanel.getPrimaryColor(), rb.getSounds().get("buttonSound.wav"));
 
@@ -96,7 +99,7 @@ public class WelcomePanel extends JFrame {
 			
 		});
 		
-		background.add(lblLogo, "cell 0 0, center");
+		background.add(iconLogo, "cell 0 0, center");
 		background.add(btnStart, "cell 0 1,alignx center,aligny center");
 		background.add(btnExit, "cell 0 2,alignx center,aligny center");
 		
@@ -104,18 +107,34 @@ public class WelcomePanel extends JFrame {
 	
 	//------------------------------------------------>||GETTERS & SETTERS||<--------------------------------------------------------\\
 
+	/**
+	 * 
+	 * @return
+	 */
 	public StartPreGameListener getsPreGameL() {
 		return sPreGameL;
 	}
 
+	/**
+	 * 
+	 * @param sPreGameL
+	 */
 	public void setsPreGameL(StartPreGameListener sPreGameL) {
 		this.sPreGameL = sPreGameL;
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public ExitListener getExitListener() {
 		return exitListener;
 	}
 
+	/**
+	 * 
+	 * @param exitListener
+	 */
 	public void setExitListener(ExitListener exitListener) {
 		this.exitListener = exitListener;
 	}

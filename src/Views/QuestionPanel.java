@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
@@ -49,24 +48,30 @@ public class QuestionPanel extends JFrame {
 	
 	//------------------------------------------------>||CONSTRUCTORS||<------------------------------------------------------------\\
 	
+	/**
+	 * 
+	 * @param rb
+	 * @param panelGridBoard
+	 * @param btnStartQuestion
+	 * @param btnEndTurn
+	 * @param textPaneAction
+	 * @param playerToAnswerPanel
+	 */
 	public QuestionPanel(RacerBoard rb, GridBoard panelGridBoard, JButton btnStartQuestion, JButton btnEndTurn,
 			JTextPane textPaneAction, RacerPanelCard playerToAnswerPanel) {
+		setUndecorated(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		col = rb.getCurQuestion().getCategory().getColor().darker();
 		bgCol = rb.getCurQuestion().getCategory().getColor().brighter();
 
 		contentPane = new RacerPanel(new MigLayout("fill", "[][grow][]", "[][][]"), col, bgCol, col.darker());
-		// contentPane.setSize(800, 500);
 		Path path;
 		path = FileSystems.getDefault().getPath("img", "RACER_LOGO_MINI.png");
 		setIconImage(Toolkit.getDefaultToolkit().getImage(path.toString()));
 
 		setContentPane(contentPane);
 
-		// JLabel lblPlayerToAnswer = new JLabel("Responde: " +
-		// rb.getPlayerToAnswer().getName());
-		// contentPane.add(lblPlayerToAnswer, "cell 0 0");
 		contentPane.add(playerToAnswerPanel, "cell 2 1");
 
 		RacerLabel lblCategory = new RacerLabel(rb.getCurQuestion().getCategory().getDescription(), 42, col, bgCol);
@@ -83,7 +88,7 @@ public class QuestionPanel extends JFrame {
 		textPaneQuestion.setText(rb.getCurQuestion().getStatement());
 		textPaneQuestion.setSelectionColor(col);
 		textPaneQuestion.setSelectedTextColor(bgCol);
-		textPaneQuestion.setForeground(RacerPanel.getTerciaryColor());
+		textPaneQuestion.setForeground(col);
 		textPaneQuestion.setBackground(bgCol);
 		textPaneQuestion.setFont(RacerPanel.getPrimaryFont().deriveFont(Font.ITALIC, 24));
 		textPaneQuestion.setEditable(false);
@@ -130,20 +135,36 @@ public class QuestionPanel extends JFrame {
 
 	//------------------------------------------------>||GETTERS & SETTERS||<--------------------------------------------------------\\
 
+	/**
+	 * 
+	 * @return
+	 */
 	public Color getCol() {
 		return col;
 	}
 
+	/**
+	 * 
+	 * @param col
+	 */
 	public void setCol(Color col) {
 		this.col = col;
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public Color getBgCol() {
 		return bgCol;
 	}
 	
 	//------------------------------------------------>||CLASS METHODS||<--------------------------------------------------------\\
 	
+	/**
+	 * 
+	 * @param timeLeft
+	 */
 	public void updateTimeLeft(int timeLeft) {
 		lblTimeLeft.setText(timeLeft + "");
 		isTimeLeft = timeLeft > 0;
@@ -153,6 +174,10 @@ public class QuestionPanel extends JFrame {
 
 	}
 
+	/**
+	 * 
+	 * @param bgCol
+	 */
 	public void setBgCol(Color bgCol) {
 		this.bgCol = bgCol;
 	}
