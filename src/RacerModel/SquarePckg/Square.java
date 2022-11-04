@@ -109,7 +109,7 @@ public class Square {
 	 * @param rb
 	 * @param correct
 	 */
-	public void doSquareAction(RacerBoard rb, boolean correct) {
+	public void doSquareAction(RacerBoard rb, int diceValue) {
 		rb.finishTurn();
 	}
 	

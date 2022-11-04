@@ -31,10 +31,11 @@ public class QuestionSquare extends Square {
 	//------------------------------------------------>||CLASS METHODS||<--------------------------------------------------------\\
 	
 	@Override
-	public void doSquareAction(RacerBoard rb, boolean correct) {
-		if(correct) {
+	public void doSquareAction(RacerBoard rb, int diceValue) {
+		if(diceValue != 0) {
 			rb.listenQuestionSquare(new QuestionSquareEvent());
-		} else super.doSquareAction(rb, correct);
+		} else super.doSquareAction(rb, diceValue);
 	}
+	
 
 }

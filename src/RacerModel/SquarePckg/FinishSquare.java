@@ -31,7 +31,7 @@ public class FinishSquare extends Square {
 	//------------------------------------------------>||CLASS METHODS||<--------------------------------------------------------\\
 	
 	@Override
-	public void doSquareAction(RacerBoard rb, boolean correct) {
+	public void doSquareAction(RacerBoard rb, int diceValue) {
 		rb.listenWin(new WinEvent());
 	}
 }

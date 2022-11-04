@@ -70,37 +70,43 @@ public class BoardPaneGUI extends JFrame {
 	 * @param rb
 	 */
 	public BoardPaneGUI(RacerBoard rb) {
+		RacerButton btnRollDice;
+		JScrollPane scrollPaneAction;
+		SoundClip music;
+		RacerIcon iconDice, iconActionDice;
+		JPanel panelActionColor, panelStart;
+		
 		setTitle("Racer");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 800, 600);
-		contentPane = new RacerPanel(new MigLayout("fill", "[][][grow]", "[][][][]"), RacerPanel.getPrimaryColor(),
-				RacerPanel.getSecondaryColor().darker(), RacerPanel.getTerciaryColor());//
-
-		Path path;
-		path = FileSystems.getDefault().getPath("img", "RACER_LOGO_MINI.png");
-		setIconImage(Toolkit.getDefaultToolkit().getImage(path.toString()));
+		setIconImage(Toolkit.getDefaultToolkit().getImage(FileSystems.getDefault().getPath("img", "RACER_LOGO_MINI.png").toString()));
 		
-		
-		SoundClip music = rb.getSounds().get("gameMusic.wav");
-		music.loop();
-		
-
-		questionPanel = null;
-
-		setContentPane(contentPane);
-
 		setStartQuestionListener(rb);
 		setResetListener(rb);
 		setExitListener(rb);
-
+		
 		rb.loadQuestions();
 		rb.setPlayerTurn(0);
+		
+		
+		
+		contentPane = new RacerPanel(new MigLayout("fill", "[][][grow]", "[][][][]"), RacerPanel.getPrimaryColor(),
+				RacerPanel.getSecondaryColor().darker(), RacerPanel.getTerciaryColor());
+		setContentPane(contentPane);
+		
+		questionPanel = null;
+		
+		
+		music = rb.getSounds().get("gameMusic.wav");
+		music.loop();
+		
 
-		RacerButton btnRollDice = new RacerButton("Tirar los dados", RacerPanel.getSecondaryColor(),
+
+		btnRollDice = new RacerButton("Tirar los dados", RacerPanel.getSecondaryColor(),
 				RacerPanel.getPrimaryColor(), rb.getSounds().get("buttonSound.wav"));
 		btnRollDice.setFont(RacerPanel.getPrimaryFont().deriveFont(Font.BOLD | Font.ITALIC, 16));
 
-		JScrollPane scrollPaneAction = new JScrollPane();
+		scrollPaneAction = new JScrollPane();
 		scrollPaneAction.setBorder(new LineBorder(RacerPanel.getSecondaryColor().darker(), 3));
 		scrollPaneAction.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
@@ -123,17 +129,16 @@ public class BoardPaneGUI extends JFrame {
 		textPaneAction.setBackground(RacerPanel.getSecondaryColor().brighter());
 		scrollPaneAction.setViewportView(textPaneAction);
 
-		RacerIcon iconDice = new RacerIcon(new ImageIcon(FileSystems.getDefault().getPath("img/dice", "dice1.png").toString()), 150);
+		iconDice = new RacerIcon(new ImageIcon(FileSystems.getDefault().getPath("img/dice", "dice1.png").toString()), 150);
 		
-		//iconDice.setIcon(new ImageIcon(FileSystems.getDefault().getPath("img/dice", "dice1.png").toString()), 150);
+		
 		iconDice.setHorizontalAlignment(SwingConstants.CENTER);
 
 
-		JPanel panelActionColor = new JPanel(new MigLayout("fill", "[grow]", "[grow]"));
+		panelActionColor = new JPanel(new MigLayout("fill", "[grow]", "[grow]"));
 		panelActionColor.setBackground(Color.BLACK);
-		RacerIcon iconActionDice = new RacerIcon(new ImageIcon(FileSystems.getDefault().getPath("img/actionDice", "actionRed.png").toString()), 150);
+		iconActionDice = new RacerIcon(new ImageIcon(FileSystems.getDefault().getPath("img/actionDice", "actionRed.png").toString()), 150);
 		iconActionDice.setHorizontalAlignment(SwingConstants.CENTER);
-		//iconActionDice.setIcon();
 
 		btnStartQuestion = new RacerButton("Iniciar Pregunta", RacerPanel.getSecondaryColor(),
 				RacerPanel.getPrimaryColor(), rb.getSounds().get("buttonSound.wav"));
@@ -141,7 +146,7 @@ public class BoardPaneGUI extends JFrame {
 		contentPane.add(btnStartQuestion, "flowx,cell 1 0,growx,aligny center");
 		btnStartQuestion.setEnabled(false);
 
-		JPanel panelStart = new JPanel();
+		panelStart = new JPanel();
 		panelStart.setBorder(new LineBorder(new Color(0, 0, 0)));
 
 		panelBoardGrid = new GridBoard(
@@ -152,16 +157,11 @@ public class BoardPaneGUI extends JFrame {
 
 
 
-		//panelBoardGrid.add(panelStart, "cell 0 0, width 80px, height 80px");
 
 		btnEndTurn = new RacerButton("Finalizar Turno", RacerPanel.getSecondaryColor(), RacerPanel.getPrimaryColor(),
 				rb.getSounds().get("buttonSound.wav"));
-		btnEndTurn.setFont(RacerPanel.getPrimaryFont().deriveFont(Font.BOLD | Font.ITALIC, 20));
-		contentPane.add(btnEndTurn, "cell 1 1,growx,aligny center");
-
-
+		btnEndTurn.setFont(RacerPanel.getPrimaryFont().deriveFont(Font.BOLD | Font.ITALIC, 20));	
 		btnEndTurn.setEnabled(false);
-
 		btnEndTurn.addActionListener(new ActionListener() {
 
 			@Override
@@ -171,9 +171,6 @@ public class BoardPaneGUI extends JFrame {
 					playersPanelCards.get(rb.getPlayerTurn()).stopTurnAnimation();
 					rb.nextTurn();
 					playersPanelCards.get(rb.getPlayerTurn()).startTurnAnimation();
-			
-					//lblDice.setIcon(new ImageIcon(FileSystems.getDefault().getPath("img/dice", "dice1.png").toString()), 200);
-					//lblActionDice.setIcon(new ImageIcon(FileSystems.getDefault().getPath("img/actionDice","actionRed.png").toString()), 200);
 					
 					btnEndTurn.setEnabled(false);
 					textPaneAction.setText("Acción:");
@@ -181,21 +178,12 @@ public class BoardPaneGUI extends JFrame {
 			}
 
 		});
-
-		/*for (int i = 0; i < 11; i++) {
-			for (int j = 0; j <= 19; j++) {
-				RacerLabel rl = new RacerLabel();
-				rl.setIcon(new ImageIcon(FileSystems.getDefault().getPath("img/f1Cars", "alpha romeo.png").toString()), 40);
-				//rl.setText("xd");
-				//rl.setBorder(new LineBorder(new Color(0, 0, 0)));
-				//panelBoardGrid.add(rl, "cell " + j + " " + i);
-				squareLabels.add(rl);
-			}
-		}*/
 		
 		panelBoardGrid.setPlayersRacerIcon(rb.genPlayersRacerIcon());		
 		panelBoardGrid.setStartingPositions();
-
+		contentPane.add(btnEndTurn, "cell 1 1,growx,aligny center");
+		
+		
 		btnRollDice.addActionListener(new ActionListener() {
 
 			@Override
@@ -211,8 +199,6 @@ public class BoardPaneGUI extends JFrame {
 					@Override
 					public void actionPerformed(ActionEvent e) {
 						rb.rollDices();
-						//panelActionColor.setEnabled(true);
-						//panelActionColor.setBackground(rb.getCurrentActionColor());
 						iconActionDice.setIcon(new ImageIcon(rb.getCurrentActionImgPath()), 150);
 						textPaneAction.setText("Acción: " + rb.getCurrentActionDesc());
 						dicesPanel.updateUI();
@@ -234,9 +220,6 @@ public class BoardPaneGUI extends JFrame {
 				
 				rollingAnimation.setRepeats(false);
 				rollingAnimation.start();
-
-
-				// textPaneGameStatus.setText(rb.genPlayersStatus());
 			}
 
 		});
@@ -264,10 +247,8 @@ public class BoardPaneGUI extends JFrame {
 		contentPane.add(dicesPanel, "cell 2 0 1 4, grow");
 		dicesPanel.add(btnRollDice, "cell 0 0, grow");
 		dicesPanel.add(iconDice, "cell 0 1, grow");
-		//dicesPanel.add(gifDice, "cell 0 1, grow");
 		dicesPanel.add(panelActionColor, "cell 0 2,grow");
 		panelActionColor.add(iconActionDice, "cell 0 0, growx");
-		//dicesPanel.add(lblActionDice, "cell 0 2,grow");
 		dicesPanel.add(scrollPaneAction, "cell 0 3,grow");
 
 		playersPanelCards.get(rb.getPlayerTurn()).startTurnAnimation();

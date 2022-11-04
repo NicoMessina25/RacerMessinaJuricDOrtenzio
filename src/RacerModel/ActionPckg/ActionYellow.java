@@ -31,7 +31,7 @@ public class ActionYellow extends ActionGreen {
 	public void doAction(RacerBoard rb, RacerPlayer rp, int diceValue, boolean correct) {		
 		if(correct) {
 			super.doAction(rb, rp, diceValue, correct);	
-		}
+		} else rb.getDice().setValue(0);
 	}
 
 }

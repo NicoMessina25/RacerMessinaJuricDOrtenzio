@@ -449,6 +449,7 @@ public class RacerBoard extends Board implements StartGameListener, CreatePlayer
 
 		ArrayList<Square> squares = getSquares();
 		Square currentSquare;
+		Player curPlayer;
 		
 		
 		squares.get(p.getCurrentSquare()).removePlayer(p);;
@@ -460,7 +461,7 @@ public class RacerBoard extends Board implements StartGameListener, CreatePlayer
 		
 		if(!currentSquare.isMoreThanOnePlayer()) {
 			
-			Player curPlayer = currentSquare.getCurPlayer();
+			curPlayer = currentSquare.getCurPlayer();
 			
 			if (curPlayer != null) {
 				soundEffectsMap.get("crashSound.wav").play();
@@ -638,7 +639,7 @@ public class RacerBoard extends Board implements StartGameListener, CreatePlayer
 		
 		executeAction(panelGridBoard, correct);
 
-		getSquares().get(getPlayerToAnswer().getCurrentSquare()).doSquareAction(this, correct);
+		getSquares().get(getPlayerToAnswer().getCurrentSquare()).doSquareAction(this, getDice().getValue());
 		
 		System.out.println(genPlayersStatus());
 
