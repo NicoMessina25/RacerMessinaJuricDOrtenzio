@@ -43,7 +43,8 @@ public class SoundClip {
 			audioClip = AudioSystem.getClip();
 			audioClip.open(audioStream);
 		} catch (LineUnavailableException | IOException e) {
-			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "Se produjo un error al obtener el archivo de sonido."
+					+ "(Puede que otra aplicación lo este usando) . \nError: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 	
@@ -83,7 +84,7 @@ public class SoundClip {
 	 * 
 	 * @param miliSenconds
 	 */
-	public void play(int miliSenconds) {
+	/*public void play(int miliSenconds) {
 		
 		
 		Timer timer = new Timer((int) miliSenconds, new ActionListener() {
@@ -102,15 +103,9 @@ public class SoundClip {
 		timer.setRepeats(false);
 		timer.start();
 		
-	}
-	
-	/*public int getTimeRemaining() {
-		return isPlaying()? (int) audioClip.getMicrosecondLength()/1000: 0;
-	}
-	
-	public boolean isPlaying() {
-		return audioClip.isActive();
 	}*/
+	
+
 	
 
 }

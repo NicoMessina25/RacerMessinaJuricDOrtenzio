@@ -3,7 +3,7 @@ package RacerModel.ActionPckg;
 import Controller.RacerBoard;
 import RacerModel.PlayerPckg.RacerPlayer;
 
-public class ActionBlue extends ActionGreen {
+public class ActionBlue extends ActionYellow {
 	
 	//------------------------------------------------>||CONSTRUCTORS||<------------------------------------------------------------\\
 		
@@ -31,11 +31,10 @@ public class ActionBlue extends ActionGreen {
 
 	@Override
 	public void doAction(RacerBoard rb, RacerPlayer rp, int diceValue, boolean correct) {
-		if (correct) {
-			super.doAction(rb, rp, diceValue * 2, correct);
-		} else
+		if (!correct) {
 			rp.setLostTurns(1);
-
+		}	
+		super.doAction(rb, rp, diceValue * 2, correct);
 	}
 
 }

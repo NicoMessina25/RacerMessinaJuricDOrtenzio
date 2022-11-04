@@ -617,8 +617,10 @@ public class RacerBoard extends Board implements StartGameListener, CreatePlayer
 	}
 	
 	/**
-	 * this method concludes the turn after the player answers the question and depending on the square
-	 * he is standing on after his move, executes the square action
+	 * this method concludes the turn after the player answers the 
+	 * question or throws the dices, depending on the action and executes 
+	 * the doAction method. Also, depending on the square he is standing 
+	 * on after his move, executes the square action
 	 * @param correct
 	 * @param panelGridBoard
 	 * @param btnStartQuestion

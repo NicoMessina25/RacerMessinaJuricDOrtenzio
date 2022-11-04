@@ -33,7 +33,6 @@ public class RacerPanelCard extends RacerPanel {
 	private Timer playerTurnAnimation;
 	private Color col, bgCol;
 	private String teamId;
-	// private boolean toggleBgCol = true;
 	
 	//------------------------------------------------>||CONSTRUCTORS||<------------------------------------------------------------\\
 
@@ -61,19 +60,17 @@ public class RacerPanelCard extends RacerPanel {
 
 		lblName = new RacerLabel(name, 20, col, bgCol);
 		lblName.setHorizontalAlignment(SwingConstants.CENTER);
-		// lblName.setBounds(86, 24, 46, 14);
 		add(lblName, "cell 0 0,growx");
 
 		teamLogoPanel = new ImagePanel(
 				new ImageIcon((FileSystems.getDefault().getPath("img", "logo" + teamId + "F1.jpg").toString()))
 						.getImage(),
 				100);
-		// teamLogoPanel.setBounds(58, 49, 110, 70);
+	
 		add(teamLogoPanel, "cell 0 1,alignx center");
 
 		lblTeam = new RacerLabel(teamName, 16, col, bgCol);
 		lblTeam.setHorizontalAlignment(SwingConstants.CENTER);
-		// lblTeam.setBounds(86, 130, 46, 14);
 		add(lblTeam, "cell 0 2,growx");
 
 		lblExpert = new RacerLabel(type, 16, col, bgCol);
