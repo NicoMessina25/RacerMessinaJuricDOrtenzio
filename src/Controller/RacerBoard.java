@@ -633,7 +633,7 @@ public class RacerBoard extends Board implements StartGameListener, CreatePlayer
 
 		if (getActionDice().getAction().isQuestionNeeded()) {
 			
-			soundEffectsMap.get((correct)? "correctSound.wav":"incorrectSound.wav").play(0);
+			soundEffectsMap.get((correct)? "correctSound.wav":"incorrectSound.wav").play();
 			
 		}
 		
